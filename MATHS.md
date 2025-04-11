@@ -28,3 +28,21 @@ The naive "initiator-equals-rate" paradigm is merely a special case of it.
 A time-dependent methodology for fault tree evaluation.
 <cite>Nuclear engineering and design</cite>, 13(2), 337–360.
 <<https://doi.org/10.1016/0029-5493(70)90167-6>>
+
+
+## Primary events
+
+<i>Primary events</i> (called <i>primary failures</i> by Vesely)
+are the atoms (representing failures) that make up a fault tree.
+These are entities that, over the course of time,
+switch from "unfailed" to "failed"
+(and back to "unfailed" if the failure is repairable).
+
+In the general framework, *all* primary events are characterised
+by a failure rate and a repair rate.
+
+### Failure rate
+
+### Repair rate
+
+### Special case: constant probability
