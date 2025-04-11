@@ -44,7 +44,7 @@ by a failure rate and a repair rate.
 
 ### Failure rate
 
-The failure rate `λ(t)` of a primary event is defined as
+The failure rate `λ(t)` is defined as
 
 ```
 λ(t) = Pr(becomes failed between t and t+dt | unfailed at time t) / dt,
@@ -56,7 +56,7 @@ Note the conditional nature of the probability.
 
 ### Repair rate
 
-The repair rate `μ(t)` of a primary event is defined as
+The repair rate `μ(t)` is defined as
 
 ```
 μ(t) = Pr(becomes unfailed between t and t+dt | failed at time t) / dt,
@@ -87,5 +87,31 @@ the solution reduces to
 ω(t) = λ(t) exp(−∫ [0 to t] λ(t') dt').
 ```
 
+### Failure probability
+
+The failure probability `q(t)` is found by noting that a factor of `1 − q(t)`
+will convert between the conditional quantity `λ(t)`
+and the unconditional quantity `ω(t)`, i.e.
+
+```
+ω(t) = (1 − q(t)) λ(t),
+q(t) = 1 − ω(t) / λ(t).
+```
+
 
 ### Special case: constant probability
+
+Initially I could not understand
+how a primary failure with constant probability `q(t) = Q`
+could be represented using this framework,
+which has `λ(t)` and `μ(t)` has the fundamental quantities.
+
+After much thought, it occurred to me that we must have
+
+```
+λ(t) = 0,
+ω(t) = 0,
+q(t) = 1 − 0 / 0,
+```
+
+where the indeterminacy in the last expression must resolve to Q.
