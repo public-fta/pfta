@@ -87,6 +87,7 @@ the solution reduces to
 ω(t) = λ(t) exp(−∫ [0 to t] λ(t') dt').
 ```
 
+
 ### Failure probability
 
 The failure probability `q(t)` is found by noting that a factor of `1 − q(t)`
@@ -130,3 +131,40 @@ There are two (highly philosophical) ways to think about this:
 Both are compelling. The first does not require invocation of impulse functions.
 The second allows us to think in terms of a random variable for failure time
 having the distribution `Q δ(t) + (1−Q) δ(t−∞)`.
+
+
+## Gates
+
+Gates are the entities that encode failures
+as logical combinations of other failures.
+Like primary events, gates are entities that, over the course of time,
+switch from unfailed to failed
+(and back to unfailed if relevant failures are repairable).
+
+- An AND gate (conjunction) is failed if all of its inputs are failed.
+- An OR gate (disjunction) is failed if any of its inputs are failed.
+
+
+## Boolean algebra
+
+It is useful to represent primary events by Boolean expressions,
+so that a value of `FALSE` corresponds the unfailed state
+and a value of `TRUE` corresponds to the failed state.
+
+The Boolean expression for a gate is obtained by applying the relevant operation
+(logical AND or logical OR) to the expressions for the gate's inputs.
+
+In this document we use electrical engineering notation,
+where `FALSE` is denoted by `0`, `TRUE` by `1`,
+logical AND by multiplication, and logical OR by addition.
+
+For each gate (especially the top gate),
+we reduce its Boolean expression to a sum of products
+in which each product term is minimal
+(i.e. every factor is necessary to cause the failure of the gate).
+
+These minimal product terms are precisely the sought-after
+minimal cut sets of fault tree analysis (called mode failures by Vesely).
+Having determined the minimal cut sets, it only remains to compute
+the failure characteristics (rate, intensity, and probability),
+firstly of each minimal cut set, and subsequently of their disjunction (sum).
