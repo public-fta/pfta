@@ -14,8 +14,8 @@ Having now read Vesely's 1970 paper\*,
 I have come to understand that my said belief was incorrect.
 Indeed, there are legitimate use cases for those allegedly incorrect constructs
 (e.g. an OR gate with both probability and rate input
-to model a backup generator that has a fixed probability of failing to start
-and a failure rate given it has started).
+for modelling a backup generator that has a fixed probability of failing to start
+plus a failure rate given it has started).
 
 This page attempts to give an overview of the mathematics (or rather physics)
 of Vesely's "Kinetic Tree Theory", which is the general framework
