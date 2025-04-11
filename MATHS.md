@@ -20,7 +20,7 @@ plus a failure rate given it has started).
 This page attempts to give an overview of the mathematics (or rather physics)
 of Vesely's "Kinetic Tree Theory", which is the general framework
 that every fault tree analyst should endeavour to learn and understand.
-The naive "initiator-equals-rate" paradigm is merely a special case.
+The naive "initiator-equals-rate" paradigm is merely a special case of it.
 
 ---
 
