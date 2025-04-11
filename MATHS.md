@@ -114,4 +114,4 @@ After much thought, it occurred to me that we must have
 q(t) = 1 − 0 / 0,
 ```
 
-where the indeterminacy in the last expression must resolve to Q.
+where the indeterminacy in the last expression resolves to Q.
