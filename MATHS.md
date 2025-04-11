@@ -115,3 +115,18 @@ q(t) = 1 − 0 / 0,
 ```
 
 where the indeterminacy in the last expression resolves to Q.
+
+There are two highly philosophical ways to think about this:
+
+1. Primary events of constant probability
+   don't actually switch from unfailed to failed.
+   It's either one or the other for all time,
+   with the decision made (by God if you like) outside the confines of time.
+2. Primary events of constant probability
+   switch instantly from unfailed to failed
+   with that probability at `t = 0`.
+   In symbols, `ω(t) = Q δ(t)`, where `δ(t)` is the unit impulse (or Dirac delta).
+
+Both are compelling. The first does not require invocation of impulse functions.
+The second allows us to think in terms of a random variable for failure time
+having the distribution `Q δ(t) + (1−Q) δ(t−∞)`.
