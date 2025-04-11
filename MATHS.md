@@ -66,4 +66,26 @@ where `dt` is an infinitesimal increment in the time `t`.
 Note the conditional nature of the probability.
 
 
+### Failure intensity
+
+The failure intensity `ω(t)` (denoted `w(t)` in Vesely's typography) is defined as
+
+```
+ω(t) = (instantaneous) "becomes-failed" count per time at time t.
+```
+Note the unconditional nature of this expression,
+in contrast with the conditional nature of `λ(t)`.
+
+It can be shown that `ω(t)` satisfies an integral equation
+whose components are completely determined by `λ(t)` and `μ(t)`.
+See Vesely's equation (8).
+
+For the special case where the primary failure is non-repairable,
+the solution reduces to
+
+```
+ω(t) = λ(t) exp(−∫ [0 to t] λ(t') dt').
+```
+
+
 ### Special case: constant probability
