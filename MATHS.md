@@ -1,4 +1,4 @@
-# Mathematics of FTA
+# Fault tree analysis mathematics
 
 
 ## Conway's Preface
