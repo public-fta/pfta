@@ -32,10 +32,10 @@ A time-dependent methodology for fault tree evaluation.
 
 ## Primary events
 
-<i>Primary events</i> (called <i>primary failures</i> by Vesely)
+Primary events (called primary failures by Vesely)
 are the atoms (representing failures) that make up a fault tree.
 These are entities that, over the course of time,
-switch from <i>unfailed</i> to <i>failed</i>
+switch from unfailed to failed
 (and back to unfailed if the failure is repairable).
 
 In the general framework, *all* primary events are characterised
@@ -116,7 +116,7 @@ q(t) = 1 − 0 / 0,
 
 where the indeterminacy in the last expression resolves to Q.
 
-There are two highly philosophical ways to think about this:
+There are two (highly philosophical) ways to think about this:
 
 1. Primary events of constant probability
    don't actually switch from unfailed to failed.
