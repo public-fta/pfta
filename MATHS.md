@@ -11,15 +11,16 @@ In this paradigm, certain constructs are considered incorrect
 (such as an AND gate with two rate inputs, or an OR gate with mixed inputs).
 
 Having now read Vesely's 1970 paper\*,
-I have come to understand that said belief is incorrect.
+I have come to understand that my said belief was incorrect.
 Indeed, there are legitimate use cases for those allegedly incorrect constructs
-(e.g. an OR gate with both probability and rate input,
-for a backup generator that has a fixed probability of failing to start
+(e.g. an OR gate with both probability and rate input
+to model a backup generator that has a fixed probability of failing to start
 and a failure rate given it has started).
 
 This page attempts to give an overview of the mathematics (or rather physics)
 of Vesely's "Kinetic Tree Theory", which is the general framework
-that all fault tree analysts should endeavour to learn and understand.
+that every fault tree analyst should endeavour to learn and understand.
+The naive "initiator-equals-rate" paradigm is merely a special case.
 
 ---
 
