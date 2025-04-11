@@ -13,7 +13,7 @@ In this paradigm, certain constructs are considered incorrect
 Having now read Vesely's 1970 paper\*,
 I have come to understand that my said belief was incorrect.
 Indeed, there are legitimate use cases for those allegedly incorrect constructs
-(e.g. an OR gate with both probability and rate input
+(e.g. an OR gate with both probability and rate input,
 for modelling a backup generator that has a fixed probability of failing to start
 plus a failure rate given it has started).
 
