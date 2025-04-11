@@ -35,7 +35,7 @@ A time-dependent methodology for fault tree evaluation.
 <i>Primary events</i> (called <i>primary failures</i> by Vesely)
 are the atoms (representing failures) that make up a fault tree.
 These are entities that, over the course of time,
-switch from unfailed to failed
+switch from <i>unfailed</i> to <i>failed</i>
 (and back to unfailed if the failure is repairable).
 
 In the general framework, *all* primary events are characterised
@@ -44,26 +44,26 @@ by a failure rate and a repair rate.
 
 ### Failure rate
 
-The failure rate `λ(t)` is defined as
+The failure rate `λ(t)` of a primary event is defined as
 
 ```
 λ(t) = Pr(becomes failed between t and t+dt | unfailed at time t) / dt,
 ```
 
-where `dt` is infinitesimal increment in time `t`.
-Note the conditional nature of this definition.
+where `dt` is an infinitesimal increment in the time `t`.
+Note the conditional nature of the probability.
 
 
 ### Repair rate
 
-The repair rate `μ(t)` is defined as
+The repair rate `μ(t)` of a primary event is defined as
 
 ```
 μ(t) = Pr(becomes unfailed between t and t+dt | failed at time t) / dt,
 ```
 
-where `dt` is infinitesimal increment in time `t`.
-Note the conditional nature of this definition.
+where `dt` is an infinitesimal increment in the time `t`.
+Note the conditional nature of the probability.
 
 
 ### Special case: constant probability
