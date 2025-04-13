@@ -196,7 +196,8 @@ Let `e` represent a primary event and `C` a minimal cut set.
 We write `e | C` (`e` divides `C`) if the `e` is one of the factors in `C`.
 
 We write `C ÷ e` (`C` divided by `e`) for the new minimal cut set formed
-by removing from `C` a factor of `e` if it is present.
+by removing a factor of `e` from `C` if it is present
+(otherwise leaving `C` unchanged).
 
 
 ### Failure probability
