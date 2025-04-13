@@ -193,9 +193,8 @@ We introduce some notation that will be useful for the material to follow.
 
 Let `e` represent a primary event and `C` a minimal cut set.
 
-We write `e | C` (`e` divides `C`) if the `e` is one of the factors in `C`.
-
-We write `C ÷ e` (`C` divided by `e`) for the new minimal cut set formed
+- We write `e | C` (`e` divides `C`) if the `e` is one of the factors in `C`.
+- We write `C ÷ e` (`C` divided by `e`) for the new minimal cut set formed
 by removing a factor of `e` from `C` if it is present
 (otherwise leaving `C` unchanged).
 
