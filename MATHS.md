@@ -150,15 +150,14 @@ switch from unfailed to failed
 ## Boolean algebra
 
 It is useful to represent primary events by Boolean variables,
-so that a value of `FALSE` corresponds the unfailed state
-and a value of `TRUE` corresponds to the failed state.
+so that a value of `False` corresponds the unfailed state
+and a value of `True` corresponds to the failed state.
 
 The Boolean expression for a gate is obtained by applying the relevant operation
 (logical AND or logical OR) to the expressions for the gate's inputs.
 
 In this document we use electrical engineering notation,
-where `FALSE` is denoted by `0`, `TRUE` by `1`,
-logical AND by multiplication, and logical OR by addition.
+where logical AND is denoted by by multiplication, and logical OR by addition.
 
 For the top gate (or, more generally, any gate),
 we reduce its Boolean expression to a sum of products
@@ -212,6 +211,8 @@ q[C] = q[x] q[y] q[z] ...,
 a straight product of the failure probabilities
 of its constituent primary events.
 
+Note that for an empty minimal cut set, we have `q[True] = 1`.
+
 
 ### Failure intensity
 
@@ -226,7 +227,7 @@ and the remaining primary events' failure probabilities:
 ω[C] =   ω[x] q[y] q[z] ...
        + q[x] ω[y] q[z] ...
        + q[x] q[y] ω[z] ...
-       + ....
+       + ... .
 ```
 
 Using the [notation defined above](#notation), this may be instead written as
@@ -234,6 +235,8 @@ Using the [notation defined above](#notation), this may be instead written as
 ```
 ω[C] = ∑{e|C} ω[e] q[C÷e].
 ```
+
+Note that for an empty minimal cut set, we have `ω[True] = 0`.
 
 
 ### Failure rate
@@ -291,7 +294,7 @@ is given by the inclusion–exclusion principle,
 q[T] =   ∑{1≤i≤N} q[C_i]
        − ∑{1≤i<j≤N} q[C_i C_j]
        + ∑{1≤i<j<k≤N} q[C_i C_j C_k]
-       − ....
+       − ... .
 ```
 
 For performance when `N` is large, successive upper, lower, etc. bounds
@@ -304,3 +307,68 @@ q[T] ≤ 1 − ∏{1≤i≤N} (1 − q[C_i]).
 ```
 
 per Vesely's equation (49).
+
+
+### Failure intensity
+
+Consider a top gate `T` represented as a disjunction of `N` minimal cut sets,
+
+```
+T = C_1 + C_2 + ... + C_N.
+```
+
+The failure intensity `ω[T]` of the top gate is given by
+
+```
+ω[T] = ω^1[T] − ω^2[T],
+```
+
+Here:
+
+- `ω^1[T]` is the "generic" contribution,
+  from one or more minimal cut set failures occurring.
+- `ω^2[T]` is the "redundant" contribution,
+  from one or more minimal cut set failures occurring
+  when one or more other minimal cut sets are already failed.
+
+Specifically, the generic contribution is given by
+
+```
+ω^1[T] =   ∑{1≤i≤N} ω[C_i]
+         − ∑{1≤i<j≤N} ω[gcd(C_i,C_j)] q[C_i C_j ÷ gcd(C_i,C_j)]
+         + ... .
+```
+
+The redundant contribution is given by
+
+```
+ω^2[T] =   ∑{1≤i≤N} ω_r[{C_i}]
+         − ∑{1≤i<j≤N} ω_r[{C_i,C_j}]
+         + ... ,
+```
+
+where
+
+```
+ω_r[{C_i,C_j,...}]
+=   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[C_a C_i C_j ... ÷ gcd(C_i,C_j,...)]
+  − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[C_a C_b C_i C_j ... ÷ gcd(C_i,C_j,...)]
+  + ... .
+```
+
+Again, truncation to obtain successive upper, lower, etc. bounds
+may be done for performance.
+
+
+### Failure rate
+
+Having determined the failure probability and failure intensity
+of top gate `T`, its failure rate is then given by
+
+```
+λ[T] = ω[T] / (1 − q[T]).
+```
+
+Again note that the failure rate is a quantity that is
+conditional on the top gate being unfailed
+(as hinted by the denominator `1 − q[T]` on the right-hand side).
