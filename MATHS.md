@@ -86,7 +86,7 @@ For the special case where the primary event failure is non-repairable,
 the solution reduces to
 
 ```
-ω(t) = λ(t) exp(−∫_{0 to t} λ(t') dt').
+ω(t) = λ(t) exp(−∫{0 to t} λ(t') dt').
 ```
 
 
@@ -195,8 +195,8 @@ Let `e` represent a primary event and `C` a minimal cut set.
 
 - We write `e | C` (`e` divides `C`) if the `e` is one of the factors in `C`.
 - We write `C ÷ e` (`C` divided by `e`) for the new minimal cut set formed
-by removing a factor of `e` from `C` if it is present
-(otherwise leaving `C` unchanged).
+  by removing a factor of `e` from `C` if it is present
+  (otherwise leaving `C` unchanged).
 
 
 ### Failure probability
@@ -232,7 +232,7 @@ and the remaining primary events' failure probabilities:
 Using the [notation defined above](#notation), this may be instead written as
 
 ```
-ω_C = SUM_{e | C} ω_e . q_(C ÷ e).
+ω_C = ∑{e | C} ω_e . q_(C ÷ e).
 ```
 
 
@@ -248,3 +248,58 @@ of a minimal cut set `C`, its failure rate is then given by
 Again note that the failure rate is a quantity that is
 conditional on the minimal cut set being unfailed
 (as hinted by the denominator `1 − q_C` on the right-hand side).
+
+
+## Disjunction of minimal cut sets
+
+As mentioned above, the top gate (or any gate in general)
+has a Boolean representation in the form of
+a disjunction (sum) of minimal cut sets (products).
+Effectively, it is equivalent to an OR gate
+whose inputs are AND gates representing the minimal cut sets.
+
+The derivation of failure characteristics (rate, intensity, and probability)
+for a general Boolean sum of products is quite involved.
+It takes until the 8th page of Vesely's Section 4 (Top failure information)
+before he arrives at equation (75) giving the failure intensity
+of a general top gate.
+
+
+### More notation
+
+Let `B`, `C`, `D`, ... be minimal cut sets.
+
+- We write `B | C` (`B` divides `C`) if every factor of `B` divides `C`.
+- We write `gcd(B, C, D, ...)` for the greatest minimal cut set
+  that divides each of `B`, `C`, `D`, ....
+  This is equivalent to the (set) intersection of the minimal cut sets.
+
+
+### Failure probability
+
+Consider a top gate `T` represented as a disjunction of `N` minimal cut sets,
+
+```
+T = C_1 + C_2 + ... + C_N.
+```
+
+The failure probability `q_T` of the top gate
+is given by the inclusion–exclusion principle,
+
+
+```
+q_T = ∑{1≤i≤N} q_(C_i) − ∑{1≤i<j≤N} q_(C_i.C_j)
+                       + ∑{1≤i<j<k≤N} q_(C_i.C_j.C_k)
+                       − ....
+```
+
+For performance when `N` is large, successive upper, lower, etc. bounds
+may be obtained by truncating at the first-order, second-order, etc. terms.
+
+Separately, there is the upper bound
+
+```
+q_T ≤ 1 − ∏{1≤i≤N} (1 − q_(C_i)).
+```
+
+per Vesely's equation (49).
