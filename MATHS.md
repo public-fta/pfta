@@ -158,10 +158,10 @@ In this document we use electrical engineering notation,
 where `FALSE` is denoted by `0`, `TRUE` by `1`,
 logical AND by multiplication, and logical OR by addition.
 
-For each gate (especially the top gate),
+For the top gate (or, more generally, any gate),
 we reduce its Boolean expression to a sum of products
-in which each product term is minimal
-(i.e. every factor is necessary to cause the failure of the gate).
+in which each product is minimal
+(i.e. every factor in the product is necessary to cause the failure of the gate).
 
 These minimal product terms are precisely the sought-after
 minimal cut sets of fault tree analysis (called mode failures by Vesely).
