@@ -86,7 +86,7 @@ For the special case where the primary event failure is non-repairable,
 the solution reduces to
 
 ```
-ω(t) = λ(t) exp(−∫ [0 to t] λ(t') dt').
+ω(t) = λ(t) exp(−∫_{0 to t} λ(t') dt').
 ```
 
 
