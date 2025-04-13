@@ -35,8 +35,10 @@ A time-dependent methodology for fault tree evaluation.
 Primary events (called primary failures by Vesely)
 are the atoms (representing failures) that make up a fault tree.
 These are entities that, over the course of time,
-switch from unfailed to failed
-(and back to unfailed if the failure is repairable).
+switch from unfailed to failed (i.e. failure occurs)
+and back to unfailed (i.e. repair occurs) if the failure is repairable.
+
+Primary events are assumed to be independent of one another.
 
 In the general framework, *all* primary events are characterised
 by a failure rate and a repair rate.
@@ -80,7 +82,7 @@ It can be shown that `ω(t)` satisfies an integral equation
 whose components are completely determined by `λ(t)` and `μ(t)`.
 See Vesely's equation (8).
 
-For the special case where the primary failure is non-repairable,
+For the special case where the primary event failure is non-repairable,
 the solution reduces to
 
 ```
@@ -103,7 +105,7 @@ q(t) = 1 − ω(t) / λ(t).
 ### Special case: constant probability
 
 Initially I could not understand
-how a primary failure with constant probability `q(t) = Q`
+how a primary event with constant failure probability `q(t) = Q`
 could be represented using this framework,
 which has `λ(t)` and `μ(t)` has the fundamental quantities.
 
@@ -147,7 +149,7 @@ switch from unfailed to failed
 
 ## Boolean algebra
 
-It is useful to represent primary events by Boolean expressions,
+It is useful to represent primary events by Boolean variables,
 so that a value of `FALSE` corresponds the unfailed state
 and a value of `TRUE` corresponds to the failed state.
 
@@ -168,3 +170,77 @@ minimal cut sets of fault tree analysis (called mode failures by Vesely).
 Having determined the minimal cut sets, it only remains to compute
 the failure characteristics (rate, intensity, and probability),
 firstly of each minimal cut set, and subsequently of their disjunction (sum).
+
+For brevity, we will drop the dependence on time `t`.
+However, it should be remembered that
+all failure characteristics (rate, intensity, and probability)
+are, in general, functions of time.
+
+
+## Minimal cut sets
+
+A minimal cut set (called a mode failure by Vesely)
+is a minimal set of primary events
+whose simultaneous failure would cause the failure of the top gate.
+Effectively, it is equivalent to an AND gate
+whose inputs are that set of primary events.
+In Boolean terms, it is represented by a product of Boolean variables.
+
+### Notation
+
+We introduce some notation that will be useful for the material to follow.
+
+Let `e` represent a primary event and `C` a minimal cut set.
+
+We write `e | C` (`e` divides `C`) if the `e` is one of the factors in `C`.
+
+We write `C ÷ e` (`C` divided by `e`) for the new minimal cut set formed
+by removing from `C` a factor of `e` if it is present.
+
+### Failure probability
+
+Consider a minimal cut set `C = x . y . z ...`.
+
+The failure probability `q_C` of the minimal cut set is given by
+
+```
+q_C = q_x . q_y . q_z . ...,
+```
+
+a straight product of the failure probabilities
+of its constituent primary events.
+
+### Failure intensity
+
+Consider a minimal cut set `C = x . y . z ...`.
+
+It can be shown that the failure intensity `ω_C` of the minimal cut set
+is given by a product-rule-style expression,
+where each term is the product of one primary event's failure intensity
+and the remaining primary events' failure probabilities:
+
+```
+ω_C =   ω_x . q_y . q_z . ...
+      + q_x . ω_y . q_z . ...
+      + q_x . q_y . ω_z . ...
+      + ....
+```
+
+Using the [notation defined above](#notation), this may be instead written as
+
+```
+ω_C = SUM_{e | C} ω_e . q_(C ÷ e).
+```
+
+### Failure rate
+
+Having determined the failure probability and failure intensity
+of a minimal cut set `C`, its failure rate is then given by
+
+```
+λ_C = ω_C / (1 − q_C).
+```
+
+Again note that the failure rate is a quantity that is
+conditional on the minimal cut set being unfailed
+(as hinted by the denominator `1 − q_C` on the right-hand side).
