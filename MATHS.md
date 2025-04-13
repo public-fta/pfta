@@ -186,6 +186,7 @@ Effectively, it is equivalent to an AND gate
 whose inputs are that set of primary events.
 In Boolean terms, it is represented by a product of Boolean variables.
 
+
 ### Notation
 
 We introduce some notation that will be useful for the material to follow.
@@ -196,6 +197,7 @@ We write `e | C` (`e` divides `C`) if the `e` is one of the factors in `C`.
 
 We write `C ÷ e` (`C` divided by `e`) for the new minimal cut set formed
 by removing from `C` a factor of `e` if it is present.
+
 
 ### Failure probability
 
@@ -209,6 +211,7 @@ q_C = q_x . q_y . q_z . ...,
 
 a straight product of the failure probabilities
 of its constituent primary events.
+
 
 ### Failure intensity
 
@@ -231,6 +234,7 @@ Using the [notation defined above](#notation), this may be instead written as
 ```
 ω_C = SUM_{e | C} ω_e . q_(C ÷ e).
 ```
+
 
 ### Failure rate
 
