@@ -2,9 +2,9 @@
 
 **(Work in progress)**
 
-Free and open-source fault tree analysis built from first principles.
+Free and open-source fault tree analysis.
 
-For an overview of the mathematical details of fault tree analysis, see [MATHS.md].
+For an overview of the mathematics, see [`MATHS.md`].
 
 
-[MATHS.md]: MATHS.md
+[`MATHS.md`]: MATHS.md
