@@ -1,4 +1,4 @@
-# Principled Fault Tree Analyser (PFTA)
+# Public Fault Tree Analyser (PFTA)
 
 **(Work in progress)**
 
