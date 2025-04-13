@@ -201,12 +201,12 @@ Let `e` represent a primary event and `C` a minimal cut set.
 
 ### Failure probability
 
-Consider a minimal cut set `C = x . y . z ...`.
+Consider a minimal cut set `C = x y z ...`.
 
-The failure probability `q_C` of the minimal cut set is given by
+The failure probability `q[C]` of the minimal cut set is given by
 
 ```
-q_C = q_x . q_y . q_z . ...,
+q[C] = q[x] q[y] q[z] ...,
 ```
 
 a straight product of the failure probabilities
@@ -215,24 +215,24 @@ of its constituent primary events.
 
 ### Failure intensity
 
-Consider a minimal cut set `C = x . y . z ...`.
+Consider a minimal cut set `C = x y z ...`.
 
-It can be shown that the failure intensity `ω_C` of the minimal cut set
+It can be shown that the failure intensity `ω[C]` of the minimal cut set
 is given by a product-rule-style expression,
 where each term is the product of one primary event's failure intensity
 and the remaining primary events' failure probabilities:
 
 ```
-ω_C =   ω_x . q_y . q_z . ...
-      + q_x . ω_y . q_z . ...
-      + q_x . q_y . ω_z . ...
-      + ....
+ω[C] =   ω[x] q[y] q[z] ...
+       + q[x] ω[y] q[z] ...
+       + q[x] q[y] ω[z] ...
+       + ....
 ```
 
 Using the [notation defined above](#notation), this may be instead written as
 
 ```
-ω_C = ∑{e | C} ω_e . q_(C ÷ e).
+ω[C] = ∑{e|C} ω[e] q[C÷e].
 ```
 
 
@@ -242,12 +242,12 @@ Having determined the failure probability and failure intensity
 of a minimal cut set `C`, its failure rate is then given by
 
 ```
-λ_C = ω_C / (1 − q_C).
+λ[C] = ω[C] / (1 − q[C]).
 ```
 
 Again note that the failure rate is a quantity that is
 conditional on the minimal cut set being unfailed
-(as hinted by the denominator `1 − q_C` on the right-hand side).
+(as hinted by the denominator `1 − q[C]` on the right-hand side).
 
 
 ## Disjunction of minimal cut sets
@@ -283,14 +283,15 @@ Consider a top gate `T` represented as a disjunction of `N` minimal cut sets,
 T = C_1 + C_2 + ... + C_N.
 ```
 
-The failure probability `q_T` of the top gate
+The failure probability `q[T]` of the top gate
 is given by the inclusion–exclusion principle,
 
 
 ```
-q_T = ∑{1≤i≤N} q_(C_i) − ∑{1≤i<j≤N} q_(C_i.C_j)
-                       + ∑{1≤i<j<k≤N} q_(C_i.C_j.C_k)
-                       − ....
+q[T] =   ∑{1≤i≤N} q[C_i]
+       − ∑{1≤i<j≤N} q[C_i C_j]
+       + ∑{1≤i<j<k≤N} q[C_i C_j C_k]
+       − ....
 ```
 
 For performance when `N` is large, successive upper, lower, etc. bounds
@@ -299,7 +300,7 @@ may be obtained by truncating at the first-order, second-order, etc. terms.
 Separately, there is the upper bound
 
 ```
-q_T ≤ 1 − ∏{1≤i≤N} (1 − q_(C_i)).
+q[T] ≤ 1 − ∏{1≤i≤N} (1 − q[C_i]).
 ```
 
 per Vesely's equation (49).
