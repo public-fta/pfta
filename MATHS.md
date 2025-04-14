@@ -73,8 +73,9 @@ Note the conditional nature of the probability.
 The failure intensity `ω(t)` (denoted `w(t)` in Vesely's typography) is defined as
 
 ```
-ω(t) = (instantaneous) "becomes-failed" count per time at time t.
+ω(t) = Pr(becomes failed between t and t+dt) / dt.
 ```
+
 Note the unconditional nature of this expression,
 in contrast with the conditional nature of `λ(t)`.
 
