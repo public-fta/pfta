@@ -11,7 +11,7 @@ In this paradigm, certain constructs are considered incorrect
 (such as an AND gate with two rate inputs, or an OR gate with mixed inputs).
 
 Having now read Vesely's 1970 paper\*,
-I have come to understand that my said belief was incorrect.
+I have come to understand that said belief was incorrect.
 Indeed, there are legitimate use cases for those allegedly incorrect constructs
 (e.g. an OR gate with both probability and rate input,
 for modelling a backup generator that has a fixed probability of failing to start
@@ -33,15 +33,15 @@ A time-dependent methodology for fault tree evaluation.
 ## Primary events
 
 Primary events (called primary failures by Vesely)
-are the atoms (representing failures) that make up a fault tree.
+are the atoms that make up a fault tree.
 These are entities that, over the course of time,
-switch from unfailed to failed (i.e. failure occurs)
-and back to unfailed (i.e. repair occurs) if the failure is repairable.
+may switch from unfailed to failed (if failure occurs)
+and back to unfailed (if repair occurs).
 
 Primary events are assumed to be independent of one another.
 
 In the general framework, *all* primary events are characterised
-by a failure rate and a repair rate.
+by a failure rate and a repair rate. No exceptions.
 
 
 ### Failure rate
@@ -84,7 +84,7 @@ whose components are completely determined by `λ(t)` and `μ(t)`.
 See Vesely's equation (8).
 
 For the special case where the primary event failure is non-repairable,
-the solution reduces to
+the solution of said integral equation reduces to
 
 ```
 ω(t) = λ(t) exp(−∫{0 to t} λ(t') dt').
@@ -128,7 +128,7 @@ There are two (highly philosophical) ways to think about this:
    with the decision made (by God if you like) outside the confines of time.
 2. Primary events of constant probability
    switch instantly from unfailed to failed
-   with that probability at `t = 0`.
+   with said probability at `t = 0`.
    In symbols, `ω(t) = Q δ(t)`, where `δ(t)` is the unit impulse (or Dirac delta).
 
 Both are compelling. The first does not require invocation of impulse functions.
@@ -141,8 +141,7 @@ having the distribution `Q δ(t) + (1−Q) δ(t−∞)`.
 Gates are the entities that encode failures
 as logical combinations of other failures.
 Like primary events, gates are entities that, over the course of time,
-switch from unfailed to failed
-(and back to unfailed if relevant failures are repairable).
+may switch from unfailed to failed and back to unfailed.
 
 - An AND gate (conjunction) is failed if all of its inputs are failed.
 - An OR gate (disjunction) is failed if any of its inputs are failed.
@@ -162,11 +161,11 @@ where logical AND is denoted by by multiplication, and logical OR by addition.
 
 For the top gate (or, more generally, any gate),
 we reduce its Boolean expression to a sum of products
-in which each product is minimal
-(i.e. every factor in the product is necessary to cause the failure of the gate).
+where each product is minimal
+(i.e. every factor in the product is necessary for it to cause the failure of the gate).
 
 These minimal product terms are precisely the sought-after
-minimal cut sets of fault tree analysis (called mode failures by Vesely).
+minimal cut sets of fault tree analysis.
 Having determined the minimal cut sets, it only remains to compute
 the failure characteristics (rate, intensity, and probability),
 firstly of each minimal cut set, and subsequently of their disjunction (sum).
@@ -193,9 +192,9 @@ We introduce some notation that will be useful for the material to follow.
 
 Let `e` represent a primary event and `C` a minimal cut set.
 
-- We write `e | C` (`e` divides `C`) if the `e` is one of the factors in `C`.
+- We write `e | C` (`e` divides `C`) if `e` is one of the factors in `C`.
 - We write `C ÷ e` (`C` divided by `e`) for the new minimal cut set formed
-  by removing a factor of `e` from `C` if it is present
+  by removing, if present, a factor of `e` from `C`
   (otherwise leaving `C` unchanged).
 
 
@@ -231,7 +230,7 @@ and the remaining primary events' failure probabilities:
        + ... .
 ```
 
-Using the [notation defined above](#notation), this may be instead written as
+Using the [notation defined above](#notation), this may instead be written as
 
 ```
 ω[C] = ∑{e|C} ω[e] q[C÷e].
@@ -276,7 +275,7 @@ Let `B`, `C`, `D`, ... be minimal cut sets.
 - We write `B | C` (`B` divides `C`) if every factor of `B` divides `C`.
 - We write `gcd(B, C, D, ...)` for the greatest minimal cut set
   that divides each of `B`, `C`, `D`, ....
-  This is equivalent to the (set) intersection of the minimal cut sets.
+  This is equivalent to the intersection of the minimal cut sets.
 
 
 ### Failure probability
@@ -332,7 +331,7 @@ Here:
   from one or more minimal cut set failures occurring
   when one or more other minimal cut sets are already failed.
 
-Specifically, the generic contribution is given by
+The generic contribution is given by
 
 ```
 ω^1[T] =   ∑{1≤i≤N} ω[C_i]
@@ -352,8 +351,8 @@ where
 
 ```
 ω_r[{C_i,C_j,...}]
-=   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[C_a C_i C_j ... ÷ gcd(C_i,C_j,...)]
-  − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[C_a C_b C_i C_j ... ÷ gcd(C_i,C_j,...)]
+=   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
+  − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
   + ... .
 ```
 
