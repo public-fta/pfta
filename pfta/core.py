@@ -23,4 +23,4 @@ class FaultTree:
         used_ids = set()
 
         for parsed_line in parsed_lines:
-            pass  # TODO
+            pass  # TODO: move this to building.py(?) and separately have computing
