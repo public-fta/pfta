@@ -15,7 +15,12 @@ from pfta._version import __version__
 
 def parse_cli_arguments():
     parser = argparse.ArgumentParser(description='Perform a fault tree analysis.')
-    parser.add_argument('-v', '--version', action='version', version=f'{parser.prog} version {__version__}')
+    parser.add_argument(
+        '-v', '--version',
+        action='version',
+        version=f'{parser.prog} version {__version__}',
+    )
+
     return parser.parse_args()
 
 
