@@ -33,6 +33,7 @@ class LineType(Enum):
 class ParsedLine:
     def __init__(self, number: int, type_: LineType, content: str, info: dict):
         self.number = number
+        self.type_ = type_
         self.content = content
         self.info = info
 
