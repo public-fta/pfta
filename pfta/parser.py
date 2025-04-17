@@ -16,7 +16,7 @@ LINE_EXPLAINER = '\n'.join([
     '    <class>: <identifier>  (an object declaration)',
     '    - <key>: <value>       (a property setting)',
     '    # <comment>            (a comment)',
-    '    <blank line>           (used before the next declarations)',
+    '    <blank line>           (used before the next declaration)',
 ])
 
 
@@ -28,9 +28,9 @@ class FaultTreeTextException(Exception):
 
 
 class ParsedLine:
-    def __init__(self, number: int, line: str, info: dict):
+    def __init__(self, number: int, content: str, info: dict):
         self.number = number
-        self.line = line
+        self.content = content
         self.info = info
 
     class InvalidIdException(FaultTreeTextException):
@@ -40,19 +40,19 @@ class ParsedLine:
         pass
 
 
-class ObjectDeclarationLine(ParsedLine):
+class ParsedObjectLine(ParsedLine):
     pass
 
 
-class PropertySettingLine(ParsedLine):
+class ParsedPropertyLine(ParsedLine):
     pass
 
 
-class CommentLine(ParsedLine):
+class ParsedCommentLine(ParsedLine):
     pass
 
 
-class BlankLine(ParsedLine):
+class ParsedBlankLine(ParsedLine):
     pass
 
 
@@ -66,16 +66,16 @@ def is_valid_id(id_: str) -> bool:
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
     if object_match := re.match(r'^(?P<class_>\S+):\s+(?P<id_>.+?)\s*$', line):
-        return ObjectDeclarationLine(line_number, line, info=object_match.groupdict())
+        return ParsedObjectLine(line_number, line, info=object_match.groupdict())
 
     if property_match := re.match(r'^- (?P<key>\S+):\s+(?P<value>.+?)\s*$', line):
-        return PropertySettingLine(line_number, line, info=property_match.groupdict())
+        return ParsedPropertyLine(line_number, line, info=property_match.groupdict())
 
     if re.match('^\s*#.*$', line):  # comment match (allow whitespace)
-        return CommentLine(line_number, line, info={})
+        return ParsedCommentLine(line_number, line, info={})
 
     if re.match('^\s*$', line):  # blank line (allow whitespace)
-        return BlankLine(line_number, line, info={})
+        return ParsedBlankLine(line_number, line, info={})
 
     raise ParsedLine.InvalidLineException(line_number, f'invalid line `{line}`', LINE_EXPLAINER)
 
