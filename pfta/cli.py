@@ -11,8 +11,11 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import argparse
 import os
 import shutil
+import sys
 
 from pfta._version import __version__
+from pfta.core import FaultTree
+from pfta.parser import FaultTreeTextException
 
 
 def parse_cli_arguments():
@@ -45,10 +48,24 @@ def mkdir_robust(directory_name: str):
 def main():
     arguments = parse_cli_arguments()
     fault_tree_text_file = arguments.fault_tree_text_file
+    fault_tree_text_file_name = fault_tree_text_file.name
+    fault_tree_text = fault_tree_text_file.read()
 
-    # TODO: main fault tree computation
+    try:
+        fault_tree = FaultTree(fault_tree_text)
+    except FaultTreeTextException as exception:
+        line_number = exception.line_number
+        message = exception.message
+        explainer = exception.explainer
 
-    output_directory_name = f'{fault_tree_text_file.name}.out'
+        line_parenthetical = f' (line {line_number})' if line_number else None
+        explainer_tail = f'\n\n{explainer}' if explainer else None
+
+        full_error_message = f'Error in `{fault_tree_text_file_name}`{line_parenthetical}: {message}{explainer_tail}'
+        print(full_error_message, file=sys.stderr)
+        sys.exit(1)
+
+    output_directory_name = f'{fault_tree_text_file_name}.out'
 
     mkdir_robust(output_directory_name)
 
