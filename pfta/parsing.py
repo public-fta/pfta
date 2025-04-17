@@ -1,7 +1,7 @@
 """
-# Public Fault Tree Analyser: parser.py
+# Public Fault Tree Analyser: parsing.py
 
-Parser of fault tree text.
+Parsing of fault tree text.
 
 **Copyright 2025 Conway**
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
@@ -9,6 +9,9 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import re
+from enum import Enum
+
+from pfta.exceptions import FaultTreeTextException
 
 
 LINE_EXPLAINER = '\n'.join([
@@ -20,62 +23,35 @@ LINE_EXPLAINER = '\n'.join([
 ])
 
 
-class FaultTreeTextException(Exception):
-    def __init__(self, line_number: int, message: str, explainer: str):
-        self.line_number = line_number
-        self.message = message
-        self.explainer = explainer
+class LineType(Enum):
+    OBJECT = 0
+    PROPERTY = 1
+    COMMENT = 2
+    BLANK = 3
 
 
 class ParsedLine:
-    def __init__(self, number: int, content: str, info: dict):
+    def __init__(self, number: int, type_: LineType, content: str, info: dict):
         self.number = number
         self.content = content
         self.info = info
-
-    class InvalidIdException(FaultTreeTextException):
-        pass
 
     class InvalidLineException(FaultTreeTextException):
         pass
 
 
-class ParsedObjectLine(ParsedLine):
-    pass
-
-
-class ParsedPropertyLine(ParsedLine):
-    pass
-
-
-class ParsedCommentLine(ParsedLine):
-    pass
-
-
-class ParsedBlankLine(ParsedLine):
-    pass
-
-
-def is_valid_class(class_: str) -> bool:
-    return class_ in {'Event', 'Gate'}
-
-
-def is_valid_id(id_: str) -> bool:
-    return bool(re.fullmatch('[a-z0-9_-]', id_, flags=re.IGNORECASE))
-
-
 def parse_line(line_number: int, line: str) -> ParsedLine:
     if object_match := re.match(r'^(?P<class_>\S+):\s+(?P<id_>.+?)\s*$', line):
-        return ParsedObjectLine(line_number, line, info=object_match.groupdict())
+        return ParsedLine(line_number, LineType.OBJECT, line, info=object_match.groupdict())
 
     if property_match := re.match(r'^- (?P<key>\S+):\s+(?P<value>.+?)\s*$', line):
-        return ParsedPropertyLine(line_number, line, info=property_match.groupdict())
+        return ParsedLine(line_number, LineType.PROPERTY, line, info=property_match.groupdict())
 
     if re.match('^\s*#.*$', line):  # comment match (allow whitespace)
-        return ParsedCommentLine(line_number, line, info={})
+        return ParsedLine(line_number, LineType.COMMENT, line, info={})
 
     if re.match('^\s*$', line):  # blank line (allow whitespace)
-        return ParsedBlankLine(line_number, line, info={})
+        return ParsedLine(line_number, LineType.BLANK, line, info={})
 
     raise ParsedLine.InvalidLineException(line_number, f'invalid line `{line}`', LINE_EXPLAINER)
 

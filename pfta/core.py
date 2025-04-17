@@ -8,9 +8,19 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
-from pfta.parser import parse_lines
+from pfta.parsing import parse_lines
 
 
 class FaultTree:
     def __init__(self, fault_tree_text: str):
-        parse_lines(fault_tree_text)
+        parsed_lines = parse_lines(fault_tree_text)
+
+        events = []
+        gates = []
+
+        current_event_index = 0
+        current_object_class = FaultTree
+        used_ids = set()
+
+        for parsed_line in parsed_lines:
+            pass  # TODO
