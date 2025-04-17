@@ -1,0 +1,27 @@
+[build-system]
+requires = ["flit_core >=3.8,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "pfta"
+requires-python = ">=3.11"
+authors = [{name="Conway", email="pypi.sheep257@passmail.net"}]
+description = "Public Fault Tree Analyser (PFTA)"
+readme = "README.md"
+# TODO: keywords
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+dynamic = ["version"]
+
+[project.urls]
+repository = "https://github.com/public-fta/pfta"
+issues = "https://github.com/public-fta/pfta/issues"
+# TODO: changelog
+
+[project.scripts]
+pfta = "pfta.cli:main"
