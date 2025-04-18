@@ -42,10 +42,7 @@ class ParsedLine:
         self.info = info
 
     def __eq__(self, other):
-        return self.identity() == other.identity()
-
-    def identity(self):
-        return self.number, self.type_, self.content, self.info
+        return self.__dict__ == other.__dict__
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
