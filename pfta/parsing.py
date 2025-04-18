@@ -69,10 +69,10 @@ def parse_line(line_number: int, line: str) -> ParsedLine:
     if property_match := re.match(r'^- (?P<key>\S+):\s+(?P<value>.+?)\s*$', line):
         return ParsedLine(line_number, LineType.PROPERTY, line, info=property_match.groupdict())
 
-    if re.match('^\s*#.*$', line):  # comment match (allow whitespace)
+    if re.match(r'^\s*#.*$', line):  # comment match (allow whitespace)
         return ParsedLine(line_number, LineType.COMMENT, line, info={})
 
-    if re.match('^\s*$', line):  # blank line (allow whitespace)
+    if re.match(r'^\s*$', line):  # blank line (allow whitespace)
         return ParsedLine(line_number, LineType.BLANK, line, info={})
 
     raise InvalidLineException(line_number, f'invalid line `{line}`', LINE_EXPLAINER)
