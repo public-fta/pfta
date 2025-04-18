@@ -181,8 +181,8 @@ def parse_assembly(parsed_paragraph: ParsedParagraph, is_first_paragraph: bool) 
         class_ = object_line.info['class_']
         id_ = object_line.info['id_']
 
-    if class_ not in VALID_CLASSES + ('FaultTree',):
-        raise InvalidClassException(object_line.number, f'invalid class `{class_}`', CLASS_EXPLAINER)
+        if class_ not in VALID_CLASSES:
+            raise InvalidClassException(object_line.number, f'invalid class `{class_}`', CLASS_EXPLAINER)
 
     seen_keys = set()
 

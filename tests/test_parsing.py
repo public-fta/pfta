@@ -292,3 +292,23 @@ class TestParsing(unittest.TestCase):
             ),
             is_first_paragraph=True,
         )
+
+        # Invalid class
+        self.assertRaises(
+            InvalidClassException,
+            parse_assembly,
+            ParsedParagraph(
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'FaultTree', 'id_': 'MASTER'}),
+                property_lines=[],
+            ),
+            is_first_paragraph=True,
+        )
+        self.assertRaises(
+            InvalidClassException,
+            parse_assembly,
+            ParsedParagraph(
+                object_line=ParsedLine(100, LineType.OBJECT, info={'class_': 'foo', 'id_': 'bar'}),
+                property_lines=[],
+            ),
+            is_first_paragraph=False,
+        )
