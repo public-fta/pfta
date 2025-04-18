@@ -75,7 +75,10 @@ class ParsedLine:
         self.info = info
 
     def __eq__(self, other):
-        return other is not None and self.__dict__ == other.__dict__
+        if other is None:
+            return False
+
+        return self.__dict__ == other.__dict__
 
 
 class ParsedParagraph:
