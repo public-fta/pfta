@@ -58,8 +58,8 @@ def main():
         message = exception.message
         explainer = exception.explainer
 
-        line_parenthetical = f' (line {line_number})' if line_number else None
-        explainer_tail = f'\n\n{explainer}' if explainer else None
+        line_parenthetical = f' (line {line_number})' if line_number else ''
+        explainer_tail = f'\n\n{explainer}' if explainer else ''
 
         full_error_message = f'Error in `{fault_tree_text_file_name}`{line_parenthetical}: {message}{explainer_tail}'
         print(full_error_message, file=sys.stderr)

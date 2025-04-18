@@ -10,8 +10,8 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import unittest
 
-from pfta.parsing import LineType, InvalidLineException, ParsedLine
-from pfta.parsing import parse_line
+from pfta.parsing import LineType, InvalidLineException, SmotheredObjectException, ParsedLine, ParsedParagraph
+from pfta.parsing import parse_line, parse_paragraph
 
 
 class TestParsing(unittest.TestCase):
@@ -113,4 +113,67 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(
             parse_line(3, '  \t\t  \t '),
             ParsedLine(3, LineType.BLANK, '  \t\t  \t ', info={}),
+        )
+
+    def test_parse_paragraph(self):
+        # Full paragraph
+        self.assertEqual(
+            parse_paragraph([
+                ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
+                ParsedLine(2, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
+                ParsedLine(3, LineType.PROPERTY, '- age: 50', info={'key': 'age', 'value': '50'}),
+            ]),
+            ParsedParagraph(
+                object_line=ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
+                property_lines=[
+                    ParsedLine(2, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
+                    ParsedLine(3, LineType.PROPERTY, '- age: 50', info={'key': 'age', 'value': '50'}),
+                ],
+            ),
+        )
+
+        # Paragraph with no object declaration
+        self.assertEqual(
+            parse_paragraph([
+                ParsedLine(2, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
+                ParsedLine(3, LineType.PROPERTY, '- age: 50', info={'key': 'age', 'value': '50'}),
+            ]),
+            ParsedParagraph(
+                object_line=None,
+                property_lines=[
+                    ParsedLine(2, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
+                    ParsedLine(3, LineType.PROPERTY, '- age: 50', info={'key': 'age', 'value': '50'}),
+                ],
+            ),
+        )
+
+        # Paragraph with no property settings
+        self.assertEqual(
+            parse_paragraph([
+                ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
+            ]),
+            ParsedParagraph(
+                object_line=ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
+                property_lines=[],
+            ),
+        )
+
+        # Smothered object declaration (by another)
+        self.assertRaises(
+            SmotheredObjectException,
+            parse_paragraph,
+            [
+                ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
+                ParsedLine(2, LineType.OBJECT, 'Person: Dave', info={'class_': 'Person', 'id_': 'Dave'}),
+            ],
+        )
+
+        # Smothered object declaration (by a property setting)
+        self.assertRaises(
+            SmotheredObjectException,
+            parse_paragraph,
+            [
+                ParsedLine(1, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
+                ParsedLine(2, LineType.OBJECT, 'Person: Dave', info={'class_': 'Person', 'id_': 'Dave'}),
+            ],
         )
