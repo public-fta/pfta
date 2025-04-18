@@ -86,3 +86,31 @@ class TestParsing(unittest.TestCase):
             InvalidLineException,
             parse_line, 9, '-  age: 90',  # double-space before key
         )
+
+    def test_parse_line_comment_match(self):
+        self.assertEqual(
+            parse_line(1, '# foo'),
+            ParsedLine(1, LineType.COMMENT, '# foo', info={}),
+        )
+        self.assertEqual(
+            parse_line(2, '  \t # bar baz'),
+            ParsedLine(2, LineType.COMMENT, '  \t # bar baz', info={}),
+        )
+        self.assertRaises(
+            InvalidLineException,
+            parse_line, 3, '   missing leading # ',
+        )
+
+    def test_parse_line_blank_match(self):
+        self.assertEqual(
+            parse_line(1, ''),
+            ParsedLine(1, LineType.BLANK, '', info={}),
+        )
+        self.assertEqual(
+            parse_line(2, '    '),
+            ParsedLine(2, LineType.BLANK, '    ', info={}),
+        )
+        self.assertEqual(
+            parse_line(3, '  \t\t  \t '),
+            ParsedLine(3, LineType.BLANK, '  \t\t  \t ', info={}),
+        )
