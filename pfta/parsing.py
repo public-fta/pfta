@@ -30,6 +30,10 @@ class LineType(Enum):
     BLANK = 3
 
 
+class InvalidLineException(FaultTreeTextException):
+    pass
+
+
 class ParsedLine:
     def __init__(self, number: int, type_: LineType, content: str, info: dict):
         self.number = number
@@ -37,8 +41,11 @@ class ParsedLine:
         self.content = content
         self.info = info
 
-    class InvalidLineException(FaultTreeTextException):
-        pass
+    def __eq__(self, other):
+        return self.identity() == other.identity()
+
+    def identity(self):
+        return self.number, self.type_, self.content, self.info
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
@@ -54,7 +61,7 @@ def parse_line(line_number: int, line: str) -> ParsedLine:
     if re.match('^\s*$', line):  # blank line (allow whitespace)
         return ParsedLine(line_number, LineType.BLANK, line, info={})
 
-    raise ParsedLine.InvalidLineException(line_number, f'invalid line `{line}`', LINE_EXPLAINER)
+    raise InvalidLineException(line_number, f'invalid line `{line}`', LINE_EXPLAINER)
 
 
 def parse_lines(fault_tree_text: str) -> list[ParsedLine]:
