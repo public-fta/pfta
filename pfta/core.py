@@ -32,9 +32,10 @@ class FaultTree:
                     # TODO: set fault tree properties
                     continue
 
+                first_property_line = property_lines[0]
                 raise DanglingPropertyException(
-                    property_lines[0].number,
-                    f'missing object declaration before setting property `{property_lines[0].info["key"]}`',
+                    first_property_line.number,
+                    f'missing object declaration before setting property `{first_property_line.info["key"]}`',
                 )
 
             if object_line.info['class_'] == 'Event':
