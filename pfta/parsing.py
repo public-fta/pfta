@@ -88,7 +88,7 @@ class ParsedParagraph:
 
 
 class ParsedAssembly:
-    def __init__(self, class_: str, id_: str, property_lines: list[ParsedLine]):
+    def __init__(self, class_: str, id_: str| None, property_lines: list[ParsedLine]):
         self.class_ = class_
         self.id_ = id_
         self.property_lines = property_lines

@@ -10,8 +10,13 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import unittest
 
-from pfta.parsing import LineType, InvalidLineException, SmotheredObjectException, ParsedLine, ParsedParagraph
-from pfta.parsing import parse_line, parse_paragraph
+from pfta.parsing import (
+    LineType,
+    InvalidLineException, SmotheredObjectException, DanglingPropertyException,
+    InvalidKeyException, DuplicateKeyException, InvalidClassException,
+    ParsedLine, ParsedParagraph, ParsedAssembly,
+)
+from pfta.parsing import parse_line, parse_paragraph, parse_assembly
 
 
 class TestParsing(unittest.TestCase):
@@ -175,5 +180,101 @@ class TestParsing(unittest.TestCase):
             [
                 ParsedLine(1, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
                 ParsedLine(2, LineType.OBJECT, info={'class_': 'Person', 'id_': 'Dave'}),
+            ],
+        )
+
+    def test_parse_assembly(self):
+        # Reasonable fault tree
+        self.assertEqual(
+            parse_assembly(
+                class_='FaultTree',
+                id_=None,
+                property_lines=[
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                    ParsedLine(3, LineType.PROPERTY, info={'key': 'time_unit', 'value': 'h'}),
+                ],
+            ),
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                property_lines=[
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                    ParsedLine(3, LineType.PROPERTY, info={'key': 'time_unit', 'value': 'h'}),
+                ],
+            ),
+        )
+
+        # Reasonable event
+        self.assertEqual(
+            parse_assembly(
+                class_='Event',
+                id_='EV-001',
+                property_lines=[
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Weather is cloudy'}),
+                    ParsedLine(3, LineType.PROPERTY, info={'key': 'probability', 'value': '0.2'}),
+                ],
+            ),
+            ParsedAssembly(
+                class_='Event',
+                id_='EV-001',
+                property_lines=[
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Weather is cloudy'}),
+                    ParsedLine(3, LineType.PROPERTY, info={'key': 'probability', 'value': '0.2'}),
+                ],
+            ),
+        )
+
+        # Reasonable gate
+        self.assertEqual(
+            parse_assembly(
+                class_='Gate',
+                id_='GT-001',
+                property_lines=[
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Old man yells at cloud'}),
+                    ParsedLine(3, LineType.PROPERTY, info={'key': 'inputs', 'value': 'EV-001, EV-002'}),
+                ],
+            ),
+            ParsedAssembly(
+                class_='Gate',
+                id_='GT-001',
+                property_lines=[
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Old man yells at cloud'}),
+                    ParsedLine(3, LineType.PROPERTY, info={'key': 'inputs', 'value': 'EV-001, EV-002'}),
+                ],
+            ),
+        )
+
+        # Invalid key
+        self.assertRaises(
+            InvalidKeyException,
+            parse_assembly,
+            class_='FaultTree',
+            id_=None,
+            property_lines=[ParsedLine(1, LineType.PROPERTY, info={'key': 'age', 'value': '60'})],
+        )
+        self.assertRaises(
+            InvalidKeyException,
+            parse_assembly,
+            class_='Event',
+            id_='EV-001',
+            property_lines=[ParsedLine(10, LineType.PROPERTY, info={'key': 'age', 'value': '60'})],
+        )
+        self.assertRaises(
+            InvalidKeyException,
+            parse_assembly,
+            class_='Gate',
+            id_='GT-001',
+            property_lines=[ParsedLine(10, LineType.PROPERTY, info={'key': 'iNpUTs', 'value': 'EV-001, EV-002'})],
+        )
+
+        # Duplicate key
+        self.assertRaises(
+            DuplicateKeyException,
+            parse_assembly,
+            class_='FaultTree',
+            id_=None,
+            property_lines=[
+                ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
             ],
         )
