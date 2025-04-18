@@ -250,6 +250,20 @@ class TestParsing(unittest.TestCase):
             ),
         )
 
+        # Dangling property
+        self.assertRaises(
+            DanglingPropertyException,
+            parse_assembly,
+            ParsedParagraph(
+                object_line=None,
+                property_lines=[
+                    ParsedLine(20, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                    ParsedLine(21, LineType.PROPERTY, info={'key': 'time_unit', 'value': 'h'}),
+                ],
+            ),
+            is_first_paragraph=False,
+        )
+
         # Invalid key
         self.assertRaises(
             InvalidKeyException,
