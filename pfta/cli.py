@@ -61,8 +61,7 @@ def main():
         line_parenthetical = f' (line {line_number})' if line_number else ''
         explainer_tail = f'\n\n{explainer}' if explainer else ''
 
-        full_error_message = f'Error in `{fault_tree_text_file_name}`{line_parenthetical}: {message}{explainer_tail}'
-        print(full_error_message, file=sys.stderr)
+        print(f'Error in `{fault_tree_text_file_name}`{line_parenthetical}: {message}{explainer_tail}', file=sys.stderr)
         sys.exit(1)
 
     output_directory_name = f'{fault_tree_text_file_name}.out'
