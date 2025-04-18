@@ -168,15 +168,15 @@ def parse_assembly(parsed_paragraph: ParsedParagraph, is_first_paragraph: bool) 
     property_lines = parsed_paragraph.property_lines
 
     if object_line is None:
-        if is_first_paragraph:
-            class_ = 'FaultTree'
-            id_ = None
-        else:
+        if not is_first_paragraph:
             dangling_line = property_lines[0]
             raise DanglingPropertyException(
                 dangling_line.number,
                 f'missing object declaration before setting property `{dangling_line.info["key"]}`',
             )
+
+        class_ = 'FaultTree'
+        id_ = None
     else:
         class_ = object_line.info['class_']
         id_ = object_line.info['id_']
