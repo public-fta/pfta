@@ -48,3 +48,41 @@ class TestParsing(unittest.TestCase):
             InvalidLineException,
             parse_line, 8, 'Ga te: GT-008',  # whitespace in class
         )
+
+    def test_parse_line_property_match(self):
+        self.assertEqual(
+            parse_line(1, '- emotion: HAPPY'),
+            ParsedLine(1, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
+        )
+        self.assertEqual(
+            parse_line(2, '- colour: \t  red\t'),
+            ParsedLine(2, LineType.PROPERTY, '- colour: \t  red\t', info={'key': 'colour', 'value': 'red'}),
+        )
+        self.assertRaises(
+            InvalidLineException,
+            parse_line, 3, '- age',  # incomplete
+        )
+        self.assertRaises(
+            InvalidLineException,
+            parse_line, 4, '- age:',  # incomplete
+        )
+        self.assertRaises(
+            InvalidLineException,
+            parse_line, 5, '- age: ',  # incomplete
+        )
+        self.assertRaises(
+            InvalidLineException,
+            parse_line, 6, ' - age: 60',  # leading whitespace
+        )
+        self.assertRaises(
+            InvalidLineException,
+            parse_line, 7, '- age : 70',  # whitespace before colon
+        )
+        self.assertRaises(
+            InvalidLineException,
+            parse_line, 8, '- a ge: 80',  # whitespace in key
+        )
+        self.assertRaises(
+            InvalidLineException,
+            parse_line, 9, '-  age: 90',  # double-space before key
+        )
