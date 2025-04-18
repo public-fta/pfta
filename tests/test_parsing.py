@@ -18,11 +18,11 @@ class TestParsing(unittest.TestCase):
     def test_parse_line_object_match(self):
         self.assertEqual(
             parse_line(1, 'Gate: GT-001'),
-            ParsedLine(1, LineType.OBJECT, 'Gate: GT-001', info={'class_': 'Gate', 'id_': 'GT-001'}),
+            ParsedLine(1, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
         )
         self.assertEqual(
             parse_line(2, 'Event:   EV-002\t\t '),
-            ParsedLine(2, LineType.OBJECT, 'Event:   EV-002\t\t ', info={'class_': 'Event', 'id_': 'EV-002'}),
+            ParsedLine(2, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-002'}),
         )
         self.assertRaises(
             InvalidLineException,
@@ -52,11 +52,11 @@ class TestParsing(unittest.TestCase):
     def test_parse_line_property_match(self):
         self.assertEqual(
             parse_line(1, '- emotion: HAPPY'),
-            ParsedLine(1, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
+            ParsedLine(1, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
         )
         self.assertEqual(
             parse_line(2, '- colour: \t  red\t'),
-            ParsedLine(2, LineType.PROPERTY, '- colour: \t  red\t', info={'key': 'colour', 'value': 'red'}),
+            ParsedLine(2, LineType.PROPERTY, info={'key': 'colour', 'value': 'red'}),
         )
         self.assertRaises(
             InvalidLineException,
@@ -90,11 +90,11 @@ class TestParsing(unittest.TestCase):
     def test_parse_line_comment_match(self):
         self.assertEqual(
             parse_line(1, '# foo'),
-            ParsedLine(1, LineType.COMMENT, '# foo', info={}),
+            ParsedLine(1, LineType.COMMENT, info={}),
         )
         self.assertEqual(
             parse_line(2, '  \t # bar baz'),
-            ParsedLine(2, LineType.COMMENT, '  \t # bar baz', info={}),
+            ParsedLine(2, LineType.COMMENT, info={}),
         )
         self.assertRaises(
             InvalidLineException,
@@ -104,30 +104,30 @@ class TestParsing(unittest.TestCase):
     def test_parse_line_blank_match(self):
         self.assertEqual(
             parse_line(1, ''),
-            ParsedLine(1, LineType.BLANK, '', info={}),
+            ParsedLine(1, LineType.BLANK, info={}),
         )
         self.assertEqual(
             parse_line(2, '    '),
-            ParsedLine(2, LineType.BLANK, '    ', info={}),
+            ParsedLine(2, LineType.BLANK, info={}),
         )
         self.assertEqual(
             parse_line(3, '  \t\t  \t '),
-            ParsedLine(3, LineType.BLANK, '  \t\t  \t ', info={}),
+            ParsedLine(3, LineType.BLANK, info={}),
         )
 
     def test_parse_paragraph(self):
         # Full paragraph
         self.assertEqual(
             parse_paragraph([
-                ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
-                ParsedLine(2, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
-                ParsedLine(3, LineType.PROPERTY, '- age: 50', info={'key': 'age', 'value': '50'}),
+                ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
+                ParsedLine(2, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
+                ParsedLine(3, LineType.PROPERTY, info={'key': 'age', 'value': '50'}),
             ]),
             ParsedParagraph(
-                object_line=ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
                 property_lines=[
-                    ParsedLine(2, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
-                    ParsedLine(3, LineType.PROPERTY, '- age: 50', info={'key': 'age', 'value': '50'}),
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
+                    ParsedLine(3, LineType.PROPERTY, info={'key': 'age', 'value': '50'}),
                 ],
             ),
         )
@@ -135,14 +135,14 @@ class TestParsing(unittest.TestCase):
         # Paragraph with no object declaration
         self.assertEqual(
             parse_paragraph([
-                ParsedLine(2, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
-                ParsedLine(3, LineType.PROPERTY, '- age: 50', info={'key': 'age', 'value': '50'}),
+                ParsedLine(2, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
+                ParsedLine(3, LineType.PROPERTY, info={'key': 'age', 'value': '50'}),
             ]),
             ParsedParagraph(
                 object_line=None,
                 property_lines=[
-                    ParsedLine(2, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
-                    ParsedLine(3, LineType.PROPERTY, '- age: 50', info={'key': 'age', 'value': '50'}),
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
+                    ParsedLine(3, LineType.PROPERTY, info={'key': 'age', 'value': '50'}),
                 ],
             ),
         )
@@ -150,10 +150,10 @@ class TestParsing(unittest.TestCase):
         # Paragraph with no property settings
         self.assertEqual(
             parse_paragraph([
-                ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
+                ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
             ]),
             ParsedParagraph(
-                object_line=ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
                 property_lines=[],
             ),
         )
@@ -163,8 +163,8 @@ class TestParsing(unittest.TestCase):
             SmotheredObjectException,
             parse_paragraph,
             [
-                ParsedLine(1, LineType.OBJECT, 'Person: John', info={'class_': 'Person', 'id_': 'John'}),
-                ParsedLine(2, LineType.OBJECT, 'Person: Dave', info={'class_': 'Person', 'id_': 'Dave'}),
+                ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
+                ParsedLine(2, LineType.OBJECT, info={'class_': 'Person', 'id_': 'Dave'}),
             ],
         )
 
@@ -173,7 +173,7 @@ class TestParsing(unittest.TestCase):
             SmotheredObjectException,
             parse_paragraph,
             [
-                ParsedLine(1, LineType.PROPERTY, '- emotion: HAPPY', info={'key': 'emotion', 'value': 'HAPPY'}),
-                ParsedLine(2, LineType.OBJECT, 'Person: Dave', info={'class_': 'Person', 'id_': 'Dave'}),
+                ParsedLine(1, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
+                ParsedLine(2, LineType.OBJECT, info={'class_': 'Person', 'id_': 'Dave'}),
             ],
         )

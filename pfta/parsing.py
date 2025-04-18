@@ -43,10 +43,9 @@ class SmotheredObjectException(FaultTreeTextException):
 
 
 class ParsedLine:
-    def __init__(self, number: int, type_: LineType, content: str, info: dict):
+    def __init__(self, number: int, type_: LineType, info: dict):
         self.number = number
         self.type_ = type_
-        self.content = content
         self.info = info
 
     def __eq__(self, other):
@@ -64,16 +63,16 @@ class ParsedParagraph:
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
     if object_match := re.match(r'^(?P<class_>\S+):\s+(?P<id_>.+?)\s*$', line):
-        return ParsedLine(line_number, LineType.OBJECT, line, info=object_match.groupdict())
+        return ParsedLine(line_number, LineType.OBJECT, info=object_match.groupdict())
 
     if property_match := re.match(r'^- (?P<key>\S+):\s+(?P<value>.+?)\s*$', line):
-        return ParsedLine(line_number, LineType.PROPERTY, line, info=property_match.groupdict())
+        return ParsedLine(line_number, LineType.PROPERTY, info=property_match.groupdict())
 
     if re.match(r'^\s*#.*$', line):  # comment match (allow whitespace)
-        return ParsedLine(line_number, LineType.COMMENT, line, info={})
+        return ParsedLine(line_number, LineType.COMMENT, info={})
 
     if re.match(r'^\s*$', line):  # blank line (allow whitespace)
-        return ParsedLine(line_number, LineType.BLANK, line, info={})
+        return ParsedLine(line_number, LineType.BLANK, info={})
 
     raise InvalidLineException(line_number, f'invalid line `{line}`', LINE_EXPLAINER)
 
