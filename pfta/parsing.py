@@ -93,7 +93,7 @@ def parse_paragraph(chunk: list[ParsedLine]) -> ParsedParagraph:
         body_lines = chunk
 
     for parsed_line in body_lines:
-        if parsed_line.type_ in [LineType.COMMENT, LineType.BLANK]:
+        if parsed_line.type_ in (LineType.COMMENT, LineType.BLANK):
             raise ImplementationError
 
         if parsed_line.type_ == LineType.OBJECT:
@@ -115,7 +115,7 @@ def parse_paragraphs(parsed_lines: list[ParsedLine]) -> list[ParsedParagraph]:
                 chunks.append(latest_chunk)
                 latest_chunk = []
 
-        elif parsed_line.type_ in [LineType.OBJECT, LineType.PROPERTY]:
+        elif parsed_line.type_ in (LineType.OBJECT, LineType.PROPERTY):
             latest_chunk.append(parsed_line)
 
     return [
