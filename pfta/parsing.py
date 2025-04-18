@@ -22,6 +22,20 @@ LINE_EXPLAINER = '\n'.join([
     '    <blank line>           (used before the next declaration)',
 ])
 
+VALID_CLASSES = ('Event', 'Gate')
+CLASS_EXPLAINER = 'An object must have class `Event` or `Gate`.'
+
+VALID_KEYS_FROM_CLASS = {
+    'FaultTree': ('time_unit', 'time'),
+    'Event': ('label', 'probability', 'intensity', 'comment'),
+    'Gate': ('label', 'is_paged', 'type', 'inputs', 'comment'),
+}
+KEY_EXPLAINER_FROM_CLASS = {
+    'FaultTree': 'Recognised keys are `time_unit` and `time`.',
+    'Event': 'Recognised keys are `label`, `probability`, `intensity`, and `comment`.',
+    'Gate': 'Recognised keys are `label`, `is_paged`, `type`, `inputs`, and `comment`.',
+}
+
 
 class LineType(Enum):
     OBJECT = 0
@@ -30,15 +44,27 @@ class LineType(Enum):
     BLANK = 3
 
 
-class DanglingPropertyException(FaultTreeTextException):
-    pass
-
-
 class InvalidLineException(FaultTreeTextException):
     pass
 
 
 class SmotheredObjectException(FaultTreeTextException):
+    pass
+
+
+class DanglingPropertyException(FaultTreeTextException):
+    pass
+
+
+class InvalidKeyException(FaultTreeTextException):
+    pass
+
+
+class DuplicateKeyException(FaultTreeTextException):
+    pass
+
+
+class InvalidClassException(FaultTreeTextException):
     pass
 
 
@@ -56,6 +82,16 @@ class ParsedParagraph:
     def __init__(self, object_line: ParsedLine | None, property_lines: list[ParsedLine]):
         self.object_line = object_line
         self.property_lines = property_lines
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+
+class ParsedAssembly:
+    def __init__(self, class_: str, id_: str, properties: dict):
+        self.class_ = class_
+        self.id_ = id_
+        self.properties = properties
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -110,15 +146,72 @@ def parse_paragraphs(parsed_lines: list[ParsedLine]) -> list[ParsedParagraph]:
     latest_chunk = []
 
     for parsed_line in parsed_lines:
+        if parsed_line.type_ in (LineType.OBJECT, LineType.PROPERTY):
+            latest_chunk.append(parsed_line)
+
         if parsed_line == parsed_lines[-1] or parsed_line.type_ == LineType.BLANK:
             if latest_chunk:
                 chunks.append(latest_chunk)
                 latest_chunk = []
 
-        elif parsed_line.type_ in (LineType.OBJECT, LineType.PROPERTY):
-            latest_chunk.append(parsed_line)
-
     return [
         parse_paragraph(chunk)
         for chunk in chunks
     ]
+
+
+def parse_assembly(class_: str, id_: str | None, property_lines: list[ParsedLine]) -> ParsedAssembly:
+    properties = {}
+
+    for parsed_line in property_lines:
+        key = parsed_line.info['key']
+        value = parsed_line.info['value']
+
+        try:
+            valid_keys = VALID_KEYS_FROM_CLASS[class_]
+        except KeyError:
+            raise ImplementationError
+
+        if key not in valid_keys:
+            raise InvalidKeyException(
+                parsed_line.number,
+                f'invalid key `{key}` for a property setting under class `{class_}`',
+                KEY_EXPLAINER_FROM_CLASS[class_]
+            )
+
+        if key in properties:
+            raise DuplicateKeyException(
+                parsed_line.number,
+                f'duplicate key `{key}` for a property setting under class `{class_}`',
+            )
+
+        properties[key] = value
+
+    return ParsedAssembly(class_, id_, properties)
+
+
+def parse_assemblies(parsed_paragraphs: list[ParsedParagraph]) -> list[ParsedAssembly]:
+    parsed_assemblies = []
+
+    for parsed_paragraph in parsed_paragraphs:
+        object_line = parsed_paragraph.object_line
+        property_lines = parsed_paragraph.property_lines
+
+        if object_line is None:
+            if parsed_paragraph == parsed_paragraphs[0]:
+                parsed_assemblies.append(parse_assembly('FaultTree', None, property_lines))
+                continue
+
+            dangling_line = property_lines[0]
+            raise DanglingPropertyException(
+                dangling_line.number,
+                f'missing object declaration before setting property `{dangling_line.info["key"]}`',
+            )
+
+        if (class_ := object_line.info['class_']) in VALID_CLASSES:
+            parsed_assemblies.append(parse_assembly(class_, object_line.info['id_'], property_lines))
+            continue
+
+        raise InvalidClassException(object_line.number, f'invalid class `{class_}`', CLASS_EXPLAINER)
+
+    return parsed_assemblies
