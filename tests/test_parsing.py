@@ -187,12 +187,14 @@ class TestParsing(unittest.TestCase):
         # Reasonable fault tree
         self.assertEqual(
             parse_assembly(
-                class_='FaultTree',
-                id_=None,
-                property_lines=[
-                    ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
-                    ParsedLine(3, LineType.PROPERTY, info={'key': 'time_unit', 'value': 'h'}),
-                ],
+                ParsedParagraph(
+                    object_line=None,
+                    property_lines=[
+                        ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                        ParsedLine(3, LineType.PROPERTY, info={'key': 'time_unit', 'value': 'h'}),
+                    ],
+                ),
+                is_first_paragraph=True,
             ),
             ParsedAssembly(
                 class_='FaultTree',
@@ -207,12 +209,14 @@ class TestParsing(unittest.TestCase):
         # Reasonable event
         self.assertEqual(
             parse_assembly(
-                class_='Event',
-                id_='EV-001',
-                property_lines=[
-                    ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Weather is cloudy'}),
-                    ParsedLine(3, LineType.PROPERTY, info={'key': 'probability', 'value': '0.2'}),
-                ],
+                ParsedParagraph(
+                    object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-001'}),
+                    property_lines=[
+                        ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Weather is cloudy'}),
+                        ParsedLine(3, LineType.PROPERTY, info={'key': 'probability', 'value': '0.2'}),
+                    ],
+                ),
+                is_first_paragraph=True,
             ),
             ParsedAssembly(
                 class_='Event',
@@ -227,12 +231,14 @@ class TestParsing(unittest.TestCase):
         # Reasonable gate
         self.assertEqual(
             parse_assembly(
-                class_='Gate',
-                id_='GT-001',
-                property_lines=[
-                    ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Old man yells at cloud'}),
-                    ParsedLine(3, LineType.PROPERTY, info={'key': 'inputs', 'value': 'EV-001, EV-002'}),
-                ],
+                ParsedParagraph(
+                    object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                    property_lines=[
+                        ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Old man yells at cloud'}),
+                        ParsedLine(3, LineType.PROPERTY, info={'key': 'inputs', 'value': 'EV-001, EV-002'}),
+                    ],
+                ),
+                is_first_paragraph=True,
             ),
             ParsedAssembly(
                 class_='Gate',
@@ -248,33 +254,41 @@ class TestParsing(unittest.TestCase):
         self.assertRaises(
             InvalidKeyException,
             parse_assembly,
-            class_='FaultTree',
-            id_=None,
-            property_lines=[ParsedLine(1, LineType.PROPERTY, info={'key': 'age', 'value': '60'})],
+            ParsedParagraph(
+                object_line=None,
+                property_lines=[ParsedLine(1, LineType.PROPERTY, info={'key': 'age', 'value': '60'})],
+            ),
+            is_first_paragraph=True,
         )
         self.assertRaises(
             InvalidKeyException,
             parse_assembly,
-            class_='Event',
-            id_='EV-001',
-            property_lines=[ParsedLine(10, LineType.PROPERTY, info={'key': 'age', 'value': '60'})],
+            ParsedParagraph(
+                object_line=ParsedLine(9, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-001'}),
+                property_lines=[ParsedLine(10, LineType.PROPERTY, info={'key': 'age', 'value': '60'})],
+            ),
+            is_first_paragraph=False,
         )
         self.assertRaises(
             InvalidKeyException,
             parse_assembly,
-            class_='Gate',
-            id_='GT-001',
-            property_lines=[ParsedLine(10, LineType.PROPERTY, info={'key': 'iNpUTs', 'value': 'EV-001, EV-002'})],
+            ParsedParagraph(
+                object_line=ParsedLine(9, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                property_lines=[ParsedLine(10, LineType.PROPERTY, info={'key': 'iNpUTs', 'value': 'EV-001, EV-002'})],
+            ),
+            is_first_paragraph=False,
         )
 
         # Duplicate key
         self.assertRaises(
             DuplicateKeyException,
             parse_assembly,
-            class_='FaultTree',
-            id_=None,
-            property_lines=[
-                ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
-                ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
-            ],
+            ParsedParagraph(
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                ],
+            ),
+            is_first_paragraph=True,
         )

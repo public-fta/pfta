@@ -75,7 +75,7 @@ class ParsedLine:
         self.info = info
 
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        return other is not None and self.__dict__ == other.__dict__
 
 
 class ParsedParagraph:
@@ -160,7 +160,27 @@ def parse_paragraphs(parsed_lines: list[ParsedLine]) -> list[ParsedParagraph]:
     ]
 
 
-def parse_assembly(class_: str, id_: str | None, property_lines: list[ParsedLine]) -> ParsedAssembly:
+def parse_assembly(parsed_paragraph: ParsedParagraph, is_first_paragraph: bool) -> ParsedAssembly:
+    object_line = parsed_paragraph.object_line
+    property_lines = parsed_paragraph.property_lines
+
+    if object_line is None:
+        if is_first_paragraph:
+            class_ = 'FaultTree'
+            id_ = None
+        else:
+            dangling_line = property_lines[0]
+            raise DanglingPropertyException(
+                dangling_line.number,
+                f'missing object declaration before setting property `{dangling_line.info["key"]}`',
+            )
+    else:
+        class_ = object_line.info['class_']
+        id_ = object_line.info['id_']
+
+    if class_ not in VALID_CLASSES + ('FaultTree',):
+        raise InvalidClassException(object_line.number, f'invalid class `{class_}`', CLASS_EXPLAINER)
+
     seen_keys = set()
 
     for parsed_line in property_lines:
@@ -190,27 +210,7 @@ def parse_assembly(class_: str, id_: str | None, property_lines: list[ParsedLine
 
 
 def parse_assemblies(parsed_paragraphs: list[ParsedParagraph]) -> list[ParsedAssembly]:
-    parsed_assemblies = []
-
-    for parsed_paragraph in parsed_paragraphs:
-        object_line = parsed_paragraph.object_line
-        property_lines = parsed_paragraph.property_lines
-
-        if object_line is None:
-            if parsed_paragraph == parsed_paragraphs[0]:
-                parsed_assemblies.append(parse_assembly('FaultTree', None, property_lines))
-                continue
-
-            dangling_line = property_lines[0]
-            raise DanglingPropertyException(
-                dangling_line.number,
-                f'missing object declaration before setting property `{dangling_line.info["key"]}`',
-            )
-
-        if (class_ := object_line.info['class_']) in VALID_CLASSES:
-            parsed_assemblies.append(parse_assembly(class_, object_line.info['id_'], property_lines))
-            continue
-
-        raise InvalidClassException(object_line.number, f'invalid class `{class_}`', CLASS_EXPLAINER)
-
-    return parsed_assemblies
+    return [
+        parse_assembly(parsed_paragraph, is_first_paragraph=parsed_paragraph == parsed_paragraphs[0])
+        for parsed_paragraph in parsed_paragraphs
+    ]
