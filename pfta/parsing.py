@@ -30,6 +30,10 @@ class LineType(Enum):
     BLANK = 3
 
 
+class DanglingPropertyException(FaultTreeTextException):
+    pass
+
+
 class InvalidLineException(FaultTreeTextException):
     pass
 
