@@ -16,3 +16,7 @@ class FaultTree:
         parsed_lines = parse_lines(fault_tree_text)
         parsed_paragraphs = parse_paragraphs(parsed_lines)
         parsed_assemblies = parse_assemblies(parsed_paragraphs)
+
+        print(parsed_lines)  # TODO: remove when done
+        print(parsed_paragraphs)  # TODO: remove when done
+        print(parsed_assemblies)  # TODO: remove when done
