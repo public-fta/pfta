@@ -88,10 +88,10 @@ class ParsedParagraph:
 
 
 class ParsedAssembly:
-    def __init__(self, class_: str, id_: str, properties: dict):
+    def __init__(self, class_: str, id_: str, property_lines: list[ParsedLine]):
         self.class_ = class_
         self.id_ = id_
-        self.properties = properties
+        self.property_lines = property_lines
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -161,16 +161,15 @@ def parse_paragraphs(parsed_lines: list[ParsedLine]) -> list[ParsedParagraph]:
 
 
 def parse_assembly(class_: str, id_: str | None, property_lines: list[ParsedLine]) -> ParsedAssembly:
-    properties = {}
+    seen_keys = set()
 
     for parsed_line in property_lines:
-        key = parsed_line.info['key']
-        value = parsed_line.info['value']
-
         try:
             valid_keys = VALID_KEYS_FROM_CLASS[class_]
         except KeyError:
             raise ImplementationError
+
+        key = parsed_line.info['key']
 
         if key not in valid_keys:
             raise InvalidKeyException(
@@ -179,15 +178,15 @@ def parse_assembly(class_: str, id_: str | None, property_lines: list[ParsedLine
                 KEY_EXPLAINER_FROM_CLASS[class_]
             )
 
-        if key in properties:
+        if key in seen_keys:
             raise DuplicateKeyException(
                 parsed_line.number,
                 f'duplicate key `{key}` for a property setting under class `{class_}`',
             )
 
-        properties[key] = value
+        seen_keys.add(key)
 
-    return ParsedAssembly(class_, id_, properties)
+    return ParsedAssembly(class_, id_, property_lines)
 
 
 def parse_assemblies(parsed_paragraphs: list[ParsedParagraph]) -> list[ParsedAssembly]:
