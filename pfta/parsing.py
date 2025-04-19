@@ -12,7 +12,7 @@ import re
 from enum import Enum
 
 from pfta.convenience import convenient_eq, convenient_repr
-from pfta.exceptions import FaultTreeTextException, ImplementationError
+from pfta.woe import FaultTreeTextException, ImplementationError
 
 
 LINE_EXPLAINER = '\n'.join([

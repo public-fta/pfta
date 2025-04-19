@@ -1,7 +1,7 @@
 """
-# Public Fault Tree Analyser: exceptions.py
+# Public Fault Tree Analyser: woe.py
 
-Ancestral exception classes.
+Ancestral classes indicative of woe.
 
 **Copyright 2025 Conway**
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).

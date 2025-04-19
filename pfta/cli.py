@@ -15,7 +15,7 @@ import sys
 
 from pfta._version import __version__
 from pfta.core import FaultTree
-from pfta.exceptions import FaultTreeTextException
+from pfta.woe import FaultTreeTextException
 
 
 def parse_cli_arguments():
