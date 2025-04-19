@@ -9,7 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import re
-from enum import Enum
+import enum
 
 from pfta.common import none_aware_dict_eq, natural_repr
 from pfta.woe import FaultTreeTextException, ImplementationError
@@ -37,7 +37,7 @@ KEY_EXPLAINER_FROM_CLASS = {
 }
 
 
-class LineType(Enum):
+class LineType(enum.Enum):
     OBJECT = 0
     PROPERTY = 1
     COMMENT = 2
