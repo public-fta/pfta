@@ -141,7 +141,7 @@ def parse_paragraph(chunk: list[ParsedLine]) -> ParsedParagraph:
 
     for parsed_line in body_lines:
         if parsed_line.type_ in (LineType.COMMENT, LineType.BLANK):
-            raise ImplementationError
+            raise ImplementationError('comment lines and blank lines should not appear in chunk')
 
         if parsed_line.type_ == LineType.OBJECT:
             raise SmotheredObjectException(
@@ -198,7 +198,7 @@ def parse_assembly(parsed_paragraph: ParsedParagraph, is_first_paragraph: bool) 
         try:
             valid_keys = VALID_KEYS_FROM_CLASS[class_]
         except KeyError:
-            raise ImplementationError
+            raise ImplementationError('class inconsistent with dictionary of valid keys')
 
         key = parsed_line.info['key']
 
