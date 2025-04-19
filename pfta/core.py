@@ -18,11 +18,5 @@ class FaultTree:
         parsed_assemblies = parse_assemblies(parsed_paragraphs)
 
         # TODO: remove below when done
-        for parsed_line in parsed_lines:
-            print(parsed_line)
-
-        for parsed_paragraph in parsed_paragraphs:
-            print(parsed_paragraph)
-
         for parsed_assembly in parsed_assemblies:
             print(parsed_assembly)
