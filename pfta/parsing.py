@@ -95,9 +95,10 @@ class ParsedParagraph:
 
 
 class ParsedAssembly:
-    def __init__(self, class_: str, id_: str | None, property_lines: list[ParsedLine]):
+    def __init__(self, class_: str, id_: str | None, object_line: ParsedLine | None, property_lines: list[ParsedLine]):
         self.class_ = class_
         self.id_ = id_
+        self.object_line = object_line
         self.property_lines = property_lines
 
     def __eq__(self, other):
@@ -216,7 +217,7 @@ def parse_assembly(parsed_paragraph: ParsedParagraph, is_first_paragraph: bool) 
 
         seen_keys.add(key)
 
-    return ParsedAssembly(class_, id_, property_lines)
+    return ParsedAssembly(class_, id_, object_line, property_lines)
 
 
 def parse_assemblies(parsed_paragraphs: list[ParsedParagraph]) -> list[ParsedAssembly]:

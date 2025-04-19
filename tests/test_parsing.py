@@ -199,6 +199,7 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='FaultTree',
                 id_=None,
+                object_line=None,
                 property_lines=[
                     ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
                     ParsedLine(3, LineType.PROPERTY, info={'key': 'time_unit', 'value': 'h'}),
@@ -221,6 +222,7 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Event',
                 id_='EV-001',
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-001'}),
                 property_lines=[
                     ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Weather is cloudy'}),
                     ParsedLine(3, LineType.PROPERTY, info={'key': 'probability', 'value': '0.2'}),
@@ -243,6 +245,7 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Gate',
                 id_='GT-001',
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
                 property_lines=[
                     ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Old man yells at cloud'}),
                     ParsedLine(3, LineType.PROPERTY, info={'key': 'inputs', 'value': 'EV-001, EV-002'}),
