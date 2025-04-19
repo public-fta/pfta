@@ -16,7 +16,8 @@ from pfta.parsing import (
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
     InvalidFloatException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
-    parse_line, parse_paragraph, parse_assembly, parse_fault_tree_properties,
+    parse_line, parse_paragraph, parse_assembly,
+    parse_fault_tree_properties, parse_event_properties,
 )
 
 
@@ -357,6 +358,21 @@ class TestParsing(unittest.TestCase):
                 object_line=None,
                 property_lines=[
                     ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3.1, foo'})
+                ],
+            ),
+        )
+
+    def test_parse_event_properties(self):
+        # Invalid float
+        self.assertRaises(
+            InvalidFloatException,
+            parse_event_properties,
+            ParsedAssembly(
+                class_='Event',
+                id_='EV-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'intensity', 'value': 'bar'})
                 ],
             ),
         )

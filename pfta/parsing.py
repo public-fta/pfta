@@ -72,6 +72,10 @@ class InvalidFloatException(FaultTreeTextException):
     pass
 
 
+class DuplicateIdException(FaultTreeTextException):
+    pass
+
+
 class UnsetPropertyException(FaultTreeTextException):
     pass
 
@@ -272,6 +276,36 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
                     raise InvalidFloatException(parsed_line.number, f'unable to convert `{time_substring}` to float')
 
             properties['times'] = times
+            continue
+
+        raise ImplementationError(f'bad key `{key}`')
+
+    return properties
+
+
+def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
+    properties = {}
+
+    for parsed_line in parsed_assembly.property_lines:
+        key = parsed_line.info['key']
+        value = parsed_line.info['value']
+
+        if key in ('label', 'comment'):
+            properties[key] = value
+            continue
+
+        if key == 'probability':
+            try:
+                properties['probability'] = float(value)  # TODO: check value / handle distributions
+            except ValueError:
+                raise InvalidFloatException(parsed_line.number, f'unable to convert `{value}` to float')
+            continue
+
+        if key == 'intensity':
+            try:
+                properties['intensity'] = float(value)  # TODO: check value / handle distributions
+            except ValueError:
+                raise InvalidFloatException(parsed_line.number, f'unable to convert `{value}` to float')
             continue
 
         raise ImplementationError(f'bad key `{key}`')

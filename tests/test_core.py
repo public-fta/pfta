@@ -8,14 +8,28 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import textwrap
 import unittest
 
 from pfta.core import FaultTree
-from pfta.parsing import UnsetPropertyException
+from pfta.parsing import DuplicateIdException, UnsetPropertyException
 
 
 class TestCore(unittest.TestCase):
     def test_fault_tree(self):
+        # Duplicate identifier
+        self.assertRaises(
+            DuplicateIdException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+
+                Event: EV-001
+
+                Event: EV-001
+            '''),
+        )
+
         # Unset time
         self.assertRaises(
             UnsetPropertyException,

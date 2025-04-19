@@ -10,8 +10,9 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 from pfta.common import natural_repr
 from pfta.parsing import (
-    UnsetPropertyException,
-    parse_lines, parse_paragraphs, parse_assemblies, parse_fault_tree_properties,
+    DuplicateIdException, UnsetPropertyException,
+    parse_lines, parse_paragraphs, parse_assemblies,
+    parse_fault_tree_properties, parse_event_properties,
 )
 from pfta.woe import ImplementationError
 
@@ -24,10 +25,22 @@ class FaultTree:
 
         time_unit = None
         times = None
+        events = []
+
+        seen_ids = set()
+        event_index = 0
 
         for parsed_assembly in parsed_assemblies:
             class_ = parsed_assembly.class_
             id_ = parsed_assembly.id_
+
+            if id_ in seen_ids:
+                raise DuplicateIdException(
+                    parsed_assembly.object_line.number,
+                    f'identifier `{id_}` already used',
+                )
+            else:
+                seen_ids.add(id_)
 
             if class_ == 'FaultTree':
                 fault_tree_properties = parse_fault_tree_properties(parsed_assembly)
@@ -45,7 +58,9 @@ class FaultTree:
                 continue
 
             if class_ == 'Event':
-                # TODO
+                event_properties = parse_event_properties(parsed_assembly)
+                events.append(Event(id_, event_index, event_properties))
+                event_index += 1
                 continue
 
             if class_ == 'Gate':
@@ -67,6 +82,20 @@ class FaultTree:
 
         self.time_unit = time_unit
         self.times = times
+        self.events = events
+
+    def __repr__(self):
+        return natural_repr(self)
+
+
+class Event:
+    def __init__(self, id_: str, event_index: int, event_properties: dict):
+        self.id_ = id_
+        self.event_index = event_index
+        self.label = event_properties.get('label')
+        self.probability = event_properties.get('probability')
+        self.intensity = event_properties.get('intensity')
+        self.comment = event_properties.get('comment')
 
     def __repr__(self):
         return natural_repr(self)
