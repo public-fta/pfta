@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import re
 from enum import Enum
 
-from pfta.convenience import convenient_eq, convenient_repr
+from pfta.common import convenient_eq, convenient_repr
 from pfta.woe import FaultTreeTextException, ImplementationError
 
 

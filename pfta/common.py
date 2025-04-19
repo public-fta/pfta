@@ -1,7 +1,7 @@
 """
-# Public Fault Tree Analyser: convenience.py
+# Public Fault Tree Analyser: common.py
 
-Convenience methods.
+Commonly used convenience methods.
 
 **Copyright 2025 Conway.**
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
