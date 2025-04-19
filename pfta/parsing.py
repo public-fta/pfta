@@ -14,7 +14,6 @@ from enum import Enum
 from pfta.common import none_aware_dict_eq, natural_repr
 from pfta.woe import FaultTreeTextException, ImplementationError
 
-
 LINE_EXPLAINER = '\n'.join([
     'A line must have one of the following forms:',
     '    <class>: <identifier>  (an object declaration)',
@@ -69,6 +68,14 @@ class InvalidClassException(FaultTreeTextException):
     pass
 
 
+class InvalidFloatException(FaultTreeTextException):
+    pass
+
+
+class UnsetPropertyException(FaultTreeTextException):
+    pass
+
+
 class ParsedLine:
     def __init__(self, number: int, type_: LineType, info: dict):
         self.number = number
@@ -106,6 +113,15 @@ class ParsedAssembly:
 
     def __repr__(self):
         return natural_repr(self)
+
+    def last_line_number(self) -> int:
+        if self.property_lines:
+            return self.property_lines[-1].number
+
+        if self.object_line:
+            return self.object_line.number
+
+        return 1
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
@@ -225,3 +241,31 @@ def parse_assemblies(parsed_paragraphs: list[ParsedParagraph]) -> list[ParsedAss
         parse_assembly(parsed_paragraph, is_first_paragraph=parsed_paragraph == parsed_paragraphs[0])
         for parsed_paragraph in parsed_paragraphs
     ]
+
+
+def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
+    properties = {}
+
+    for parsed_line in parsed_assembly.property_lines:
+        key = parsed_line.info['key']
+        value = parsed_line.info['value']
+
+        if key == 'time_unit':
+            properties['time_unit'] = value
+            continue
+
+        if key == 'time':
+            times = []
+
+            for time_substring in value.split(','):
+                try:
+                    times.append(float(time_substring))
+                except ValueError:
+                    raise InvalidFloatException(parsed_line.number, f'unable to convert `{time_substring}` to float')
+
+            properties['times'] = times
+            continue
+
+        raise ImplementationError(f'bad key `{key}`')
+
+    return properties

@@ -64,6 +64,8 @@ def main():
         print(f'Error in `{fault_tree_text_file_name}`{line_parenthetical}: {message}{explainer_tail}', file=sys.stderr)
         sys.exit(1)
 
+    print(fault_tree)  # TODO: remove when done
+
     output_directory_name = f'{fault_tree_text_file_name}.out'
 
     mkdir_robust(output_directory_name)
