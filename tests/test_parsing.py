@@ -14,8 +14,9 @@ from pfta.parsing import (
     LineType,
     InvalidLineException, SmotheredObjectException, DanglingPropertyException,
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
+    InvalidFloatException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
-    parse_line, parse_paragraph, parse_assembly,
+    parse_line, parse_paragraph, parse_assembly, parse_fault_tree_properties,
 )
 
 
@@ -328,4 +329,34 @@ class TestParsing(unittest.TestCase):
                 property_lines=[],
             ),
             is_first_paragraph=False,
+        )
+
+    def test_parse_fault_tree_properties(self):
+        # Ignore empty floats
+        try:
+            parse_fault_tree_properties(
+                ParsedAssembly(
+                    class_='FaultTree',
+                    id_=None,
+                    object_line=None,
+                    property_lines=[
+                        ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3.1,'})
+                    ],
+                ),
+            )
+        except InvalidFloatException:
+            self.fail('InvalidFloatException should not be raised')
+
+        # Invalid float
+        self.assertRaises(
+            InvalidFloatException,
+            parse_fault_tree_properties,
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3.1, foo'})
+                ],
+            ),
         )
