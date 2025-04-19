@@ -124,6 +124,10 @@ class ParsedAssembly:
         return 1
 
 
+def split_by_comma(string: str) -> list[str]:
+    return re.split(r'\s*,\s*', string)
+
+
 def parse_line(line_number: int, line: str) -> ParsedLine:
     if object_match := re.match(r'^(?P<class_>\S+):\s+(?P<id_>.+?)\s*$', line):
         return ParsedLine(line_number, LineType.OBJECT, info=object_match.groupdict())
@@ -257,7 +261,7 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
         if key == 'time':
             times = []
 
-            for time_substring in value.split(','):
+            for time_substring in split_by_comma(value):
                 try:
                     times.append(float(time_substring))
                 except ValueError:
