@@ -15,8 +15,8 @@ from pfta.parsing import (
     InvalidLineException, SmotheredObjectException, DanglingPropertyException,
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
+    parse_line, parse_paragraph, parse_assembly,
 )
-from pfta.parsing import parse_line, parse_paragraph, parse_assembly
 
 
 class TestParsing(unittest.TestCase):
