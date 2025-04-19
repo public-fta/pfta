@@ -9,14 +9,14 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 
-def convenient_eq(self, other):
+def none_aware_dict_eq(self, other):
     if other is None:
         return False
 
     return self.__dict__ == other.__dict__
 
 
-def convenient_repr(self):
+def natural_repr(self):
     class_name = type(self).__name__
     argument_sequence = ', '.join(f'{key}={value!r}' for key, value in self.__dict__.items())
     return f'{class_name}({argument_sequence})'

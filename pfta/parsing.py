@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import re
 from enum import Enum
 
-from pfta.common import convenient_eq, convenient_repr
+from pfta.common import none_aware_dict_eq, natural_repr
 from pfta.woe import FaultTreeTextException, ImplementationError
 
 
@@ -76,10 +76,10 @@ class ParsedLine:
         self.info = info
 
     def __eq__(self, other):
-        return convenient_eq(self, other)
+        return none_aware_dict_eq(self, other)
 
     def __repr__(self):
-        return convenient_repr(self)
+        return natural_repr(self)
 
 
 class ParsedParagraph:
@@ -88,10 +88,10 @@ class ParsedParagraph:
         self.property_lines = property_lines
 
     def __eq__(self, other):
-        return convenient_eq(self, other)
+        return none_aware_dict_eq(self, other)
 
     def __repr__(self):
-        return convenient_repr(self)
+        return natural_repr(self)
 
 
 class ParsedAssembly:
@@ -102,10 +102,10 @@ class ParsedAssembly:
         self.property_lines = property_lines
 
     def __eq__(self, other):
-        return convenient_eq(self, other)
+        return none_aware_dict_eq(self, other)
 
     def __repr__(self):
-        return convenient_repr(self)
+        return natural_repr(self)
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
