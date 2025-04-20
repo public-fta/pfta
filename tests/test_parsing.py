@@ -15,6 +15,7 @@ from pfta.parsing import (
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
     InvalidFloatException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
+    split_by_comma,
     parse_line, parse_paragraph, parse_assembly,
     parse_fault_tree_properties, parse_event_properties,
 )
@@ -22,6 +23,18 @@ from pfta.constants import LineType
 
 
 class TestParsing(unittest.TestCase):
+    def test_split_by_comma(self):
+        self.assertEqual(split_by_comma(''), [])
+        self.assertEqual(split_by_comma(','), [])
+        self.assertEqual(split_by_comma(' \t , \t'), [])
+
+        self.assertEqual(split_by_comma(',,'), ['', ''])
+        self.assertEqual(split_by_comma(', ,'), ['', ''])
+
+        self.assertEqual(split_by_comma('A, B, C'), ['A', 'B', 'C'])
+        self.assertEqual(split_by_comma('A, B, C,'), ['A', 'B', 'C'])
+        self.assertEqual(split_by_comma('A, B, C,,'), ['A', 'B', 'C', ''])
+
     def test_parse_line_object_match(self):
         self.assertEqual(
             parse_line(1, 'Gate: GT-001'),

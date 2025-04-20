@@ -110,12 +110,12 @@ class ParsedAssembly:
 
 
 def split_by_comma(string: str) -> list[str]:
-    string = re.sub(r',\s*\Z', '', string)  # observe one trailing comma
+    string = re.sub(r'\s*,\s*\Z', '', string)  # observe one trailing comma
 
-    return [
-        substring
-        for substring in re.split(r'\s*,\s*', string)
-    ]
+    if not string:
+        return []
+
+    return re.split(r'\s*,\s*', string)
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
