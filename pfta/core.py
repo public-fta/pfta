@@ -81,9 +81,7 @@ class FaultTree:
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
-
-        if sample_size < 1:
-            raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
+        FaultTree.validate_sample_size(sample_size, sample_size_raw, sample_size_line_number)
 
         self.time_unit = time_unit
         self.times = times
@@ -106,6 +104,11 @@ class FaultTree:
         for time, time_raw in zip(times, times_raw):
             if time <= 0:
                 raise NonPositiveValueException(times_line_number, f'non-positive time `{time_raw}`')
+
+    @staticmethod
+    def validate_sample_size(sample_size: float, sample_size_raw: int, sample_size_line_number: int):
+        if sample_size < 1:
+            raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
 
 
 class Event:
