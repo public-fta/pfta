@@ -49,10 +49,7 @@ class FaultTree:
             id_ = parsed_assembly.id_
 
             if id_ in seen_ids:
-                raise DuplicateIdException(
-                    parsed_assembly.object_line.number,
-                    f'identifier `{id_}` already used',
-                )
+                raise DuplicateIdException(parsed_assembly.object_line.number, f'identifier `{id_}` already used')
             else:
                 seen_ids.add(id_)
 

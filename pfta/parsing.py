@@ -224,7 +224,7 @@ def parse_assembly(parsed_paragraph: ParsedParagraph, is_first_paragraph: bool) 
             raise InvalidKeyException(
                 parsed_line.number,
                 f'invalid key `{key}` for a property setting under class `{class_}`',
-                KEY_EXPLAINER_FROM_CLASS[class_]
+                KEY_EXPLAINER_FROM_CLASS[class_],
             )
 
         if key in seen_keys:
