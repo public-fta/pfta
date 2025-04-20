@@ -12,36 +12,11 @@ import re
 import enum
 
 from pfta.common import none_aware_dict_eq, natural_repr
+from pfta.constants import (
+    LINE_EXPLAINER, VALID_CLASSES, CLASS_EXPLAINER, IS_PAGED_EXPLAINER, GATE_TYPE_EXPLAINER,
+    VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS, BOOLEAN_FROM_STRING_STRICT,
+)
 from pfta.woe import FaultTreeTextException, ImplementationError
-
-LINE_EXPLAINER = '\n'.join([
-    'A line must have one of the following forms:',
-    '    <class>: <identifier>  (an object declaration)',
-    '    - <key>: <value>       (a property setting)',
-    '    # <comment>            (a comment)',
-    '    <blank line>           (used before the next declaration)',
-])
-
-VALID_CLASSES = ('Event', 'Gate')
-CLASS_EXPLAINER = 'An object must have class `Event` or `Gate`.'
-
-IS_PAGED_EXPLAINER = 'Boolean property must be `True` or `False` (case-sensitive)'
-GATE_TYPE_EXPLAINER = 'Gate type must be `OR` or `AND` (case-sensitive)'
-
-VALID_KEYS_FROM_CLASS = {
-    'FaultTree': ('time_unit', 'time'),
-    'Event': ('label', 'probability', 'intensity', 'comment'),
-    'Gate': ('label', 'is_paged', 'type', 'inputs', 'comment'),
-}
-KEY_EXPLAINER_FROM_CLASS = {
-    'FaultTree': 'Recognised keys are `time_unit` and `time`.',
-    'Event': 'Recognised keys are `label`, `probability`, `intensity`, and `comment`.',
-    'Gate': 'Recognised keys are `label`, `is_paged`, `type`, `inputs`, and `comment`.',
-}
-BOOLEAN_FROM_STRING_STRICT = {
-    'True': True,
-    'False': False,
-}
 
 
 class LineType(enum.Enum):
