@@ -359,3 +359,5 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
             continue
 
         raise ImplementationError(f'bad key `{key}`')
+
+    return properties
