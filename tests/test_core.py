@@ -12,7 +12,8 @@ import textwrap
 import unittest
 
 from pfta.core import (
-    DuplicateIdException, UnsetPropertyException, NonPositiveValueException, SubUnitValueException,
+    DuplicateIdException, UnsetPropertyException,
+    NonPositiveValueException, SubUnitValueException, UnknownInputException,
     FaultTree, Gate,
 )
 
@@ -79,6 +80,21 @@ class TestCore(unittest.TestCase):
             textwrap.dedent('''
                 - time: 1
                 - sample_size: 0.9999
+            '''),
+        )
+
+        # Unknown gate inputs
+        self.assertRaises(
+            UnknownInputException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+
+                Gate: GT-001
+                - type: AND
+                - inputs: EV-YES, EV-NO
+
+                Event: EV-YES
             '''),
         )
 
