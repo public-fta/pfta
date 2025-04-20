@@ -78,15 +78,11 @@ class FaultTree:
         sample_size = fault_tree_properties.get('sample_size', 1)
         sample_size_raw = fault_tree_properties.get('sample_size_raw')
         sample_size_line_number = fault_tree_properties.get('sample_size_line_number')
+        unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
         if times is None:
-            if parsed_assemblies and parsed_assemblies[0].class_ == 'FaultTree':
-                unset_times_line_number = parsed_assemblies[0].last_line_number() + 1
-            else:
-                unset_times_line_number = 1
-
             raise UnsetPropertyException(
-                unset_times_line_number,
+                unset_property_line_number,
                 'mandatory property `time` has not been set for fault tree',
             )
 
