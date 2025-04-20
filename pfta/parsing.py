@@ -61,6 +61,10 @@ class UnsetPropertyException(FaultTreeTextException):
     pass
 
 
+class NonPositiveTimeException(FaultTreeTextException):
+    pass
+
+
 class ParsedLine:
     def __init__(self, number: int, type_: LineType, info: dict):
         self.number = number
@@ -258,6 +262,7 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
                     raise InvalidFloatException(parsed_line.number, f'unable to convert `{time_substring}` to float')
 
             properties['times'] = times
+            properties['times_line_number'] = parsed_line.number
             continue
 
         raise ImplementationError(f'bad key `{key}`')

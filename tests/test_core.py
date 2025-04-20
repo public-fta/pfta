@@ -12,7 +12,7 @@ import textwrap
 import unittest
 
 from pfta.core import FaultTree
-from pfta.parsing import DuplicateIdException, UnsetPropertyException
+from pfta.parsing import DuplicateIdException, UnsetPropertyException, NonPositiveTimeException
 
 
 class TestCore(unittest.TestCase):
@@ -35,4 +35,21 @@ class TestCore(unittest.TestCase):
             UnsetPropertyException,
             FaultTree,
             '- time_unit: h',
+        )
+
+        # Non-positive time
+        self.assertRaises(
+            NonPositiveTimeException,
+            FaultTree,
+            '- time: 0.',
+        )
+        self.assertRaises(
+            NonPositiveTimeException,
+            FaultTree,
+            '- time: -1',
+        )
+        self.assertRaises(
+            NonPositiveTimeException,
+            FaultTree,
+            '- time: 3, 4, -5',
         )
