@@ -38,20 +38,8 @@ class FaultTree:
         parsed_paragraphs = parse_paragraphs(parsed_lines)
         parsed_assemblies = parse_assemblies(parsed_paragraphs)
 
-        time_unit = None
-
-        times = None
-        times_raw = None
-        times_line_number = None
-
-        seed = None
-
-        sample_size = None
-        sample_size_raw = None
-        sample_size_line_number = None
-
+        fault_tree_properties = {}
         events = []
-
         seen_ids = set()
         event_index = 0
 
@@ -69,31 +57,6 @@ class FaultTree:
 
             if class_ == 'FaultTree':
                 fault_tree_properties = parse_fault_tree_properties(parsed_assembly)
-
-                try:
-                    time_unit = fault_tree_properties['time_unit']
-                except KeyError:
-                    pass
-
-                try:
-                    times = fault_tree_properties['times']
-                    times_raw = fault_tree_properties['times_raw']
-                    times_line_number = fault_tree_properties['times_line_number']
-                except KeyError:
-                    pass
-
-                try:
-                    seed = fault_tree_properties['seed']
-                except KeyError:
-                    pass
-
-                try:
-                    sample_size = fault_tree_properties['sample_size']
-                    sample_size_raw = fault_tree_properties['sample_size_raw']
-                    sample_size_line_number = fault_tree_properties['sample_size_line_number']
-                except KeyError:
-                    pass
-
                 continue
 
             if class_ == 'Event':
@@ -107,6 +70,15 @@ class FaultTree:
                 continue
 
             raise ImplementationError(f'bad class {class_}')
+
+        time_unit = fault_tree_properties.get('time_unit')
+        times = fault_tree_properties.get('times')
+        times_raw = fault_tree_properties.get('times_raw')
+        times_line_number = fault_tree_properties.get('times_line_number')
+        seed = fault_tree_properties.get('seed')
+        sample_size = fault_tree_properties.get('sample_size', 1)
+        sample_size_raw = fault_tree_properties.get('sample_size_raw')
+        sample_size_line_number = fault_tree_properties.get('sample_size_line_number')
 
         if times is None:
             if parsed_assemblies and parsed_assemblies[0].class_ == 'FaultTree':
@@ -129,6 +101,7 @@ class FaultTree:
         self.time_unit = time_unit
         self.times = times
         self.seed = seed
+        self.sample_size = sample_size
         self.events = events
 
     def __repr__(self):
