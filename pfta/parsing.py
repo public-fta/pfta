@@ -115,7 +115,7 @@ def split_by_comma(string: str) -> list[str]:
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
-    if object_match := re.match(r'^(?P<class_>\S+):\s+(?P<id_>.+?)\s*$', line):
+    if object_match := re.match(r'^(?P<class>\S+):\s+(?P<id>.+?)\s*$', line):
         return ParsedLine(line_number, LineType.OBJECT, info=object_match.groupdict())
 
     if property_match := re.match(r'^- (?P<key>\S+):\s+(?P<value>.+?)\s*$', line):
@@ -152,7 +152,7 @@ def parse_paragraph(chunk: list[ParsedLine]) -> ParsedParagraph:
         if parsed_line.type_ == LineType.OBJECT:
             raise SmotheredObjectException(
                 parsed_line.number,
-                f'missing blank line before declaration of `{parsed_line.info["class_"]}`',
+                f'missing blank line before declaration of `{parsed_line.info["class"]}`',
             )
 
     return ParsedParagraph(object_line=head_line, property_lines=body_lines)
@@ -192,8 +192,8 @@ def parse_assembly(parsed_paragraph: ParsedParagraph, is_first_paragraph: bool) 
         class_ = 'FaultTree'
         id_ = None
     else:
-        class_ = object_line.info['class_']
-        id_ = object_line.info['id_']
+        class_ = object_line.info['class']
+        id_ = object_line.info['id']
 
         if class_ not in VALID_CLASSES:
             raise InvalidClassException(object_line.number, f'invalid class `{class_}`', CLASS_EXPLAINER)
@@ -314,9 +314,9 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
                 raise InvalidBooleanException(parsed_line.number, f'invalid value `{value}`', IS_PAGED_EXPLAINER)
             continue
 
-        if key == 'type_':
+        if key == 'type':
             try:
-                properties['type_'] = GATE_TYPE_FROM_STRING[value]
+                properties['type'] = GATE_TYPE_FROM_STRING[value]
             except KeyError:
                 raise InvalidGateTypeException(parsed_line.number, f'invalid value `{value}`', GATE_TYPE_EXPLAINER)
             continue

@@ -38,11 +38,11 @@ class TestParsing(unittest.TestCase):
     def test_parse_line_object_match(self):
         self.assertEqual(
             parse_line(1, 'Gate: GT-001'),
-            ParsedLine(1, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+            ParsedLine(1, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
         )
         self.assertEqual(
             parse_line(2, 'Event:   EV-002\t\t '),
-            ParsedLine(2, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-002'}),
+            ParsedLine(2, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-002'}),
         )
         self.assertRaises(
             InvalidLineException,
@@ -139,12 +139,12 @@ class TestParsing(unittest.TestCase):
         # Full paragraph
         self.assertEqual(
             parse_paragraph([
-                ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
+                ParsedLine(1, LineType.OBJECT, info={'class': 'Person', 'id': 'John'}),
                 ParsedLine(2, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
                 ParsedLine(3, LineType.PROPERTY, info={'key': 'age', 'value': '50'}),
             ]),
             ParsedParagraph(
-                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class': 'Person', 'id': 'John'}),
                 property_lines=[
                     ParsedLine(2, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
                     ParsedLine(3, LineType.PROPERTY, info={'key': 'age', 'value': '50'}),
@@ -170,10 +170,10 @@ class TestParsing(unittest.TestCase):
         # Paragraph with no property settings
         self.assertEqual(
             parse_paragraph([
-                ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
+                ParsedLine(1, LineType.OBJECT, info={'class': 'Person', 'id': 'John'}),
             ]),
             ParsedParagraph(
-                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class': 'Person', 'id': 'John'}),
                 property_lines=[],
             ),
         )
@@ -183,8 +183,8 @@ class TestParsing(unittest.TestCase):
             SmotheredObjectException,
             parse_paragraph,
             [
-                ParsedLine(1, LineType.OBJECT, info={'class_': 'Person', 'id_': 'John'}),
-                ParsedLine(2, LineType.OBJECT, info={'class_': 'Person', 'id_': 'Dave'}),
+                ParsedLine(1, LineType.OBJECT, info={'class': 'Person', 'id': 'John'}),
+                ParsedLine(2, LineType.OBJECT, info={'class': 'Person', 'id': 'Dave'}),
             ],
         )
 
@@ -194,7 +194,7 @@ class TestParsing(unittest.TestCase):
             parse_paragraph,
             [
                 ParsedLine(1, LineType.PROPERTY, info={'key': 'emotion', 'value': 'HAPPY'}),
-                ParsedLine(2, LineType.OBJECT, info={'class_': 'Person', 'id_': 'Dave'}),
+                ParsedLine(2, LineType.OBJECT, info={'class': 'Person', 'id': 'Dave'}),
             ],
         )
 
@@ -226,7 +226,7 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(
             parse_assembly(
                 ParsedParagraph(
-                    object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-001'}),
+                    object_line=ParsedLine(1, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
                     property_lines=[
                         ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Weather is cloudy'}),
                         ParsedLine(3, LineType.PROPERTY, info={'key': 'probability', 'value': '0.2'}),
@@ -237,7 +237,7 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Event',
                 id_='EV-001',
-                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-001'}),
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
                 property_lines=[
                     ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Weather is cloudy'}),
                     ParsedLine(3, LineType.PROPERTY, info={'key': 'probability', 'value': '0.2'}),
@@ -249,7 +249,7 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(
             parse_assembly(
                 ParsedParagraph(
-                    object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                    object_line=ParsedLine(1, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
                     property_lines=[
                         ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Old man yells at cloud'}),
                         ParsedLine(3, LineType.PROPERTY, info={'key': 'inputs', 'value': 'EV-001, EV-002'}),
@@ -260,7 +260,7 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Gate',
                 id_='GT-001',
-                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
                 property_lines=[
                     ParsedLine(2, LineType.PROPERTY, info={'key': 'label', 'value': 'Old man yells at cloud'}),
                     ParsedLine(3, LineType.PROPERTY, info={'key': 'inputs', 'value': 'EV-001, EV-002'}),
@@ -296,7 +296,7 @@ class TestParsing(unittest.TestCase):
             InvalidKeyException,
             parse_assembly,
             ParsedParagraph(
-                object_line=ParsedLine(9, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-001'}),
+                object_line=ParsedLine(9, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
                 property_lines=[ParsedLine(10, LineType.PROPERTY, info={'key': 'age', 'value': '60'})],
             ),
             is_first_paragraph=False,
@@ -305,7 +305,7 @@ class TestParsing(unittest.TestCase):
             InvalidKeyException,
             parse_assembly,
             ParsedParagraph(
-                object_line=ParsedLine(9, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                object_line=ParsedLine(9, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
                 property_lines=[ParsedLine(10, LineType.PROPERTY, info={'key': 'iNpUTs', 'value': 'EV-001, EV-002'})],
             ),
             is_first_paragraph=False,
@@ -330,7 +330,7 @@ class TestParsing(unittest.TestCase):
             InvalidClassException,
             parse_assembly,
             ParsedParagraph(
-                object_line=ParsedLine(1, LineType.OBJECT, info={'class_': 'FaultTree', 'id_': 'MASTER'}),
+                object_line=ParsedLine(1, LineType.OBJECT, info={'class': 'FaultTree', 'id': 'MASTER'}),
                 property_lines=[],
             ),
             is_first_paragraph=True,
@@ -339,7 +339,7 @@ class TestParsing(unittest.TestCase):
             InvalidClassException,
             parse_assembly,
             ParsedParagraph(
-                object_line=ParsedLine(100, LineType.OBJECT, info={'class_': 'foo', 'id_': 'bar'}),
+                object_line=ParsedLine(100, LineType.OBJECT, info={'class': 'foo', 'id': 'bar'}),
                 property_lines=[],
             ),
             is_first_paragraph=False,
@@ -397,7 +397,7 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Event',
                 id_='EV-001',
-                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-001'}),
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
                 property_lines=[
                     ParsedLine(5, LineType.PROPERTY, info={'key': 'intensity', 'value': 'bar'})
                 ],
@@ -412,7 +412,7 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Gate',
                 id_='GT-001',
-                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
                 property_lines=[
                     ParsedLine(5, LineType.PROPERTY, info={'key': 'is_paged', 'value': 'true'})
                 ],
@@ -424,7 +424,7 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Gate',
                 id_='GT-001',
-                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
                 property_lines=[
                     ParsedLine(5, LineType.PROPERTY, info={'key': 'is_paged', 'value': 'false'})
                 ],
@@ -436,7 +436,7 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Gate',
                 id_='GT-001',
-                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
                 property_lines=[
                     ParsedLine(5, LineType.PROPERTY, info={'key': 'is_paged', 'value': 'foo'})
                 ],
@@ -450,9 +450,9 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Gate',
                 id_='GT-001',
-                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
                 property_lines=[
-                    ParsedLine(5, LineType.PROPERTY, info={'key': 'type_', 'value': 'and'})
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'type', 'value': 'and'})
                 ],
             ),
         )
@@ -462,9 +462,9 @@ class TestParsing(unittest.TestCase):
             ParsedAssembly(
                 class_='Gate',
                 id_='GT-001',
-                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
                 property_lines=[
-                    ParsedLine(5, LineType.PROPERTY, info={'key': 'type_', 'value': 'XOR'})
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'type', 'value': 'XOR'})
                 ],
             ),
         )
