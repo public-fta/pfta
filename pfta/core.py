@@ -80,15 +80,7 @@ class FaultTree:
         sample_size_line_number = fault_tree_properties.get('sample_size_line_number')
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
-        if times is None:
-            raise UnsetPropertyException(
-                unset_property_line_number,
-                'mandatory property `time` has not been set for fault tree',
-            )
-
-        for time, time_raw in zip(times, times_raw):
-            if time <= 0:
-                raise NonPositiveValueException(times_line_number, f'non-positive time `{time_raw}`')
+        FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
 
         if sample_size < 1:
             raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
@@ -102,6 +94,18 @@ class FaultTree:
 
     def __repr__(self):
         return natural_repr(self)
+
+    @staticmethod
+    def validate_times(times: list, times_raw: list, times_line_number: int, unset_property_line_number: int):
+        if times is None:
+            raise UnsetPropertyException(
+                unset_property_line_number,
+                'mandatory property `time` has not been set for fault tree',
+            )
+
+        for time, time_raw in zip(times, times_raw):
+            if time <= 0:
+                raise NonPositiveValueException(times_line_number, f'non-positive time `{time_raw}`')
 
 
 class Event:
