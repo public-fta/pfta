@@ -53,6 +53,10 @@ class InvalidBooleanException(FaultTreeTextException):
     pass
 
 
+class InvalidGateTypeException(FaultTreeTextException):
+    pass
+
+
 class ParsedLine:
     def __init__(self, number: int, type_: LineType, info: dict):
         self.number = number
@@ -310,11 +314,11 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
                 raise InvalidBooleanException(parsed_line.number, f'invalid value `{value}`', IS_PAGED_EXPLAINER)
             continue
 
-        if key == 'type':
+        if key == 'type_':
             try:
                 properties['type_'] = GATE_TYPE_FROM_STRING[value]
             except KeyError:
-                raise InvalidBooleanException(parsed_line.number, f'invalid value `{value}`', GATE_TYPE_EXPLAINER)
+                raise InvalidGateTypeException(parsed_line.number, f'invalid value `{value}`', GATE_TYPE_EXPLAINER)
             continue
 
         if key == 'inputs':

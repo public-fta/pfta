@@ -13,11 +13,11 @@ import unittest
 from pfta.parsing import (
     InvalidLineException, SmotheredObjectException, DanglingPropertyException,
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
-    InvalidFloatException,
+    InvalidFloatException, InvalidBooleanException, InvalidGateTypeException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
     split_by_comma,
     parse_line, parse_paragraph, parse_assembly,
-    parse_fault_tree_properties, parse_event_properties,
+    parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
 )
 from pfta.constants import LineType
 
@@ -400,6 +400,71 @@ class TestParsing(unittest.TestCase):
                 object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Event', 'id_': 'EV-001'}),
                 property_lines=[
                     ParsedLine(5, LineType.PROPERTY, info={'key': 'intensity', 'value': 'bar'})
+                ],
+            ),
+        )
+
+    def test_parse_gate_properties(self):
+        # Invalid Boolean
+        self.assertRaises(
+            InvalidBooleanException,
+            parse_gate_properties,
+            ParsedAssembly(
+                class_='Gate',
+                id_='GT-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'is_paged', 'value': 'true'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            InvalidBooleanException,
+            parse_gate_properties,
+            ParsedAssembly(
+                class_='Gate',
+                id_='GT-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'is_paged', 'value': 'false'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            InvalidBooleanException,
+            parse_gate_properties,
+            ParsedAssembly(
+                class_='Gate',
+                id_='GT-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'is_paged', 'value': 'foo'})
+                ],
+            ),
+        )
+
+        # Invalid gate type
+        self.assertRaises(
+            InvalidGateTypeException,
+            parse_gate_properties,
+            ParsedAssembly(
+                class_='Gate',
+                id_='GT-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'type_', 'value': 'and'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            InvalidGateTypeException,
+            parse_gate_properties,
+            ParsedAssembly(
+                class_='Gate',
+                id_='GT-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class_': 'Gate', 'id_': 'GT-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'type_', 'value': 'XOR'})
                 ],
             ),
         )
