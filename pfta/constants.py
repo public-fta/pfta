@@ -32,7 +32,7 @@ KEY_EXPLAINER_FROM_CLASS = {
     'Event': 'Recognised keys are `label`, `probability`, `intensity`, and `comment`.',
     'Gate': 'Recognised keys are `label`, `is_paged`, `type`, `inputs`, and `comment`.',
 }
-BOOLEAN_FROM_STRING_STRICT = {
+BOOLEAN_FROM_STRING = {
     'True': True,
     'False': False,
 }

@@ -14,7 +14,7 @@ import enum
 from pfta.common import none_aware_dict_eq, natural_repr
 from pfta.constants import (
     LINE_EXPLAINER, VALID_CLASSES, CLASS_EXPLAINER, IS_PAGED_EXPLAINER, GATE_TYPE_EXPLAINER,
-    VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS, BOOLEAN_FROM_STRING_STRICT,
+    VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS, BOOLEAN_FROM_STRING,
 )
 from pfta.woe import FaultTreeTextException, ImplementationError
 
@@ -317,7 +317,7 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key == 'is_paged':
             try:
-                properties['is_paged'] = BOOLEAN_FROM_STRING_STRICT[value]
+                properties['is_paged'] = BOOLEAN_FROM_STRING[value]
             except KeyError:
                 raise InvalidBooleanException(parsed_line.number, f'invalid value `{value}`', IS_PAGED_EXPLAINER)
             continue
