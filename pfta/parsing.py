@@ -240,8 +240,8 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
         key = parsed_line.info['key']
         value = parsed_line.info['value']
 
-        if key == 'time_unit':
-            properties['time_unit'] = value
+        if key in ('time_unit', 'seed'):
+            properties[key] = value
             continue
 
         if key == 'time':

@@ -40,6 +40,8 @@ class FaultTree:
         times_raw = None
         times_line_number = None
 
+        seed = None
+
         events = []
 
         seen_ids = set()
@@ -69,6 +71,11 @@ class FaultTree:
                     times = fault_tree_properties['times']
                     times_raw = fault_tree_properties['times_raw']
                     times_line_number = fault_tree_properties['times_line_number']
+                except KeyError:
+                    pass
+
+                try:
+                    seed = fault_tree_properties['seed']
                 except KeyError:
                     pass
 
@@ -103,6 +110,7 @@ class FaultTree:
 
         self.time_unit = time_unit
         self.times = times
+        self.seed = seed
         self.events = events
 
     def __repr__(self):
