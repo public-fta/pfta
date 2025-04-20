@@ -9,6 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 from pfta.common import natural_repr
+from pfta.constants import LineType
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
@@ -131,7 +132,7 @@ class Event:
         intensity = event_properties.get('intensity')
         comment = event_properties.get('comment')
 
-        # TODO: check probability and intensity values valid (when evaluated at times across sample size)
+        # TODO: validate probability and intensity values valid (when evaluated at times across sample size)
 
         self.id_ = id_
         self.event_index = event_index
@@ -154,17 +155,8 @@ class Gate:
         comment = gate_properties.get('comment')
         unset_property_line_number = gate_properties.get('unset_property_line_number')
 
-        if type_ is None:
-            raise UnsetPropertyException(
-                unset_property_line_number,
-                f'mandatory property `type` has not been set for gate `{id_}`',
-            )
-
-        if input_ids is None:
-            raise UnsetPropertyException(
-                unset_property_line_number,
-                f'mandatory property `inputs` has not been set for gate `{id_}`',
-            )
+        Gate.validate_type(id_, type_, unset_property_line_number)
+        Gate.validate_input_ids(id_, input_ids, unset_property_line_number)
 
         self.id_ = id_
         self.label = label
@@ -176,3 +168,19 @@ class Gate:
 
     def __repr__(self):
         return natural_repr(self)
+
+    @staticmethod
+    def validate_type(id_: str, type_: LineType, unset_property_line_number: int):
+        if type_ is None:
+            raise UnsetPropertyException(
+                unset_property_line_number,
+                f'mandatory property `type` has not been set for gate `{id_}`',
+            )
+
+    @staticmethod
+    def validate_input_ids(id_: str, input_ids: list, unset_property_line_number: int):
+        if input_ids is None:
+            raise UnsetPropertyException(
+                unset_property_line_number,
+                f'mandatory property `inputs` has not been set for gate `{id_}`',
+            )
