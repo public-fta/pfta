@@ -145,8 +145,6 @@ class Gate:
                 f'mandatory property `inputs` has not been set for gate `{id_}`',
             )
 
-        # TODO: check input_ids
-
         self.id_ = id_
         self.label = label
         self.is_paged = is_paged

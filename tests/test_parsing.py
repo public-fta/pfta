@@ -15,7 +15,7 @@ from pfta.parsing import (
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
     InvalidFloatException, InvalidBooleanException, InvalidGateTypeException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
-    split_by_comma,
+    split_by_comma, is_valid_id,
     parse_line, parse_paragraph, parse_assembly,
     parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
 )
@@ -34,6 +34,18 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(split_by_comma('A, B, C'), ['A', 'B', 'C'])
         self.assertEqual(split_by_comma('A, B, C,'), ['A', 'B', 'C'])
         self.assertEqual(split_by_comma('A, B, C,,'), ['A', 'B', 'C', ''])
+
+    def test_is_valid_id(self):
+        self.assertTrue(is_valid_id('GT-001'))
+        self.assertTrue(is_valid_id('EV_001'))
+        self.assertTrue(is_valid_id('abc123XYZ'))
+        self.assertTrue(is_valid_id('AbSoLUtEly-fiNe'))
+
+        self.assertFalse(is_valid_id('Contains space'))
+        self.assertFalse(is_valid_id('Contains\ttab'))
+        self.assertFalse(is_valid_id('Contains,comma'))
+        self.assertFalse(is_valid_id('Contains.full.stop'))
+        self.assertFalse(is_valid_id('file/separators'))
 
     def test_parse_line_blank_match(self):
         self.assertEqual(

@@ -17,6 +17,7 @@ from pfta.constants import (
     BOOLEAN_FROM_STRING, IS_PAGED_EXPLAINER,
     GATE_TYPE_FROM_STRING, GATE_TYPE_EXPLAINER,
     VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS,
+    VALID_ID_REGEX, ID_EXPLAINER,
 )
 from pfta.woe import FaultTreeTextException, ImplementationError
 
@@ -42,6 +43,10 @@ class DuplicateKeyException(FaultTreeTextException):
 
 
 class InvalidClassException(FaultTreeTextException):
+    pass
+
+
+class InvalidIdException(FaultTreeTextException):
     pass
 
 
@@ -112,6 +117,10 @@ def split_by_comma(string: str) -> list[str]:
         return []
 
     return re.split(r'\s*,\s*', string)
+
+
+def is_valid_id(string: str) -> bool:
+    return bool(re.fullmatch(VALID_ID_REGEX, string))
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
@@ -197,6 +206,9 @@ def parse_assembly(parsed_paragraph: ParsedParagraph, is_first_paragraph: bool) 
 
         if class_ not in VALID_CLASSES:
             raise InvalidClassException(object_line.number, f'invalid class `{class_}`', CLASS_EXPLAINER)
+
+        if not is_valid_id(id_):
+            raise InvalidIdException(object_line.number, f'invalid identifier `{id_}`', ID_EXPLAINER)
 
     seen_keys = set()
 

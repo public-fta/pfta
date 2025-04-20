@@ -9,6 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import enum
+import re
 
 
 class LineType(enum.Enum):
@@ -33,6 +34,9 @@ LINE_EXPLAINER = '\n'.join([
 
 VALID_CLASSES = ('Event', 'Gate')
 CLASS_EXPLAINER = 'An object must have class `Event` or `Gate`.'
+
+VALID_ID_REGEX = re.compile(r'[a-z0-9_-]+', flags=re.IGNORECASE)
+ID_EXPLAINER = 'An identifier must consist only of ASCII letters, underscores, and hyphens.'
 
 BOOLEAN_FROM_STRING = {
     'True': True,
