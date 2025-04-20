@@ -32,6 +32,10 @@ class SubUnitValueException(FaultTreeTextException):
     pass
 
 
+class UnknownInputException(FaultTreeTextException):
+    pass
+
+
 class FaultTree:
     def __init__(self, fault_tree_text: str):
         parsed_lines = parse_lines(fault_tree_text)
@@ -82,6 +86,7 @@ class FaultTree:
 
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
         FaultTree.validate_sample_size(sample_size, sample_size_raw, sample_size_line_number)
+        FaultTree.validate_gate_inputs(events, gates)
 
         self.time_unit = time_unit
         self.times = times
@@ -110,6 +115,14 @@ class FaultTree:
         if sample_size < 1:
             raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
 
+    @staticmethod
+    def validate_gate_inputs(events: list['Event'], gates: list['Gate']):
+        known_ids = [object_.id_ for object_ in (events + gates)]
+        for gate in gates:
+            for id_ in gate.input_ids:
+                if id_ not in known_ids:
+                    raise UnknownInputException(gate.input_ids_line_number, f'no event or gate with identifier `{id_}`')
+
 
 class Event:
     def __init__(self, id_: str, event_index: int, event_properties: dict):
@@ -137,6 +150,7 @@ class Gate:
         is_paged = gate_properties.get('is_paged', False)
         type_ = gate_properties.get('type')
         input_ids = gate_properties.get('input_ids')
+        input_ids_line_number = gate_properties.get('input_ids_line_number')
         comment = gate_properties.get('comment')
         unset_property_line_number = gate_properties.get('unset_property_line_number')
 
@@ -157,6 +171,7 @@ class Gate:
         self.is_paged = is_paged
         self.type_ = type_
         self.input_ids = input_ids
+        self.input_ids_line_number = input_ids_line_number
         self.comment = comment
 
     def __repr__(self):

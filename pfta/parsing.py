@@ -347,6 +347,7 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key == 'inputs':
             properties['input_ids'] = split_by_comma(value)
+            properties['input_ids_line_number'] = parsed_line.number
             continue
 
         raise ImplementationError(f'bad key `{key}`')
