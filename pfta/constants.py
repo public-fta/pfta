@@ -47,7 +47,7 @@ GATE_TYPE_FROM_STRING = {
 GATE_TYPE_EXPLAINER = 'Gate type must be `OR` or `AND` (case-sensitive)'
 
 VALID_KEYS_FROM_CLASS = {
-    'FaultTree': ('time_unit', 'time', 'seed'),  # TODO: 'sample_size'
+    'FaultTree': ('time_unit', 'time', 'seed', 'sample_size'),
     'Event': ('label', 'probability', 'intensity', 'comment'),
     'Gate': ('label', 'is_paged', 'type', 'inputs', 'comment'),
 }

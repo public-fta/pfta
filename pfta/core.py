@@ -28,6 +28,10 @@ class NonPositiveValueException(FaultTreeTextException):
     pass
 
 
+class SubUnitValueException(FaultTreeTextException):
+    pass
+
+
 class FaultTree:
     def __init__(self, fault_tree_text: str):
         parsed_lines = parse_lines(fault_tree_text)
@@ -41,6 +45,10 @@ class FaultTree:
         times_line_number = None
 
         seed = None
+
+        sample_size = None
+        sample_size_raw = None
+        sample_size_line_number = None
 
         events = []
 
@@ -79,6 +87,13 @@ class FaultTree:
                 except KeyError:
                     pass
 
+                try:
+                    sample_size = fault_tree_properties['sample_size']
+                    sample_size_raw = fault_tree_properties['sample_size_raw']
+                    sample_size_line_number = fault_tree_properties['sample_size_line_number']
+                except KeyError:
+                    pass
+
                 continue
 
             if class_ == 'Event':
@@ -107,6 +122,9 @@ class FaultTree:
         for time, time_raw in zip(times, times_raw):
             if time <= 0:
                 raise NonPositiveValueException(times_line_number, f'non-positive time `{time_raw}`')
+
+        if sample_size < 1:
+            raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
 
         self.time_unit = time_unit
         self.times = times

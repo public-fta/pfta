@@ -13,7 +13,7 @@ import unittest
 
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException, NonPositiveValueException,
-    FaultTree,
+    FaultTree, SubUnitValueException,
 )
 
 
@@ -54,4 +54,30 @@ class TestCore(unittest.TestCase):
             NonPositiveValueException,
             FaultTree,
             '- time: 3, 4, -5',
+        )
+
+        # Sub-unit sample size
+        self.assertRaises(
+            SubUnitValueException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - sample_size: 0
+            '''),
+        )
+        self.assertRaises(
+            SubUnitValueException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - sample_size: -100
+            '''),
+        )
+        self.assertRaises(
+            SubUnitValueException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - sample_size: 0.9999
+            '''),
         )
