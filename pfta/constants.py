@@ -19,7 +19,12 @@ LINE_EXPLAINER = '\n'.join([
 VALID_CLASSES = ('Event', 'Gate')
 CLASS_EXPLAINER = 'An object must have class `Event` or `Gate`.'
 
+BOOLEAN_FROM_STRING = {
+    'True': True,
+    'False': False,
+}
 IS_PAGED_EXPLAINER = 'Boolean property must be `True` or `False` (case-sensitive)'
+
 GATE_TYPE_EXPLAINER = 'Gate type must be `OR` or `AND` (case-sensitive)'
 
 VALID_KEYS_FROM_CLASS = {
@@ -31,8 +36,4 @@ KEY_EXPLAINER_FROM_CLASS = {
     'FaultTree': 'Recognised keys are `time_unit` and `time`.',
     'Event': 'Recognised keys are `label`, `probability`, `intensity`, and `comment`.',
     'Gate': 'Recognised keys are `label`, `is_paged`, `type`, `inputs`, and `comment`.',
-}
-BOOLEAN_FROM_STRING = {
-    'True': True,
-    'False': False,
 }
