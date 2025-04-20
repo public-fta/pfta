@@ -359,7 +359,7 @@ class TestParsing(unittest.TestCase):
                 ),
             )
         except InvalidFloatException:
-            self.fail('InvalidFloatException should not be raised')
+            self.fail('InvalidFloatException should not have been raised')
 
         # Observe only one trailing comma
         self.assertRaises(

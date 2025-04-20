@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 from pfta.common import natural_repr
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
-    parse_fault_tree_properties, parse_event_properties,
+    parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
 )
 from pfta.woe import ImplementationError, FaultTreeTextException
 
@@ -40,6 +40,7 @@ class FaultTree:
 
         fault_tree_properties = {}
         events = []
+        gates = []
         seen_ids = set()
         event_index = 0
 
@@ -66,7 +67,8 @@ class FaultTree:
                 continue
 
             if class_ == 'Gate':
-                # TODO
+                gate_properties = parse_gate_properties(parsed_assembly)
+                gates.append(Gate(id_, gate_properties))
                 continue
 
             raise ImplementationError(f'bad class {class_}')
@@ -103,6 +105,7 @@ class FaultTree:
         self.seed = seed
         self.sample_size = sample_size
         self.events = events
+        self.gates = gates
 
     def __repr__(self):
         return natural_repr(self)
@@ -116,6 +119,40 @@ class Event:
         self.probability = event_properties.get('probability')
         self.intensity = event_properties.get('intensity')
         self.comment = event_properties.get('comment')
+
+    def __repr__(self):
+        return natural_repr(self)
+
+
+class Gate:
+    def __init__(self, id_: str, gate_properties: dict):
+        label = gate_properties.get('label')
+        is_paged = gate_properties.get('is_paged', False)
+        type_ = gate_properties.get('type')
+        input_ids = gate_properties.get('input_ids')
+        comment = gate_properties.get('comment')
+        unset_property_line_number = gate_properties.get('unset_property_line_number')
+
+        if type_ is None:
+            raise UnsetPropertyException(
+                unset_property_line_number,
+                f'mandatory property `type` has not been set for gate `{id_}`',
+            )
+
+        if input_ids is None:
+            raise UnsetPropertyException(
+                unset_property_line_number,
+                f'mandatory property `inputs` has not been set for gate `{id_}`',
+            )
+
+        # TODO: check input_ids
+
+        self.id_ = id_
+        self.label = label
+        self.is_paged = is_paged
+        self.type_ = type_
+        self.input_ids = input_ids
+        self.comment = comment
 
     def __repr__(self):
         return natural_repr(self)

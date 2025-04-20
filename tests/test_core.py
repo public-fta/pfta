@@ -12,8 +12,8 @@ import textwrap
 import unittest
 
 from pfta.core import (
-    DuplicateIdException, UnsetPropertyException, NonPositiveValueException,
-    FaultTree, SubUnitValueException,
+    DuplicateIdException, UnsetPropertyException, NonPositiveValueException, SubUnitValueException,
+    FaultTree, Gate,
 )
 
 
@@ -81,3 +81,24 @@ class TestCore(unittest.TestCase):
                 - sample_size: 0.9999
             '''),
         )
+
+    def test_gate(self):
+        # Unset type
+        self.assertRaises(
+            UnsetPropertyException,
+            Gate,
+            'GT-003', {'label': 'Third gate'},
+        )
+
+        # Unset inputs
+        self.assertRaises(
+            UnsetPropertyException,
+            Gate,
+            'GT-003', {'label': 'type gate', 'type': 'OR'},
+        )
+
+        # Reasonable gate
+        try:
+            Gate('GT-003', {'type': 'OR', 'input_ids': ['EV-001', 'EV-002']})
+        except UnsetPropertyException:
+            self.fail('UnsetPropertyException should not have been raised')
