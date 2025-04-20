@@ -25,6 +25,9 @@ LINE_EXPLAINER = '\n'.join([
 VALID_CLASSES = ('Event', 'Gate')
 CLASS_EXPLAINER = 'An object must have class `Event` or `Gate`.'
 
+IS_PAGED_EXPLAINER = 'Boolean property must be `True` or `False` (case-sensitive)'
+GATE_TYPE_EXPLAINER = 'Gate type must be `OR` or `AND` (case-sensitive)'
+
 VALID_KEYS_FROM_CLASS = {
     'FaultTree': ('time_unit', 'time'),
     'Event': ('label', 'probability', 'intensity', 'comment'),
@@ -35,6 +38,10 @@ KEY_EXPLAINER_FROM_CLASS = {
     'Event': 'Recognised keys are `label`, `probability`, `intensity`, and `comment`.',
     'Gate': 'Recognised keys are `label`, `is_paged`, `type`, `inputs`, and `comment`.',
 }
+BOOLEAN_FROM_STRING_STRICT = {
+    'True': True,
+    'False': False,
+}
 
 
 class LineType(enum.Enum):
@@ -42,6 +49,11 @@ class LineType(enum.Enum):
     PROPERTY = 1
     COMMENT = 2
     BLANK = 3
+
+
+class GateType(enum.Enum):
+    OR = 0
+    AND = 1
 
 
 class InvalidLineException(FaultTreeTextException):
@@ -69,6 +81,10 @@ class InvalidClassException(FaultTreeTextException):
 
 
 class InvalidFloatException(FaultTreeTextException):
+    pass
+
+
+class InvalidBooleanException(FaultTreeTextException):
     pass
 
 
@@ -311,3 +327,35 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
         raise ImplementationError(f'bad key `{key}`')
 
     return properties
+
+
+def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
+    properties = {}
+
+    for parsed_line in parsed_assembly.property_lines:
+        key = parsed_line.info['key']
+        value = parsed_line.info['value']
+
+        if key in ('label', 'comment'):
+            properties[key] = value
+            continue
+
+        if key == 'is_paged':
+            try:
+                properties['is_paged'] = BOOLEAN_FROM_STRING_STRICT[value]
+            except KeyError:
+                raise InvalidBooleanException(parsed_line.number, f'invalid value `{value}`', IS_PAGED_EXPLAINER)
+            continue
+
+        if key == 'type':
+            try:
+                properties['type_'] = {'OR': GateType.OR, 'AND': GateType.AND}[value]  # TODO: refactor dict to constant
+            except KeyError:
+                raise InvalidBooleanException(parsed_line.number, f'invalid value `{value}`', GATE_TYPE_EXPLAINER)
+            continue
+
+        if key == 'inputs':
+            properties['input_ids'] = split_by_comma(value, keep_empty=True)
+            continue
+
+        raise ImplementationError(f'bad key `{key}`')
