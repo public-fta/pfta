@@ -13,7 +13,7 @@ import unittest
 from pfta.parsing import (
     InvalidLineException, SmotheredObjectException, DanglingPropertyException,
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
-    InvalidFloatException, NonPositiveTimeException,
+    InvalidFloatException, NonPositiveValueException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
     split_by_comma,
     parse_line, parse_paragraph, parse_assembly,
@@ -391,7 +391,7 @@ class TestParsing(unittest.TestCase):
 
         # Non-positive time
         self.assertRaises(
-            NonPositiveTimeException,
+            NonPositiveValueException,
             parse_fault_tree_properties,
             ParsedAssembly(
                 class_='FaultTree',
@@ -403,7 +403,7 @@ class TestParsing(unittest.TestCase):
             ),
         )
         self.assertRaises(
-            NonPositiveTimeException,
+            NonPositiveValueException,
             parse_fault_tree_properties,
             ParsedAssembly(
                 class_='FaultTree',
@@ -415,7 +415,7 @@ class TestParsing(unittest.TestCase):
             ),
         )
         self.assertRaises(
-            NonPositiveTimeException,
+            NonPositiveValueException,
             parse_fault_tree_properties,
             ParsedAssembly(
                 class_='FaultTree',

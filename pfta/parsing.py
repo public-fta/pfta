@@ -61,7 +61,7 @@ class UnsetPropertyException(FaultTreeTextException):
     pass
 
 
-class NonPositiveTimeException(FaultTreeTextException):
+class NonPositiveValueException(FaultTreeTextException):
     pass
 
 
@@ -262,7 +262,7 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
                     raise InvalidFloatException(parsed_line.number, f'unable to convert `{time_substring}` to float')
 
                 if time <= 0:
-                    raise NonPositiveTimeException(parsed_line.number, f'non-positive time `{time_substring}`')
+                    raise NonPositiveValueException(parsed_line.number, f'non-positive time `{time_substring}`')
 
                 times.append(time)
 
