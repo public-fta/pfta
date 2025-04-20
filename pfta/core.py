@@ -14,6 +14,7 @@ from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
 )
+from pfta.utilities import find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
 
 
@@ -34,6 +35,10 @@ class SubUnitValueException(FaultTreeTextException):
 
 
 class UnknownInputException(FaultTreeTextException):
+    pass
+
+
+class CircularGateInputsException(FaultTreeTextException):
     pass
 
 
@@ -88,6 +93,7 @@ class FaultTree:
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
         FaultTree.validate_sample_size(sample_size, sample_size_raw, sample_size_line_number)
         FaultTree.validate_gate_inputs(events, gates)
+        FaultTree.validate_cycle_free(gates)
 
         self.time_unit = time_unit
         self.times = times
@@ -123,6 +129,24 @@ class FaultTree:
             for id_ in gate.input_ids:
                 if id_ not in known_ids:
                     raise UnknownInputException(gate.input_ids_line_number, f'no event or gate with identifier `{id_}`')
+
+    @staticmethod
+    def validate_cycle_free(gates: list['Gate']):
+        gate_ids = set(gate.id_ for gate in gates)
+        input_gate_ids_from_id = {
+            gate.id_: set.intersection(set(gate.input_ids), gate_ids)
+            for gate in gates
+        }
+
+        if id_cycles := find_cycles(input_gate_ids_from_id):
+            gate_from_id = {gate.id_: gate for gate in gates}
+            gate_cycle = [gate_from_id[id_] for id_ in min(id_cycles)]
+            message = (
+                'circular gate inputs detected: '
+                + ' <-- '.join(f'`{gate.id_}` (line {gate.input_ids_line_number})' for gate in gate_cycle)
+                + ' <-- ' + f'`{gate_cycle[0].id_}`'
+            )
+            raise CircularGateInputsException(None, message)
 
 
 class Event:
