@@ -11,6 +11,18 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import enum
 
 
+class LineType(enum.Enum):
+    OBJECT = 0
+    PROPERTY = 1
+    COMMENT = 2
+    BLANK = 3
+
+
+class GateType(enum.Enum):
+    OR = 0
+    AND = 1
+
+
 LINE_EXPLAINER = '\n'.join([
     'A line must have one of the following forms:',
     '    <class>: <identifier>  (an object declaration)',
@@ -28,6 +40,10 @@ BOOLEAN_FROM_STRING = {
 }
 IS_PAGED_EXPLAINER = 'Boolean property must be `True` or `False` (case-sensitive)'
 
+GATE_TYPE_FROM_STRING = {
+    'OR': GateType.OR,
+    'AND': GateType.AND,
+}
 GATE_TYPE_EXPLAINER = 'Gate type must be `OR` or `AND` (case-sensitive)'
 
 VALID_KEYS_FROM_CLASS = {
@@ -40,15 +56,3 @@ KEY_EXPLAINER_FROM_CLASS = {
     'Event': 'Recognised keys are `label`, `probability`, `intensity`, and `comment`.',
     'Gate': 'Recognised keys are `label`, `is_paged`, `type`, `inputs`, and `comment`.',
 }
-
-
-class LineType(enum.Enum):
-    OBJECT = 0
-    PROPERTY = 1
-    COMMENT = 2
-    BLANK = 3
-
-
-class GateType(enum.Enum):
-    OR = 0
-    AND = 1

@@ -12,9 +12,11 @@ import re
 
 from pfta.common import none_aware_dict_eq, natural_repr
 from pfta.constants import (
-    LINE_EXPLAINER, VALID_CLASSES, CLASS_EXPLAINER, IS_PAGED_EXPLAINER, GATE_TYPE_EXPLAINER,
-    VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS, BOOLEAN_FROM_STRING,
-    LineType, GateType,
+    LineType,
+    LINE_EXPLAINER, VALID_CLASSES, CLASS_EXPLAINER,
+    BOOLEAN_FROM_STRING, IS_PAGED_EXPLAINER,
+    GATE_TYPE_FROM_STRING, GATE_TYPE_EXPLAINER,
+    VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS,
 )
 from pfta.woe import FaultTreeTextException, ImplementationError
 
@@ -312,7 +314,7 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key == 'type':
             try:
-                properties['type_'] = {'OR': GateType.OR, 'AND': GateType.AND}[value]  # TODO: refactor dict to constant
+                properties['type_'] = GATE_TYPE_FROM_STRING[value]  # TODO: refactor dict to constant
             except KeyError:
                 raise InvalidBooleanException(parsed_line.number, f'invalid value `{value}`', GATE_TYPE_EXPLAINER)
             continue
