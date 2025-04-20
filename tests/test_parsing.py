@@ -11,7 +11,6 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import unittest
 
 from pfta.parsing import (
-    LineType,
     InvalidLineException, SmotheredObjectException, DanglingPropertyException,
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
     InvalidFloatException,
@@ -19,6 +18,7 @@ from pfta.parsing import (
     parse_line, parse_paragraph, parse_assembly,
     parse_fault_tree_properties, parse_event_properties,
 )
+from pfta.constants import LineType
 
 
 class TestParsing(unittest.TestCase):

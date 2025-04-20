@@ -8,6 +8,9 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import enum
+
+
 LINE_EXPLAINER = '\n'.join([
     'A line must have one of the following forms:',
     '    <class>: <identifier>  (an object declaration)',
@@ -37,3 +40,15 @@ KEY_EXPLAINER_FROM_CLASS = {
     'Event': 'Recognised keys are `label`, `probability`, `intensity`, and `comment`.',
     'Gate': 'Recognised keys are `label`, `is_paged`, `type`, `inputs`, and `comment`.',
 }
+
+
+class LineType(enum.Enum):
+    OBJECT = 0
+    PROPERTY = 1
+    COMMENT = 2
+    BLANK = 3
+
+
+class GateType(enum.Enum):
+    OR = 0
+    AND = 1

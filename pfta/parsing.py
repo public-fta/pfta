@@ -9,26 +9,14 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import re
-import enum
 
 from pfta.common import none_aware_dict_eq, natural_repr
 from pfta.constants import (
     LINE_EXPLAINER, VALID_CLASSES, CLASS_EXPLAINER, IS_PAGED_EXPLAINER, GATE_TYPE_EXPLAINER,
     VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS, BOOLEAN_FROM_STRING,
+    LineType, GateType,
 )
 from pfta.woe import FaultTreeTextException, ImplementationError
-
-
-class LineType(enum.Enum):
-    OBJECT = 0
-    PROPERTY = 1
-    COMMENT = 2
-    BLANK = 3
-
-
-class GateType(enum.Enum):
-    OR = 0
-    AND = 1
 
 
 class InvalidLineException(FaultTreeTextException):
