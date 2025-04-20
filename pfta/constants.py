@@ -12,10 +12,10 @@ import enum
 
 
 class LineType(enum.Enum):
-    OBJECT = 0
-    PROPERTY = 1
-    COMMENT = 2
-    BLANK = 3
+    BLANK = 0
+    COMMENT = 1
+    OBJECT = 2
+    PROPERTY = 3
 
 
 class GateType(enum.Enum):

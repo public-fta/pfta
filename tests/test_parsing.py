@@ -35,6 +35,34 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(split_by_comma('A, B, C,'), ['A', 'B', 'C'])
         self.assertEqual(split_by_comma('A, B, C,,'), ['A', 'B', 'C', ''])
 
+    def test_parse_line_blank_match(self):
+        self.assertEqual(
+            parse_line(1, ''),
+            ParsedLine(1, LineType.BLANK, info={}),
+        )
+        self.assertEqual(
+            parse_line(2, '    '),
+            ParsedLine(2, LineType.BLANK, info={}),
+        )
+        self.assertEqual(
+            parse_line(3, '  \t\t  \t '),
+            ParsedLine(3, LineType.BLANK, info={}),
+        )
+
+    def test_parse_line_comment_match(self):
+        self.assertEqual(
+            parse_line(1, '# foo'),
+            ParsedLine(1, LineType.COMMENT, info={}),
+        )
+        self.assertEqual(
+            parse_line(2, '  \t # bar baz'),
+            ParsedLine(2, LineType.COMMENT, info={}),
+        )
+        self.assertRaises(
+            InvalidLineException,
+            parse_line, 3, '   missing leading # ',
+        )
+
     def test_parse_line_object_match(self):
         self.assertEqual(
             parse_line(1, 'Gate: GT-001'),
@@ -105,34 +133,6 @@ class TestParsing(unittest.TestCase):
         self.assertRaises(
             InvalidLineException,
             parse_line, 9, '-  age: 90',  # double-space before key
-        )
-
-    def test_parse_line_comment_match(self):
-        self.assertEqual(
-            parse_line(1, '# foo'),
-            ParsedLine(1, LineType.COMMENT, info={}),
-        )
-        self.assertEqual(
-            parse_line(2, '  \t # bar baz'),
-            ParsedLine(2, LineType.COMMENT, info={}),
-        )
-        self.assertRaises(
-            InvalidLineException,
-            parse_line, 3, '   missing leading # ',
-        )
-
-    def test_parse_line_blank_match(self):
-        self.assertEqual(
-            parse_line(1, ''),
-            ParsedLine(1, LineType.BLANK, info={}),
-        )
-        self.assertEqual(
-            parse_line(2, '    '),
-            ParsedLine(2, LineType.BLANK, info={}),
-        )
-        self.assertEqual(
-            parse_line(3, '  \t\t  \t '),
-            ParsedLine(3, LineType.BLANK, info={}),
         )
 
     def test_parse_paragraph(self):
