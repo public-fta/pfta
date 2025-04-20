@@ -314,7 +314,7 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key == 'type':
             try:
-                properties['type_'] = GATE_TYPE_FROM_STRING[value]  # TODO: refactor dict to constant
+                properties['type_'] = GATE_TYPE_FROM_STRING[value]
             except KeyError:
                 raise InvalidBooleanException(parsed_line.number, f'invalid value `{value}`', GATE_TYPE_EXPLAINER)
             continue
