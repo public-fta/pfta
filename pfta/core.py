@@ -10,7 +10,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 from pfta.common import natural_repr
 from pfta.parsing import (
-    DuplicateIdException, UnsetPropertyException,
+    DuplicateIdException, UnsetPropertyException, NonPositiveValueException,
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_event_properties,
 )
@@ -24,7 +24,10 @@ class FaultTree:
         parsed_assemblies = parse_assemblies(parsed_paragraphs)
 
         time_unit = None
+
         times = None
+        times_raw = None
+        times_line_number = None
 
         events = []
 
@@ -53,6 +56,8 @@ class FaultTree:
 
                 try:
                     times = fault_tree_properties['times']
+                    times_raw = fault_tree_properties['times_raw']
+                    times_line_number = fault_tree_properties['times_line_number']
                 except KeyError:
                     pass
 
@@ -80,6 +85,10 @@ class FaultTree:
                 unset_times_line_number,
                 'mandatory property `time` has not been set for fault tree',
             )
+
+        for time, time_raw in zip(times, times_raw):
+            if time <= 0:
+                raise NonPositiveValueException(times_line_number, f'non-positive time `{time_raw}`')
 
         self.time_unit = time_unit
         self.times = times

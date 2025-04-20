@@ -254,19 +254,19 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key == 'time':
             times = []
+            times_raw = []
 
-            for time_substring in split_by_comma(value):
+            for time_raw in split_by_comma(value):
                 try:
-                    time = float(time_substring)
+                    times.append(float(time_raw))
                 except ValueError:
-                    raise InvalidFloatException(parsed_line.number, f'unable to convert `{time_substring}` to float')
+                    raise InvalidFloatException(parsed_line.number, f'unable to convert `{time_raw}` to float')
 
-                if time <= 0:
-                    raise NonPositiveValueException(parsed_line.number, f'non-positive time `{time_substring}`')
-
-                times.append(time)
+                times_raw.append(time_raw)
 
             properties['times'] = times
+            properties['times_raw'] = times_raw
+            properties['times_line_number'] = parsed_line.number
             continue
 
         raise ImplementationError(f'bad key `{key}`')
