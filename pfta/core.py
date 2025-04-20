@@ -113,12 +113,19 @@ class FaultTree:
 
 class Event:
     def __init__(self, id_: str, event_index: int, event_properties: dict):
+        label = event_properties.get('label')
+        probability = event_properties.get('probability')
+        intensity = event_properties.get('intensity')
+        comment = event_properties.get('comment')
+
+        # TODO: check probability and intensity values valid (when evaluated at times across sample size)
+
         self.id_ = id_
         self.event_index = event_index
-        self.label = event_properties.get('label')
-        self.probability = event_properties.get('probability')
-        self.intensity = event_properties.get('intensity')
-        self.comment = event_properties.get('comment')
+        self.label = label
+        self.probability = probability
+        self.intensity = intensity
+        self.comment = comment
 
     def __repr__(self):
         return natural_repr(self)

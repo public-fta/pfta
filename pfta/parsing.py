@@ -301,14 +301,14 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key == 'probability':
             try:
-                properties['probability'] = float(value)  # TODO: check value / handle distributions
+                properties['probability'] = float(value)  # TODO: handle distributions
             except ValueError:
                 raise InvalidFloatException(parsed_line.number, f'unable to convert `{value}` to float')
             continue
 
         if key == 'intensity':
             try:
-                properties['intensity'] = float(value)  # TODO: check value / handle distributions
+                properties['intensity'] = float(value)  # TODO: handle distributions
             except ValueError:
                 raise InvalidFloatException(parsed_line.number, f'unable to convert `{value}` to float')
             continue
