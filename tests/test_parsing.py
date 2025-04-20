@@ -58,9 +58,13 @@ class TestParsing(unittest.TestCase):
             parse_line(2, '  \t # bar baz'),
             ParsedLine(2, LineType.COMMENT, info={}),
         )
+        self.assertEqual(
+            parse_line(3, '#Gate: GT-001'),
+            ParsedLine(3, LineType.COMMENT, info={}),
+        )
         self.assertRaises(
             InvalidLineException,
-            parse_line, 3, '   missing leading # ',
+            parse_line, 4, '   missing leading # ',
         )
 
     def test_parse_line_object_match(self):

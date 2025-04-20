@@ -115,17 +115,17 @@ def split_by_comma(string: str) -> list[str]:
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
+    if re.match(r'^\s*$', line):  # blank line (allow whitespace)
+        return ParsedLine(line_number, LineType.BLANK, info={})
+
+    if re.match(r'^\s*#.*$', line):  # comment match (allow whitespace)
+        return ParsedLine(line_number, LineType.COMMENT, info={})
+
     if object_match := re.match(r'^(?P<class>\S+):\s+(?P<id>.+?)\s*$', line):
         return ParsedLine(line_number, LineType.OBJECT, info=object_match.groupdict())
 
     if property_match := re.match(r'^- (?P<key>\S+):\s+(?P<value>.+?)\s*$', line):
         return ParsedLine(line_number, LineType.PROPERTY, info=property_match.groupdict())
-
-    if re.match(r'^\s*#.*$', line):  # comment match (allow whitespace)
-        return ParsedLine(line_number, LineType.COMMENT, info={})
-
-    if re.match(r'^\s*$', line):  # blank line (allow whitespace)
-        return ParsedLine(line_number, LineType.BLANK, info={})
 
     raise InvalidLineException(line_number, f'invalid line `{line}`', LINE_EXPLAINER)
 
