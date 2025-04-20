@@ -13,7 +13,7 @@ import unittest
 from pfta.parsing import (
     InvalidLineException, SmotheredObjectException, DanglingPropertyException,
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
-    InvalidFloatException,
+    InvalidFloatException, NonPositiveTimeException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
     split_by_comma,
     parse_line, parse_paragraph, parse_assembly,
@@ -385,6 +385,44 @@ class TestParsing(unittest.TestCase):
                 object_line=None,
                 property_lines=[
                     ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3.1, foo'})
+                ],
+            ),
+        )
+
+        # Non-positive time
+        self.assertRaises(
+            NonPositiveTimeException,
+            parse_fault_tree_properties,
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '0.'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            NonPositiveTimeException,
+            parse_fault_tree_properties,
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '-1'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            NonPositiveTimeException,
+            parse_fault_tree_properties,
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3, 4, -5'})
                 ],
             ),
         )
