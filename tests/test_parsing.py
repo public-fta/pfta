@@ -333,7 +333,7 @@ class TestParsing(unittest.TestCase):
         )
 
     def test_parse_fault_tree_properties(self):
-        # Ignore empty floats
+        # Allow trailing comma
         try:
             parse_fault_tree_properties(
                 ParsedAssembly(
@@ -347,6 +347,20 @@ class TestParsing(unittest.TestCase):
             )
         except InvalidFloatException:
             self.fail('InvalidFloatException should not be raised')
+
+        # Observe only one trailing comma
+        self.assertRaises(
+            InvalidFloatException,
+            parse_fault_tree_properties,
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3.1,,'})
+                ],
+            ),
+        )
 
         # Invalid float
         self.assertRaises(

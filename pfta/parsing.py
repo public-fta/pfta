@@ -109,11 +109,12 @@ class ParsedAssembly:
         return 1
 
 
-def split_by_comma(string: str, keep_empty: bool) -> list[str]:
+def split_by_comma(string: str) -> list[str]:
+    string = re.sub(r',\s*\Z', '', string)  # observe one trailing comma
+
     return [
         substring
         for substring in re.split(r'\s*,\s*', string)
-        if substring or keep_empty
     ]
 
 
@@ -250,7 +251,7 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
         if key == 'time':
             times = []
 
-            for time_substring in split_by_comma(value, keep_empty=False):
+            for time_substring in split_by_comma(value):
                 try:
                     times.append(float(time_substring))
                 except ValueError:
@@ -320,7 +321,7 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
             continue
 
         if key == 'inputs':
-            properties['input_ids'] = split_by_comma(value, keep_empty=True)
+            properties['input_ids'] = split_by_comma(value)
             continue
 
         raise ImplementationError(f'bad key `{key}`')
