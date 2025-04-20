@@ -10,11 +10,22 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 from pfta.common import natural_repr
 from pfta.parsing import (
-    DuplicateIdException, UnsetPropertyException, NonPositiveValueException,
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_event_properties,
 )
-from pfta.woe import ImplementationError
+from pfta.woe import ImplementationError, FaultTreeTextException
+
+
+class DuplicateIdException(FaultTreeTextException):
+    pass
+
+
+class UnsetPropertyException(FaultTreeTextException):
+    pass
+
+
+class NonPositiveValueException(FaultTreeTextException):
+    pass
 
 
 class FaultTree:

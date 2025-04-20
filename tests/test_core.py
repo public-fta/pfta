@@ -11,8 +11,10 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import textwrap
 import unittest
 
-from pfta.core import FaultTree
-from pfta.parsing import DuplicateIdException, UnsetPropertyException, NonPositiveValueException
+from pfta.core import (
+    DuplicateIdException, UnsetPropertyException, NonPositiveValueException,
+    FaultTree,
+)
 
 
 class TestCore(unittest.TestCase):

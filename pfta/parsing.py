@@ -53,18 +53,6 @@ class InvalidBooleanException(FaultTreeTextException):
     pass
 
 
-class DuplicateIdException(FaultTreeTextException):
-    pass
-
-
-class UnsetPropertyException(FaultTreeTextException):
-    pass
-
-
-class NonPositiveValueException(FaultTreeTextException):
-    pass
-
-
 class ParsedLine:
     def __init__(self, number: int, type_: LineType, info: dict):
         self.number = number
