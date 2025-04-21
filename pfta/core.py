@@ -141,9 +141,9 @@ class FaultTree:
         return Table(headings, data)
 
     def compile_gate_table(self) -> Table:
-        headings = ['id', 'is_paged', 'inputs', 'label', 'comment']  # TODO: is_top_gate, computed quantities
+        headings = ['id', 'is_paged', 'type', 'inputs', 'label', 'comment']  # TODO: is_top_gate, computed quantities
         data = [
-            [gate.id_, gate.is_paged, ','.join(gate.input_ids), gate.label, gate.comment]
+            [gate.id_, gate.is_paged, gate.type_.name, ','.join(gate.input_ids), gate.label, gate.comment]
             for gate in self.gates
             # TODO: time dependence and sample number dependence
         ]
