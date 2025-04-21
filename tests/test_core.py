@@ -13,7 +13,7 @@ import unittest
 
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException,
-    NonPositiveValueException, SubUnitValueException, UnknownInputException,
+    NonPositiveValueException, SubUnitValueException, UnknownInputException, CircularInputsException,
     FaultTree, Gate,
 )
 
@@ -95,6 +95,46 @@ class TestCore(unittest.TestCase):
                 - inputs: EV-YES, EV-NO
 
                 Event: EV-YES
+            '''),
+        )
+
+        # Circular gate inputs
+        self.assertRaises(
+            CircularInputsException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+
+                Gate: A
+                - type: AND
+                - inputs: A
+            '''),
+        )
+        self.assertRaises(
+            CircularInputsException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+
+                Gate: Paper
+                - type: OR
+                - inputs: Scissors, Lizard
+
+                Gate: Scissors
+                - type: OR
+                - inputs: Spock, Rock
+
+                Gate: Spock
+                - type: OR
+                - inputs: Lizard, Paper
+
+                Gate: Lizard
+                - type: OR
+                - inputs: Rock, Scissors
+
+                Gate: Rock
+                - type: OR
+                - inputs: Paper, Spock
             '''),
         )
 
