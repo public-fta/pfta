@@ -8,6 +8,8 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import itertools
+
 
 class Term:
     """
@@ -109,3 +111,16 @@ class Expression:
 
     def __repr__(self):
         return f'Expression({", ".join(repr(t) for t in self.terms)})'
+
+    @staticmethod
+    def conjunction(*expressions: 'Expression') -> 'Expression':
+        """
+        Compute the conjunction (AND) of a sequence of expressions.
+
+        This involves summing (disjunction) over the products (conjunction) of the Cartesian combinations of terms,
+        as per the distributive law.
+        """
+        return Term.disjunction(*(
+            Term.conjunction(*terms)
+            for terms in itertools.product(*(expression.terms for expression in expressions))
+        ))

@@ -115,3 +115,60 @@ class TestBoolean(unittest.TestCase):
                 Term(0b011010),  # BDE
             ),
         )
+
+    def test_expression_conjunction(self):
+        # (Empty conjunction) = True
+        self.assertEqual(
+            Expression.conjunction(),
+            Expression(Term(0)),
+        )
+
+        # True = True
+        self.assertEqual(
+            Expression.conjunction(Expression(Term(0))),
+            Expression(Term(0)),
+        )
+
+        # A . True = A
+        self.assertEqual(
+            Expression.conjunction(Expression(Term(1)), Expression(Term(0))),
+            Expression(Term(1)),
+        )
+
+        # A . B . C = ABC
+        self.assertEqual(
+            Expression.conjunction(Expression(Term(0b001)), Expression(Term(0b010)), Expression(Term(0b100))),
+            Expression(Term(0b111)),
+        )
+
+        # A . AB . ABC = ABC
+        self.assertEqual(
+            Expression.conjunction(Expression(Term(0b001)), Expression(Term(0b011)), Expression(Term(0b111))),
+            Expression(Term(0b111)),
+        )
+
+        # A . (A+B) = A
+        self.assertEqual(
+            Expression.conjunction(Expression(Term(0b01)), Expression(Term(0b01), Term(0b10))),
+            Expression(Term(0b01)),
+        )
+
+        # (A + B + E) . (A + B + C + D) = A + B + CE + DE
+        self.assertEqual(
+            Expression.conjunction(
+                Expression(Term(0b00001), Term(0b00010), Term(0b10000)),
+                Expression(Term(0b00001), Term(0b00010), Term(0b00100), Term(0b01000)),
+            ),
+            Expression(Term(0b00001), Term(0b00010), Term(0b10100), Term(0b11000)),
+        )
+
+        # (A+B) . (A+C) . (A+D) . E = AE + BCDE
+        self.assertEqual(
+            Expression.conjunction(
+                Expression(Term(0b00001), Term(0b00010)),
+                Expression(Term(0b00001), Term(0b00100)),
+                Expression(Term(0b00001), Term(0b01000)),
+                Expression(Term(0b10000)),
+            ),
+            Expression(Term(0b10001), Term(0b11110)),
+        )
