@@ -112,9 +112,14 @@ class FaultTree:
         sample_size_line_number = fault_tree_properties.get('sample_size_line_number')
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
-        # Identifier mappings
+        # Identifier conveniences
         event_from_id = {event.id_: event for event in events}
         gate_from_id = {gate.id_: gate for gate in gates}
+        all_input_ids = {
+            input_id
+            for gate in gates
+            for input_id in gate.input_ids
+        }
 
         # Validation
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
@@ -123,8 +128,8 @@ class FaultTree:
         FaultTree.validate_cycle_free(gate_from_id)
 
         # Marking of objects
-        FaultTree.mark_used_events(events, gates)
-        FaultTree.mark_top_gates(gates)
+        FaultTree.mark_used_events(events, all_input_ids)
+        FaultTree.mark_top_gates(gates, all_input_ids)
 
         # Computation of expressions
         FaultTree.compute_event_expressions(events)
@@ -223,24 +228,12 @@ class FaultTree:
             raise CircularInputsException(None, message)
 
     @staticmethod
-    def mark_used_events(events: list['Event'], gates: list['Gate']):
-        all_input_ids = {
-            input_id
-            for gate in gates
-            for input_id in gate.input_ids
-        }
-
+    def mark_used_events(events: list['Event'], all_input_ids: set[str]):
         for event in events:
             event.is_used = event.id_ in all_input_ids
 
     @staticmethod
-    def mark_top_gates(gates: list['Gate']):
-        all_input_ids = {
-            input_id
-            for gate in gates
-            for input_id in gate.input_ids
-        }
-
+    def mark_top_gates(gates: list['Gate'], all_input_ids: set[str]):
         for gate in gates:
             gate.is_top_gate = gate.id_ not in all_input_ids
 
