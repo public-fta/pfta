@@ -129,6 +129,15 @@ class FaultTree:
     def __repr__(self):
         return natural_repr(self)
 
+    def compile_event_table(self) -> Table:
+        headings = ['index', 'id', 'label', 'comment']  # TODO: is_used, computed values
+        rows = [
+            [event.index, event.id_, event.label, event.comment]
+            for event in self.events
+            # TODO: time dependence and sample number dependence
+        ]
+        return Table(headings, rows)
+
     @staticmethod
     def validate_times(times: list, times_raw: list, times_line_number: int, unset_property_line_number: int):
         if times is None:
@@ -184,15 +193,6 @@ class FaultTree:
         for gate in gate_from_id.values():
             gate.compute_expression(event_from_id, gate_from_id)
 
-    def compile_event_table(self) -> Table:
-        headings = ['index', 'id', 'label', 'comment']  # TODO: is_used, computed values
-        rows = [
-            [event.index, event.id_, event.label, event.comment]
-            for event in self.events
-            # TODO: time dependence and sample number dependence
-        ]
-        return Table(headings, rows)
-
 
 class Event:
     def __init__(self, id_: str, index: int, event_properties: dict):
@@ -243,22 +243,6 @@ class Gate:
     def __repr__(self):
         return natural_repr(self)
 
-    @staticmethod
-    def validate_type(id_: str, type_: LineType, unset_property_line_number: int):
-        if type_ is None:
-            raise UnsetPropertyException(
-                unset_property_line_number,
-                f'mandatory property `type` has not been set for gate `{id_}`',
-            )
-
-    @staticmethod
-    def validate_input_ids(id_: str, input_ids: list, unset_property_line_number: int):
-        if input_ids is None:
-            raise UnsetPropertyException(
-                unset_property_line_number,
-                f'mandatory property `inputs` has not been set for gate `{id_}`',
-            )
-
     @memoise('computed_expression')
     def compute_expression(self, event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']) -> Expression:
         object_from_id = {**event_from_id, **gate_from_id}
@@ -275,3 +259,19 @@ class Gate:
             raise ImplementationError(f'bad gate type `{self.type_}`')
 
         return boolean_operator(*input_expressions)
+
+    @staticmethod
+    def validate_type(id_: str, type_: LineType, unset_property_line_number: int):
+        if type_ is None:
+            raise UnsetPropertyException(
+                unset_property_line_number,
+                f'mandatory property `type` has not been set for gate `{id_}`',
+            )
+
+    @staticmethod
+    def validate_input_ids(id_: str, input_ids: list, unset_property_line_number: int):
+        if input_ids is None:
+            raise UnsetPropertyException(
+                unset_property_line_number,
+                f'mandatory property `inputs` has not been set for gate `{id_}`',
+            )
