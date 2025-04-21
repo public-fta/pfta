@@ -66,17 +66,21 @@ def main():
 
     event_table = fault_tree.compile_event_table()
     gate_table = fault_tree.compile_gate_table()
-    # TODO: cut_set_table_from_gate_id
+    cut_set_table_from_gate_id = fault_tree.compile_cut_set_tables()
     # TODO: figure_from_id
 
     output_directory_name = f'{fault_tree_text_file_name}.out'
-    # TODO: cut_sets_directory_name
+    cut_sets_directory_name = f'{output_directory_name}/cut-sets'
     # TODO: figures_directory_name
 
     mkdir_robust(output_directory_name)
+    mkdir_robust(cut_sets_directory_name)
 
     event_table.write_tsv(f'{output_directory_name}/events.tsv')
     gate_table.write_tsv(f'{output_directory_name}/gates.tsv')
+    for gate_id, cut_set_table in cut_set_table_from_gate_id.items():
+        cut_set_table.write_tsv(f'{cut_sets_directory_name}/{gate_id}.tsv')
+
     # TODO: other writes
 
 

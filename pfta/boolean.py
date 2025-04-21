@@ -34,6 +34,9 @@ class Term:
     def __repr__(self):
         return f'Term({bin(self.encoding)})'
 
+    def order(self) -> int:
+        return self.encoding.bit_count()
+
     def implies(self, other: 'Term') -> bool:
         """
         Decide whether a term implies another.

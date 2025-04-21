@@ -22,11 +22,11 @@ from pfta.woe import ImplementationError, FaultTreeTextException
 
 def memoise(attribute_name: str):
     """
-    Custom decorator `@memoise` for caching the result of a function into a given attribute.
+    Custom decorator `@memoise` for caching the result of a function into a given attribute (initially None).
     """
     def decorator(function: callable):
         def wrapper(self, *args, **kwargs):
-            if not hasattr(self, attribute_name):
+            if getattr(self, attribute_name) is None:
                 setattr(self, attribute_name, function(self, *args, **kwargs))
 
             return getattr(self, attribute_name)
@@ -119,6 +119,8 @@ class FaultTree:
         FaultTree.compute_event_expressions(events)
         FaultTree.compute_gate_expressions(event_from_id, gate_from_id)
 
+        # TODO: compute quantities over times and samples
+
         self.time_unit = time_unit
         self.times = times
         self.seed = seed
@@ -146,6 +148,12 @@ class FaultTree:
             # TODO: time dependence and sample number dependence
         ]
         return Table(headings, data)
+
+    def compile_cut_set_tables(self) -> dict[str, Table]:
+        return {
+            gate.id_: gate.compile_cut_set_table()
+            for gate in self.gates
+        }
 
     @staticmethod
     def validate_times(times: list, times_raw: list, times_line_number: int, unset_property_line_number: int):
@@ -219,6 +227,8 @@ class Event:
         self.intensity = intensity
         self.comment = comment
 
+        self.computed_expression = None
+
     def __repr__(self):
         return natural_repr(self)
 
@@ -249,6 +259,8 @@ class Gate:
         self.input_ids_line_number = input_ids_line_number
         self.comment = comment
 
+        self.computed_expression = None
+
     def __repr__(self):
         return natural_repr(self)
 
@@ -268,6 +280,15 @@ class Gate:
             raise ImplementationError(f'bad gate type `{self.type_}`')
 
         return boolean_operator(*input_expressions)
+
+    def compile_cut_set_table(self) -> Table:
+        headings = ['encoding', 'order']  # computed quantities
+        data = [
+            [term.encoding, term.order()]  # TODO: change encoding to human-readable cut set
+            for term in self.computed_expression.terms
+            # TODO: time dependence and sample number dependence
+        ]
+        return Table(headings, data)
 
     @staticmethod
     def validate_type(id_: str, type_: LineType, unset_property_line_number: int):
