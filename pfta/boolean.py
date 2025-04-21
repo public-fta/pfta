@@ -124,3 +124,14 @@ class Expression:
             Term.conjunction(*terms)
             for terms in itertools.product(*(expression.terms for expression in expressions))
         ))
+
+    @staticmethod
+    def disjunction(*expressions: 'Expression') -> 'Expression':
+        """
+        Compute the disjunction (OR) of a sequence of expressions.
+        """
+        return Term.disjunction(*(
+            term
+            for expression in expressions
+            for term in expression.terms
+        ))

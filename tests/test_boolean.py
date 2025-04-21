@@ -172,3 +172,35 @@ class TestBoolean(unittest.TestCase):
             ),
             Expression(Term(0b10001), Term(0b11110)),
         )
+
+    def test_expression_disjunction(self):
+        # (Empty disjunction) = False
+        self.assertEqual(
+            Expression.disjunction(),
+            Expression(),
+        )
+
+        # A + True = True
+        self.assertEqual(
+            Expression.disjunction(Expression(Term(1)), Expression(Term(0))),
+            Expression(Term(0)),
+        )
+
+        # (AB + BC + CA) + ABC = AB + BC + CA
+        self.assertEqual(
+            Expression.disjunction(
+                Expression(Term(0b011), Term(0b110), Term(0b101)),
+                Expression(Term(0b111)),
+            ),
+            Expression(Term(0b011), Term(0b110), Term(0b101)),
+        )
+
+        # A + (A + B) + (AB + C) = A + B + C
+        self.assertEqual(
+            Expression.disjunction(
+                Expression(Term(0b001)),
+                Expression(Term(0b001), Term(0b010)),
+                Expression(Term(0b011), Term(0b100)),
+            ),
+            Expression(Term(0b001), Term(0b010), Term(0b100)),
+        )
