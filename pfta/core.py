@@ -130,10 +130,19 @@ class FaultTree:
         return natural_repr(self)
 
     def compile_event_table(self) -> Table:
-        headings = ['index', 'id', 'label', 'comment']  # TODO: is_used, computed values
+        headings = ['index', 'id', 'label', 'comment']  # TODO: is_used, computed quantities
         rows = [
             [event.index, event.id_, event.label, event.comment]
             for event in self.events
+            # TODO: time dependence and sample number dependence
+        ]
+        return Table(headings, rows)
+
+    def compile_gate_table(self) -> Table:
+        headings = ['id', 'inputs', 'label', 'comment']  # TODO: is_top_gate, is_paged, computed quantities
+        rows = [
+            [gate.id_, ', '.join(gate.input_ids), gate.label, gate.comment]
+            for gate in self.gates
             # TODO: time dependence and sample number dependence
         ]
         return Table(headings, rows)

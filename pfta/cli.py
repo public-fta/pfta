@@ -65,7 +65,7 @@ def main():
         sys.exit(1)
 
     event_table = fault_tree.compile_event_table()
-    # TODO: gate_table
+    gate_table = fault_tree.compile_gate_table()
     # TODO: cut_set_table_from_gate_id
     # TODO: figure_from_id
 
@@ -76,6 +76,7 @@ def main():
     mkdir_robust(output_directory_name)
 
     event_table.write_tsv(f'{output_directory_name}/events.tsv')
+    gate_table.write_tsv(f'{output_directory_name}/gates.tsv')
     # TODO: other writes
 
 
