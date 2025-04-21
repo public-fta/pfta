@@ -8,6 +8,7 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+from pfta.boolean import Term, Expression
 from pfta.common import natural_repr
 from pfta.constants import LineType
 from pfta.parsing import (
@@ -95,6 +96,8 @@ class FaultTree:
         FaultTree.validate_gate_inputs(events, gates)
         FaultTree.validate_cycle_free(gates)
 
+        FaultTree.compute_event_expressions(events)
+
         self.time_unit = time_unit
         self.times = times
         self.seed = seed
@@ -148,6 +151,11 @@ class FaultTree:
             )
             raise CircularInputsException(None, message)
 
+    @staticmethod
+    def compute_event_expressions(events: list['Event']):
+        for event in events:
+            event.compute_expression()
+
 
 class Event:
     def __init__(self, id_: str, event_index: int, event_properties: dict):
@@ -165,8 +173,19 @@ class Event:
         self.intensity = intensity
         self.comment = comment
 
+        self.computed_expression = None
+        # TODO: self.computed_probabilities
+        # TODO: self.computed_intensities
+
     def __repr__(self):
         return natural_repr(self)
+
+    def compute_expression(self):
+        if self.computed_expression is not None:
+            return
+
+        encoding = 1 << self.event_index
+        self.computed_expression = Expression(Term(encoding))
 
 
 class Gate:
