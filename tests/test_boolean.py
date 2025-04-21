@@ -10,7 +10,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import unittest
 
-from pfta.boolean import Term
+from pfta.boolean import Term, Expression
 
 
 class TestBoolean(unittest.TestCase):
@@ -48,3 +48,70 @@ class TestBoolean(unittest.TestCase):
 
         # ABCD . True . A = ABCD
         self.assertEqual(Term.conjunction(Term(0b1111), Term(0b0000), Term(0b0001)), Term(0b1111))
+
+    def test_term_disjunction(self):
+        # (Empty disjunction) = False
+        self.assertEqual(Term.disjunction(), Expression())
+
+        # A + True = True
+        self.assertEqual(Term.disjunction(Term(1), Term(0)), Expression(Term(0)))
+
+        # A + A + A = A
+        self.assertEqual(Term.disjunction(Term(1), Term(1), Term(1)), Expression(Term(1)))
+
+        # AC = AC
+        self.assertEqual(Term.disjunction(Term(0b101)), Expression(Term(0b101)))
+
+        # A + B + C = A + B + C
+        self.assertEqual(
+            Term.disjunction(Term(0b001), Term(0b010), Term(0b100)),
+            Expression(Term(0b001), Term(0b010), Term(0b100)),
+        )
+
+        # A + AB + BC = A + BC
+        self.assertEqual(
+            Term.disjunction(Term(0b001), Term(0b011), Term(0b110)),
+            Expression(Term(0b001), Term(0b110)),
+        )
+
+        # AB + BC + CA + ABC = AB + BC + CA
+        self.assertEqual(
+            Term.disjunction(Term(0b011), Term(0b110), Term(0b101), Term(0b111)),
+            Expression(Term(0b011), Term(0b110), Term(0b101)),
+        )
+
+        # God save!
+        self.assertEqual(
+            Term.disjunction(
+                Term(0b000011),  # AB
+                Term(0b000110),  # BC
+                Term(0b001100),  # CD
+                Term(0b010100),  # CE
+                Term(0b100000),  # F
+                Term(0b000111),  # ABC
+                Term(0b001011),  # ABD
+                Term(0b010011),  # ABE
+                Term(0b001101),  # ACD
+                Term(0b010101),  # ACE
+                Term(0b011001),  # ADE
+                Term(0b001110),  # BCD
+                Term(0b010110),  # BCE
+                Term(0b011010),  # BDE
+                Term(0b011100),  # CDE
+                Term(0b001111),  # ABCD
+                Term(0b010111),  # ABCE
+                Term(0b011011),  # ABDE
+                Term(0b011101),  # ACDE
+                Term(0b011110),  # BCDE
+                Term(0b110101),  # FACE
+            ),
+            Expression(
+                Term(0b000011),  # AB
+                Term(0b000110),  # BC
+                Term(0b001100),  # CD
+                Term(0b010100),  # CE
+                Term(0b100000),  # F
+                Term(0b011001),  # ADE
+                Term(0b011010),  # BDE
+            ),
+        )

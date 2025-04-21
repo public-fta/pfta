@@ -1,7 +1,7 @@
 """
 # Public Fault Tree Analyser: boolean.py
 
-Classes pertaining to Boolean algebra.
+Classes pertaining to inversion-free Boolean algebra.
 
 **Copyright 2025 Conway.**
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
@@ -31,6 +31,9 @@ class Term:
     def __eq__(self, other):
         return self.encoding == other.encoding
 
+    def __hash__(self):
+        return hash(self.encoding)
+
     def __repr__(self):
         return f'Term({bin(self.encoding)})'
 
@@ -39,7 +42,7 @@ class Term:
         Decide whether a term implies another.
 
         Equivalent to deciding whether the term is a multiple of the other term.
-        If so, the term would be redundant in a disjunction (OR) with the other term, per the absorption law.
+        If so, the term would be redundant in a disjunction (OR) with the other term, as per the absorption law.
 
         For the term to be a multiple of the other term, all bits set in the other term must be set in the term.
         Thus, if there exists a bit not set in the term that is set in the other term, return False.
@@ -61,15 +64,48 @@ class Term:
 
         return Term(conjunction_encoding)
 
+    @staticmethod
+    def disjunction(*terms: 'Term') -> 'Expression':
+        """
+        Compute the disjunction (OR) of a sequence of terms.
+
+        Since we never encounter inversions, the result is merely an expression with the redundant terms removed
+        as per the absorption law.
+        """
+        undecided_terms = set(terms)
+        necessary_terms = set()
+
+        while undecided_terms:
+            term = undecided_terms.pop()
+
+            for other_term in undecided_terms.copy():
+                if term.implies(other_term):  # term is redundant
+                    break
+
+                if other_term.implies(term):  # other term is redundant
+                    undecided_terms.discard(other_term)
+
+            else:  # term is not redundant (because `break` not executed)
+                necessary_terms.add(term)
+
+        return Expression(*necessary_terms)
+
 
 class Expression:
     """
     A general disjunction (OR) of minimal cut sets, represented as a Boolean sum of products, i.e. an expression.
+
+    The constructor does not eliminate redundant terms. Use `Term.disjunction` for that purpose.
+
+    Note that an empty disjunction is False.
     """
     __slots__ = ('terms',)
 
     def __init__(self, *terms: Term):
         self.terms = frozenset({*terms})
 
+    def __eq__(self, other):
+        return self.terms == other.terms
+
     def __repr__(self):
-        return f'Expression({set(self.terms)!r})'
+        return f'Expression({", ".join(repr(t) for t in self.terms)})'
