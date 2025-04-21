@@ -4,6 +4,16 @@ on:
     tags:
       - 'v*'
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - run: |
+        python3 -m unittest discover -s tests -p *.py
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -20,7 +30,7 @@ jobs:
         path: dist/
 
   publish:
-    needs: ['build']
+    needs: ['test', 'build']
     environment: 'publish'
     runs-on: ubuntu-latest
     permissions:
