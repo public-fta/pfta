@@ -18,11 +18,6 @@ class Term:
     A Boolean term (i.e. conjunction (AND) of events) is encoded in binary,
     with the nth bit set if and only if the nth event is present as a factor.
 
-    For example, if the events are A, B, C, D, E, then the encoding of the term ABE is
-        EDCBA
-        10011 (in binary),
-    which is 19.
-
     Note that 0 encodes an empty conjunction, which is True.
     """
     __slots__ = ('encoding',)
