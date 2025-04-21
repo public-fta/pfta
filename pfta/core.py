@@ -38,7 +38,7 @@ class UnknownInputException(FaultTreeTextException):
     pass
 
 
-class CircularGateInputsException(FaultTreeTextException):
+class CircularInputsException(FaultTreeTextException):
     pass
 
 
@@ -146,7 +146,7 @@ class FaultTree:
                 + ' <-- '.join(f'`{gate.id_}` (line {gate.input_ids_line_number})' for gate in gate_cycle)
                 + ' <-- ' + f'`{gate_cycle[0].id_}`'
             )
-            raise CircularGateInputsException(None, message)
+            raise CircularInputsException(None, message)
 
 
 class Event:
