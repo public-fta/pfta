@@ -91,10 +91,13 @@ class FaultTree:
         sample_size_line_number = fault_tree_properties.get('sample_size_line_number')
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
+        event_from_id = {event.id_: event for event in events}
+        gate_from_id = {gate.id_: gate for gate in gates}
+
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
         FaultTree.validate_sample_size(sample_size, sample_size_raw, sample_size_line_number)
-        FaultTree.validate_gate_inputs(events, gates)
-        FaultTree.validate_cycle_free(gates)
+        FaultTree.validate_gate_inputs(event_from_id, gate_from_id)
+        FaultTree.validate_cycle_free(gate_from_id)
 
         FaultTree.compute_event_expressions(events)
 
@@ -126,23 +129,25 @@ class FaultTree:
             raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
 
     @staticmethod
-    def validate_gate_inputs(events: list['Event'], gates: list['Gate']):
-        known_ids = [object_.id_ for object_ in (events + gates)]
-        for gate in gates:
-            for id_ in gate.input_ids:
-                if id_ not in known_ids:
-                    raise UnknownInputException(gate.input_ids_line_number, f'no event or gate with identifier `{id_}`')
+    def validate_gate_inputs(event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']):
+        known_ids = [*event_from_id.keys(), *gate_from_id.keys()]
+        for gate in gate_from_id.values():
+            for input_id in gate.input_ids:
+                if input_id not in known_ids:
+                    raise UnknownInputException(
+                        gate.input_ids_line_number,
+                        f'no event or gate with identifier `{input_id}`',
+                    )
 
     @staticmethod
-    def validate_cycle_free(gates: list['Gate']):
-        gate_ids = set(gate.id_ for gate in gates)
+    def validate_cycle_free(gate_from_id: dict[str, 'Gate']):
+        gate_ids = gate_from_id.keys()
         input_gate_ids_from_id = {
-            gate.id_: set.intersection(set(gate.input_ids), gate_ids)
-            for gate in gates
+            id_: set.intersection(set(gate.input_ids), gate_ids)
+            for id_, gate in gate_from_id.items()
         }
 
         if id_cycles := find_cycles(input_gate_ids_from_id):
-            gate_from_id = {gate.id_: gate for gate in gates}
             gate_cycle = [gate_from_id[id_] for id_ in min(id_cycles)]
             message = (
                 'circular gate inputs detected: '
