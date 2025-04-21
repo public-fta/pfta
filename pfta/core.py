@@ -131,21 +131,21 @@ class FaultTree:
 
     def compile_event_table(self) -> Table:
         headings = ['index', 'id', 'label', 'comment']  # TODO: is_used, computed quantities
-        rows = [
+        data = [
             [event.index, event.id_, event.label, event.comment]
             for event in self.events
             # TODO: time dependence and sample number dependence
         ]
-        return Table(headings, rows)
+        return Table(headings, data)
 
     def compile_gate_table(self) -> Table:
         headings = ['id', 'inputs', 'label', 'comment']  # TODO: is_top_gate, is_paged, computed quantities
-        rows = [
+        data = [
             [gate.id_, ', '.join(gate.input_ids), gate.label, gate.comment]
             for gate in self.gates
             # TODO: time dependence and sample number dependence
         ]
-        return Table(headings, rows)
+        return Table(headings, data)
 
     @staticmethod
     def validate_times(times: list, times_raw: list, times_line_number: int, unset_property_line_number: int):
