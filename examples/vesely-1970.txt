@@ -1,0 +1,114 @@
+# From Fig. 1 of Vesely, W. E. (1970).
+# A time-dependent methodology for fault tree evaluation.
+# Nuclear engineering and design, 13(2), 337–360.
+# <https://doi.org/10.1016/0029-5493(70)90167-6>
+
+
+- time_unit: hr
+- time: 0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
+
+
+Event: 1
+
+Event: 2
+
+Event: 3
+
+Event: 4
+
+Event: 5
+
+Event: 6
+
+Event: 7
+
+Event: 8
+
+Event: 9
+
+Event: 10
+
+
+Gate: TOP
+- type: OR
+- inputs: G1, G2
+
+Gate: G1
+- type: OR
+- inputs: G3, G4
+
+Gate: G2
+- type: OR
+- inputs: G5, G6
+
+Gate: G3
+- type: OR
+- inputs: G7, G8, G9
+
+Gate: G4
+- type: OR
+- inputs: G10, G11
+
+Gate: G5
+- type: OR
+- inputs: G12, G13, G14
+
+Gate: G6
+- type: AND
+- inputs: G15, G3
+
+Gate: G7
+- type: AND
+- inputs: 1, 2
+
+Gate: G8
+- type: AND
+- inputs: 1, 3
+
+Gate: G9
+- type: AND
+- inputs: 2, 3
+
+Gate: G10
+- type: AND
+- inputs: 1, 2, G16
+
+Gate: G11
+- type: AND
+- inputs: G17, G18
+
+Gate: G12
+- type: AND
+- inputs: 4, 5
+
+Gate: G13
+- type: AND
+- inputs: 4, 6
+
+Gate: G14
+- type: AND
+- inputs: 5, 6
+
+Gate: G15
+- type: OR
+- inputs: 7, 8
+
+Gate: G16
+- type: OR
+- inputs: 9, 10
+
+Gate: G17
+- type: OR
+- inputs: 7, 8, 9
+
+Gate: G18
+- type: OR
+- inputs: G19, G20
+
+Gate: G19
+- type: AND
+- inputs: 1, 2, 3
+
+Gate: G20
+- type: AND
+- inputs: 4, 5, 6
