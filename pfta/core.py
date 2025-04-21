@@ -124,6 +124,7 @@ class FaultTree:
 
         # Marking of objects
         FaultTree.mark_used_events(events, gates)
+        FaultTree.mark_top_gates(gates)
 
         # Computation of expressions
         FaultTree.compute_event_expressions(events)
@@ -153,9 +154,18 @@ class FaultTree:
         return Table(headings, data)
 
     def compile_gate_table(self) -> Table:
-        headings = ['id', 'is_paged', 'type', 'inputs', 'label', 'comment']  # TODO: is_top_gate, computed quantities
+        headings = [
+            'id', 'is_top_gate', 'is_paged',
+            'type', 'inputs',
+            # TODO: computed quantities
+            'label', 'comment',
+        ]
         data = [
-            [gate.id_, gate.is_paged, gate.type_.name, ','.join(gate.input_ids), gate.label, gate.comment]
+            [
+                gate.id_, gate.is_top_gate, gate.is_paged,
+                gate.type_.name, ','.join(gate.input_ids),
+                gate.label, gate.comment,
+            ]
             for gate in self.gates
             # TODO: time dependence and sample number dependence
         ]
@@ -224,6 +234,17 @@ class FaultTree:
             event.is_used = event.id_ in all_input_ids
 
     @staticmethod
+    def mark_top_gates(gates: list['Gate']):
+        all_input_ids = {
+            input_id
+            for gate in gates
+            for input_id in gate.input_ids
+        }
+
+        for gate in gates:
+            gate.is_top_gate = gate.id_ not in all_input_ids
+
+    @staticmethod
     def compute_event_expressions(events: list['Event']):
         for event in events:
             event.compute_expression()
@@ -283,6 +304,7 @@ class Gate:
         self.input_ids_line_number = input_ids_line_number
         self.comment = comment
 
+        self.is_top_gate = None
         self.computed_expression = None
 
     def __repr__(self):
