@@ -14,6 +14,22 @@ from pfta.boolean import Term
 
 
 class TestBoolean(unittest.TestCase):
+    def test_term_implies(self):
+        # A implies True
+        self.assertTrue(Term(1).implies(Term(0)))
+
+        # AB implies A
+        self.assertTrue(Term(0b11).implies(Term(0b01)))
+
+        # ABCDE implies ABE
+        self.assertTrue(Term(0b11111).implies(Term(0b10011)))
+
+        # E does not imply C (due to C)
+        self.assertFalse(Term(0b10000).implies(Term(0b00100)))
+
+        # ADE does not imply ABC (due to BC)
+        self.assertFalse(Term(0b11001).implies(Term(0b00111)))
+
     def test_term_conjunction(self):
         # (Empty conjunction) = True
         self.assertEqual(Term.conjunction(), Term(0))

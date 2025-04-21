@@ -34,6 +34,18 @@ class Term:
     def __repr__(self):
         return f'Term({bin(self.encoding)})'
 
+    def implies(self, other: 'Term') -> bool:
+        """
+        Decide whether a term implies another.
+
+        Equivalent to deciding whether the term is a multiple of the other term.
+        If so, the term would be redundant in a disjunction (OR) with the other term, per the absorption law.
+
+        For the term to be a multiple of the other term, all bits set in the other term must be set in the term.
+        Thus, if there exists a bit not set in the term that is set in the other term, return False.
+        """
+        return ~self.encoding & other.encoding == 0
+
     @staticmethod
     def conjunction(*terms: 'Term') -> 'Term':
         """
