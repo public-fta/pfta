@@ -43,7 +43,7 @@ class UnsetPropertyException(FaultTreeTextException):
     pass
 
 
-class NonPositiveValueException(FaultTreeTextException):
+class NegativeValueException(FaultTreeTextException):
     pass
 
 
@@ -133,12 +133,12 @@ class FaultTree:
         if times is None:
             raise UnsetPropertyException(
                 unset_property_line_number,
-                'mandatory property `time` has not been set for fault tree',
+                'mandatory property `time` has not been set for fault tree (use `nan` for arbitrary time)',
             )
 
         for time, time_raw in zip(times, times_raw):
-            if time <= 0:
-                raise NonPositiveValueException(times_line_number, f'non-positive time `{time_raw}`')
+            if time < 0:
+                raise NegativeValueException(times_line_number, f'negative time `{time_raw}`')
 
     @staticmethod
     def validate_sample_size(sample_size: float, sample_size_raw: int, sample_size_line_number: int):

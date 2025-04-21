@@ -13,7 +13,7 @@ import unittest
 
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException,
-    NonPositiveValueException, SubUnitValueException, UnknownInputException, CircularInputsException,
+    NegativeValueException, SubUnitValueException, UnknownInputException, CircularInputsException,
     FaultTree, Gate,
 )
 
@@ -40,19 +40,19 @@ class TestCore(unittest.TestCase):
             '- time_unit: h',
         )
 
-        # Non-positive time
+        # Negative time
+        try:
+            FaultTree('- time: 0, nan')
+        except NegativeValueException:
+            self.fail('NegativeValueException should not have been raised')
+
         self.assertRaises(
-            NonPositiveValueException,
-            FaultTree,
-            '- time: 0.',
-        )
-        self.assertRaises(
-            NonPositiveValueException,
+            NegativeValueException,
             FaultTree,
             '- time: -1',
         )
         self.assertRaises(
-            NonPositiveValueException,
+            NegativeValueException,
             FaultTree,
             '- time: 3, 4, -5',
         )
