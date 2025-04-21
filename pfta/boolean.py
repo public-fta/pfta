@@ -28,8 +28,26 @@ class Term:
     def __init__(self, encoding: int):
         self.encoding = encoding
 
+    def __eq__(self, other):
+        return self.encoding == other.encoding
+
     def __repr__(self):
         return f'Term({bin(self.encoding)})'
+
+    @staticmethod
+    def conjunction(*terms: 'Term') -> 'Term':
+        """
+        Compute the conjunction (AND) of a sequence of terms.
+
+        Since a factor is present in a conjunction if and only if it is present in at least one of the inputs,
+        the conjunction encoding is the bitwise OR of the input term encodings.
+        """
+        conjunction_encoding = 0  # True
+
+        for term in terms:
+            conjunction_encoding |= term.encoding
+
+        return Term(conjunction_encoding)
 
 
 class Expression:
