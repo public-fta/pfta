@@ -185,7 +185,7 @@ class FaultTree:
 
 
 class Event:
-    def __init__(self, id_: str, event_index: int, event_properties: dict):
+    def __init__(self, id_: str, index: int, event_properties: dict):
         label = event_properties.get('label')
         probability = event_properties.get('probability')
         intensity = event_properties.get('intensity')
@@ -194,7 +194,7 @@ class Event:
         # TODO: validate probability and intensity values valid (when evaluated at times across sample size)
 
         self.id_ = id_
-        self.event_index = event_index
+        self.index = index
         self.label = label
         self.probability = probability
         self.intensity = intensity
@@ -205,7 +205,7 @@ class Event:
 
     @memoise('computed_expression')
     def compute_expression(self) -> Expression:
-        encoding = 1 << self.event_index
+        encoding = 1 << self.index
         return Expression(Term(encoding))
 
 
