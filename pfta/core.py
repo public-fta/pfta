@@ -62,16 +62,19 @@ class CircularInputsException(FaultTreeTextException):
 
 class FaultTree:
     def __init__(self, fault_tree_text: str):
+        # Parsing
         parsed_lines = parse_lines(fault_tree_text)
         parsed_paragraphs = parse_paragraphs(parsed_lines)
         parsed_assemblies = parse_assemblies(parsed_paragraphs)
 
+        # Initialisation for main instantiation loop
         fault_tree_properties = {}
         events = []
         gates = []
         seen_ids = set()
         event_index = 0
 
+        # Main instantiation loop
         for parsed_assembly in parsed_assemblies:
             class_ = parsed_assembly.class_
             id_ = parsed_assembly.id_
@@ -98,6 +101,7 @@ class FaultTree:
 
             raise ImplementationError(f'bad class {class_}')
 
+        # Fault tree property extraction
         time_unit = fault_tree_properties.get('time_unit')
         times = fault_tree_properties.get('times')
         times_raw = fault_tree_properties.get('times_raw')
@@ -108,19 +112,27 @@ class FaultTree:
         sample_size_line_number = fault_tree_properties.get('sample_size_line_number')
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
+        # Identifier mappings
         event_from_id = {event.id_: event for event in events}
         gate_from_id = {gate.id_: gate for gate in gates}
 
+        # Validation
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
         FaultTree.validate_sample_size(sample_size, sample_size_raw, sample_size_line_number)
         FaultTree.validate_gate_inputs(event_from_id, gate_from_id)
         FaultTree.validate_cycle_free(gate_from_id)
 
+        # Marking of objects
+        FaultTree.mark_used_events(events, gates)
+
+        # Computation of expressions
         FaultTree.compute_event_expressions(events)
         FaultTree.compute_gate_expressions(event_from_id, gate_from_id)
 
+        # Computation of quantities
         # TODO: compute quantities over times and samples
 
+        # Finalisation
         self.time_unit = time_unit
         self.times = times
         self.seed = seed
@@ -132,9 +144,9 @@ class FaultTree:
         return natural_repr(self)
 
     def compile_event_table(self) -> Table:
-        headings = ['index', 'id', 'label', 'comment']  # TODO: is_used, computed quantities
+        headings = ['index', 'id', 'is_used', 'label', 'comment']  # TODO: computed quantities
         data = [
-            [event.index, event.id_, event.label, event.comment]
+            [event.index, event.id_, event.is_used, event.label, event.comment]
             for event in self.events
             # TODO: time dependence and sample number dependence
         ]
@@ -201,6 +213,17 @@ class FaultTree:
             raise CircularInputsException(None, message)
 
     @staticmethod
+    def mark_used_events(events: list['Event'], gates: list['Gate']):
+        all_input_ids = {
+            input_id
+            for gate in gates
+            for input_id in gate.input_ids
+        }
+
+        for event in events:
+            event.is_used = event.id_ in all_input_ids
+
+    @staticmethod
     def compute_event_expressions(events: list['Event']):
         for event in events:
             event.compute_expression()
@@ -227,6 +250,7 @@ class Event:
         self.intensity = intensity
         self.comment = comment
 
+        self.is_used = None
         self.computed_expression = None
 
     def __repr__(self):
