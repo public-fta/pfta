@@ -15,6 +15,7 @@ from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
 )
+from pfta.presentation import Table
 from pfta.utilities import find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
 
@@ -182,6 +183,15 @@ class FaultTree:
     def compute_gate_expressions(event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']):
         for gate in gate_from_id.values():
             gate.compute_expression(event_from_id, gate_from_id)
+
+    def compile_event_table(self) -> Table:
+        headings = ['index', 'id', 'label', 'comment']  # TODO: is_used, computed values
+        rows = [
+            [event.index, event.id_, event.label, event.comment]
+            for event in self.events
+            # TODO: time dependence and sample number dependence
+        ]
+        return Table(headings, rows)
 
 
 class Event:

@@ -64,13 +64,19 @@ def main():
         print(f'Error in `{fault_tree_text_file_name}`{line_parenthetical}: {message}{explainer_tail}', file=sys.stderr)
         sys.exit(1)
 
-    print(fault_tree)  # TODO: remove when done
+    event_table = fault_tree.compile_event_table()
+    # TODO: gate_table
+    # TODO: cut_set_table_from_gate_id
+    # TODO: figure_from_id
 
     output_directory_name = f'{fault_tree_text_file_name}.out'
+    # TODO: cut_sets_directory_name
+    # TODO: figures_directory_name
 
     mkdir_robust(output_directory_name)
 
-    # TODO: write output
+    event_table.write_tsv(f'{output_directory_name}/events.tsv')
+    # TODO: other writes
 
 
 if __name__ == '__main__':
