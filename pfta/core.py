@@ -8,6 +8,8 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+from functools import cached_property
+
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr
 from pfta.constants import LineType
@@ -159,7 +161,7 @@ class FaultTree:
     @staticmethod
     def compute_event_expressions(events: list['Event']):
         for event in events:
-            event.compute_expression()
+            _ = event.computed_expression
 
 
 class Event:
@@ -178,19 +180,16 @@ class Event:
         self.intensity = intensity
         self.comment = comment
 
-        self.computed_expression = None
         # TODO: self.computed_probabilities
         # TODO: self.computed_intensities
 
     def __repr__(self):
         return natural_repr(self)
 
-    def compute_expression(self):
-        if self.computed_expression is not None:
-            return
-
+    @cached_property
+    def computed_expression(self) -> Expression:
         encoding = 1 << self.event_index
-        self.computed_expression = Expression(Term(encoding))
+        return Expression(Term(encoding))
 
 
 class Gate:
