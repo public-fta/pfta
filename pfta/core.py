@@ -331,7 +331,7 @@ class Gate:
                 '.'.join(events[index].id_ for index in term.event_indices()),
                 term.order(),
             ]
-            for term in self.computed_expression.terms
+            for term in sorted(self.computed_expression.terms)
             # TODO: time dependence and sample number dependence
         ]
         return Table(headings, data)

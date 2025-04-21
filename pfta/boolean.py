@@ -28,6 +28,9 @@ class Term:
     def __eq__(self, other):
         return self.encoding == other.encoding
 
+    def __lt__(self, other):
+        return (self.order(), self.encoding) < (other.order(), other.encoding)
+
     def __hash__(self):
         return hash(self.encoding)
 
