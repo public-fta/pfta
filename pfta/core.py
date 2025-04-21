@@ -19,6 +19,22 @@ from pfta.utilities import find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
 
 
+def memoise(attribute_name: str):
+    """
+    Custom decorator `@memoise` for caching the result of a function into a given attribute.
+    """
+    def decorator(function: callable):
+        def wrapper(self, *args, **kwargs):
+            if not hasattr(self, attribute_name):
+                setattr(self, attribute_name, function(self, *args, **kwargs))
+
+            return getattr(self, attribute_name)
+
+        return wrapper
+
+    return decorator
+
+
 class DuplicateIdException(FaultTreeTextException):
     pass
 
@@ -178,19 +194,13 @@ class Event:
         self.intensity = intensity
         self.comment = comment
 
-        self.computed_expression = None
-        # TODO: self.computed_probabilities
-        # TODO: self.computed_intensities
-
     def __repr__(self):
         return natural_repr(self)
 
-    def compute_expression(self):
-        if self.computed_expression is not None:
-            return
-
+    @memoise('computed_expression')
+    def compute_expression(self) -> Expression:
         encoding = 1 << self.event_index
-        self.computed_expression = Expression(Term(encoding))
+        return Expression(Term(encoding))
 
 
 class Gate:
