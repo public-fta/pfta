@@ -10,7 +10,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr
-from pfta.constants import LineType
+from pfta.constants import LineType, GateType
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
@@ -116,6 +116,7 @@ class FaultTree:
         FaultTree.validate_cycle_free(gate_from_id)
 
         FaultTree.compute_event_expressions(events)
+        FaultTree.compute_gate_expressions(event_from_id, gate_from_id)
 
         self.time_unit = time_unit
         self.times = times
@@ -176,6 +177,11 @@ class FaultTree:
     def compute_event_expressions(events: list['Event']):
         for event in events:
             event.compute_expression()
+
+    @staticmethod
+    def compute_gate_expressions(event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']):
+        for gate in gate_from_id.values():
+            gate.compute_expression(event_from_id, gate_from_id)
 
 
 class Event:
@@ -242,3 +248,20 @@ class Gate:
                 unset_property_line_number,
                 f'mandatory property `inputs` has not been set for gate `{id_}`',
             )
+
+    @memoise('computed_expression')
+    def compute_expression(self, event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']) -> Expression:
+        object_from_id = {**event_from_id, **gate_from_id}
+        input_expressions = [
+            object_from_id[input_id].compute_expression(event_from_id, gate_from_id)
+            for input_id in self.input_ids
+        ]
+
+        if self.type_ == GateType.AND:
+            boolean_operator = Expression.conjunction
+        elif self.type_ == GateType.OR:
+            boolean_operator = Expression.disjunction
+        else:
+            raise ImplementationError(f'bad gate type `{self.type_}`')
+
+        return boolean_operator(*input_expressions)
