@@ -178,7 +178,7 @@ class FaultTree:
 
     def compile_cut_set_tables(self) -> dict[str, Table]:
         return {
-            gate.id_: gate.compile_cut_set_table()
+            gate.id_: gate.compile_cut_set_table(self.events)
             for gate in self.gates
         }
 
@@ -320,10 +320,17 @@ class Gate:
 
         return boolean_operator(*input_expressions)
 
-    def compile_cut_set_table(self) -> Table:
-        headings = ['encoding', 'order']  # computed quantities
+    def compile_cut_set_table(self, events: list[Event]) -> Table:
+        headings = [
+            'encoding',
+            'order',
+            # TODO: computed quantities
+        ]
         data = [
-            [term.encoding, term.order()]  # TODO: change encoding to human-readable cut set
+            [
+                '.'.join(events[index].id_ for index in term.event_indices()),
+                term.order(),
+            ]
             for term in self.computed_expression.terms
             # TODO: time dependence and sample number dependence
         ]

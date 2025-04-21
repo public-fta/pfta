@@ -37,6 +37,16 @@ class Term:
     def order(self) -> int:
         return self.encoding.bit_count()
 
+    def event_indices(self) -> frozenset[int]:
+        """
+        Extract the event indices, which are the set bits of the encoding.
+        """
+        return frozenset(
+            index
+            for index, digit in enumerate(bin(self.encoding)[-1:1:-1])  # stop at 1 to avoid `0b` prefix
+            if digit == '1'
+        )
+
     def implies(self, other: 'Term') -> bool:
         """
         Decide whether a term implies another.

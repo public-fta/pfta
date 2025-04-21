@@ -14,6 +14,12 @@ from pfta.boolean import Term, Expression
 
 
 class TestBoolean(unittest.TestCase):
+    def test_event_indices(self):
+        self.assertEqual(Term(0).event_indices(), set())
+        self.assertEqual(Term(1).event_indices(), {0})
+        self.assertEqual(Term(0b1010010).event_indices(), {1, 4, 6})
+        self.assertEqual(Term(2 ** 69420).event_indices(), {69420})
+
     def test_term_implies(self):
         # A implies True
         self.assertTrue(Term(1).implies(Term(0)))
