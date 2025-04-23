@@ -302,8 +302,8 @@ class Gate:
         comment = gate_properties.get('comment')
         unset_property_line_number = gate_properties.get('unset_property_line_number')
 
-        Gate.validate_type(id_, type_, unset_property_line_number)
-        Gate.validate_input_ids(id_, input_ids, unset_property_line_number)
+        Gate.validate_type_set(id_, type_, unset_property_line_number)
+        Gate.validate_input_ids_set(id_, input_ids, unset_property_line_number)
 
         self.id_ = id_
         self.label = label
@@ -353,7 +353,7 @@ class Gate:
         return Table(headings, data)
 
     @staticmethod
-    def validate_type(id_: str, type_: LineType, unset_property_line_number: int):
+    def validate_type_set(id_: str, type_: LineType, unset_property_line_number: int):
         if type_ is None:
             raise UnsetPropertyException(
                 unset_property_line_number,
@@ -361,7 +361,7 @@ class Gate:
             )
 
     @staticmethod
-    def validate_input_ids(id_: str, input_ids: list, unset_property_line_number: int):
+    def validate_input_ids_set(id_: str, input_ids: list, unset_property_line_number: int):
         if input_ids is None:
             raise UnsetPropertyException(
                 unset_property_line_number,
