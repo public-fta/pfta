@@ -21,7 +21,7 @@ class Distribution:
         return natural_repr(self)
 
 
-class ConstantDistribution(Distribution):
+class DeltaDistribution(Distribution):
     def __init__(self, value: float):
         self.value = value
 
