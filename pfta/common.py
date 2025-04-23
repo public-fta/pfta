@@ -39,7 +39,7 @@ def natural_join(items: tuple | list, penultimate_separator: str | None = 'and')
     if length == 2:
         return f'{items[0]} {penultimate_separator} {items[1]}'
 
-    joined_to_penultimate = ', '.join(str(item) for item in items[0:-1])
+    joined_to_penultimate = ', '.join(str(item) for item in items[:-1])
     return f'{joined_to_penultimate}, {penultimate_separator} {items[-1]}'
 
 
