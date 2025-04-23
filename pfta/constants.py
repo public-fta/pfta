@@ -84,7 +84,7 @@ VALID_KEYS_FROM_CLASS = {
     'FaultTree': ('time_unit', 'time', 'seed', 'sample_size'),
     'Model': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),  # TODO: make `Event` accept key `model`
     'Event': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),
-    'Gate': ('label', 'is_paged', 'type', 'inputs', 'comment'),
+    'Gate': ('label', 'comment', 'is_paged', 'type', 'inputs'),
 }
 KEY_EXPLAINER_FROM_CLASS = {
     'FaultTree': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["FaultTree"])}.',
