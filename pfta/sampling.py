@@ -24,6 +24,20 @@ class ConstantDistribution(Distribution):
         return [self.value for _ in range(count)]
 
 
+class TriangularDistribution(Distribution):
+    def __init__(self, lower: float, upper: float, mode: float):
+        self.lower = lower
+        self.upper = upper
+        self.mode = mode
+
+    def generate_samples(self, count: int) -> list[float]:
+        low = self.lower
+        high = self.upper
+        mode = self.mode
+
+        return [random.triangular(low, high, mode) for _ in range(count)]
+
+
 class UniformDistribution(Distribution):
     def __init__(self, lower: float, upper: float):
         self.lower = lower
