@@ -9,8 +9,8 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 from pfta.boolean import Term, Expression
-from pfta.common import natural_repr, format_cut_set
-from pfta.constants import LineType, GateType
+from pfta.common import natural_repr, format_cut_set, natural_join_backticks
+from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
@@ -41,6 +41,10 @@ class DuplicateIdException(FaultTreeTextException):
 
 
 class UnsetPropertyException(FaultTreeTextException):
+    pass
+
+
+class InvalidModelKeyComboException(FaultTreeTextException):
     pass
 
 
@@ -261,7 +265,14 @@ class Event:
         model_type = properties.get('model_type')
         unset_property_line_number = properties.get('unset_property_line_number')
 
+        model_keys = [
+            key
+            for key in properties
+            if key in VALID_MODEL_KEYS
+        ]
+
         Event.validate_model_type_set(id_, model_type, unset_property_line_number)
+        Event.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
         # TODO: validate probability and intensity values valid (when evaluated at times across sample size)
 
         self.id_ = id_
@@ -286,6 +297,29 @@ class Event:
             raise UnsetPropertyException(
                 unset_property_line_number,
                 f'mandatory property `model_type` has not been set for event `{id_}`',
+            )
+
+    @staticmethod
+    def validate_model_key_combo(id_: str, model_type: str, model_keys: list[str], unset_property_line_number: int):
+        model_key_set = set(model_keys)
+        valid_key_sets = [
+            set(combo)
+            for combo in VALID_KEY_COMBOS_FROM_MODEL_TYPE[model_type]
+        ]
+
+        if model_key_set not in valid_key_sets:
+            key_combo_explainer = '\n'.join([
+                f'Recognised key combinations for model type `{model_type}` are:',
+                *[
+                    f'- {{{natural_join_backticks(combo)}}}'
+                    for combo in VALID_KEY_COMBOS_FROM_MODEL_TYPE[model_type]
+                ]
+            ])
+
+            raise InvalidModelKeyComboException(
+                unset_property_line_number,
+                f'invalid model key combination {{{natural_join_backticks(model_keys)}}} for event `{id_}`',
+                key_combo_explainer,
             )
 
 

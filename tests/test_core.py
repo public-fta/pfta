@@ -12,7 +12,7 @@ import textwrap
 import unittest
 
 from pfta.core import (
-    DuplicateIdException, UnsetPropertyException,
+    DuplicateIdException, UnsetPropertyException, InvalidModelKeyComboException,
     NegativeValueException, SubUnitValueException, UnknownInputException, CircularInputsException,
     FaultTree, Event, Gate,
 )
@@ -145,14 +145,33 @@ class TestCore(unittest.TestCase):
         # Reasonable event
         try:
             Event('EV-001', 0, {'label': 'First event', 'model_type': 'Undeveloped'})
-        except UnsetPropertyException:
-            self.fail('UnsetPropertyException should not have been raised')
+        except (UnsetPropertyException, InvalidModelKeyComboException):
+            self.fail('UnsetPropertyException or InvalidModelKeyComboException should not have been raised')
 
         # Unset model type
         self.assertRaises(
             UnsetPropertyException,
             Event,
             'EV-001', 0, {'label': 'First event'},
+        )
+
+        # Reasonable model key combo
+        try:
+            Event(
+                'EV-001',
+                0,
+                {'label': 'First event', 'model_type': 'ConstantRate', 'mean_failure_time': '100', 'repair_rate': '10'},
+            )
+        except InvalidModelKeyComboException:
+            self.fail('InvalidModelKeyComboException should not have been raised')
+
+        # Invalid model key combo
+        self.assertRaises(
+            InvalidModelKeyComboException,
+            Event,
+            'EV-001',
+            0,
+            {'label': 'First event', 'model_type': 'ConstantRate', 'mean_failure_time': '100', 'failure_rate': '10'},
         )
 
     def test_gate(self):
