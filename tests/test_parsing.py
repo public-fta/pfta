@@ -452,6 +452,21 @@ class TestParsing(unittest.TestCase):
             ),
         )
 
+        # Valid distribution
+        try:
+            parse_event_properties(
+                ParsedAssembly(
+                    class_='Event',
+                    id_='EV-001',
+                    object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
+                    property_lines=[
+                        ParsedLine(5, LineType.PROPERTY, info={'key': 'intensity', 'value': 'normal(mu=3, sigma=4)'})
+                    ],
+                ),
+            )
+        except InvalidDistributionException:
+            self.fail('InvalidDistributionException should not have been raised')
+
         # Invalid distribution
         self.assertRaises(
             InvalidDistributionException,
@@ -461,7 +476,7 @@ class TestParsing(unittest.TestCase):
                 id_='EV-001',
                 object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
                 property_lines=[
-                    ParsedLine(5, LineType.PROPERTY, info={'key': 'intensity', 'value': 'bar'})
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'intensity', 'value': 'normal(mu=3, sigma)'})
                 ],
             ),
         )
