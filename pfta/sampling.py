@@ -1,7 +1,7 @@
 """
-# Public Fault Tree Analyser: prng.py
+# Public Fault Tree Analyser: sampling.py
 
-Pseudo-random number generation.
+Distribution sampling (i.e. pseudo-random number generation).
 
 **Copyright 2025 Conway.**
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
