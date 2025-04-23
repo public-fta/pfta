@@ -35,7 +35,7 @@ LINE_EXPLAINER = '\n'.join([
 ])
 
 VALID_CLASSES = ('Event', 'Gate')
-CLASS_EXPLAINER = 'An object must have class `Event` or `Gate`.'
+CLASS_EXPLAINER = f'An object must have class {natural_join_backticks(VALID_CLASSES, "or")}.'
 
 VALID_ID_REGEX = re.compile(r'[a-z0-9_-]+', flags=re.IGNORECASE)
 ID_EXPLAINER = 'An identifier must consist only of ASCII letters, underscores, and hyphens.'
@@ -44,13 +44,17 @@ BOOLEAN_FROM_STRING = {
     'True': True,
     'False': False,
 }
-IS_PAGED_EXPLAINER = 'Boolean property must be `True` or `False` (case-sensitive)'
+IS_PAGED_EXPLAINER = (
+    f'Boolean property must be {natural_join_backticks(tuple(BOOLEAN_FROM_STRING.keys()), "or")} (case-sensitive).'
+)
 
 GATE_TYPE_FROM_STRING = {
     'OR': GateType.OR,
     'AND': GateType.AND,
 }
-GATE_TYPE_EXPLAINER = 'Gate type must be `OR` or `AND` (case-sensitive)'
+GATE_TYPE_EXPLAINER = (
+    f'Gate type must be {natural_join_backticks(tuple(GATE_TYPE_FROM_STRING.keys()), "or")} (case-sensitive).'
+)
 
 VALID_KEYS_FROM_CLASS = {
     'FaultTree': ('time_unit', 'time', 'seed', 'sample_size'),

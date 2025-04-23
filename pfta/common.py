@@ -22,7 +22,7 @@ def natural_repr(self):
     return f'{class_name}({argument_sequence})'
 
 
-def natural_join(items: tuple | list) -> str:
+def natural_join(items: tuple | list, penultimate_separator: str = 'and') -> str:
     if not items:
         return ''
 
@@ -32,11 +32,11 @@ def natural_join(items: tuple | list) -> str:
         return str(items[0])
 
     if length == 2:
-        return f'{items[0]} and {items[1]}'
+        return f'{items[0]} {penultimate_separator} {items[1]}'
 
     joined_to_penultimate = ', '.join(str(item) for item in items[0:-1])
-    return f'{joined_to_penultimate}, and {items[-1]}'
+    return f'{joined_to_penultimate}, {penultimate_separator} {items[-1]}'
 
 
-def natural_join_backticks(items: tuple | list) -> str:
-    return natural_join([f'`{item}`' for item in items])
+def natural_join_backticks(items: tuple | list, penultimate_separator: str = 'and') -> str:
+    return natural_join([f'`{item}`' for item in items], penultimate_separator)
