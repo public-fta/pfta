@@ -291,11 +291,7 @@ class Model:
         model_type = properties.get('model_type')
         unset_property_line_number = properties.get('unset_property_line_number')
 
-        model_keys = [
-            key
-            for key in properties
-            if key in VALID_MODEL_KEYS
-        ]
+        model_keys = Model.extract_model_keys(properties)
 
         Model.validate_model_type_set(id_, model_type, unset_property_line_number)
         Model.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
@@ -306,6 +302,14 @@ class Model:
 
     def __repr__(self):
         return natural_repr(self)
+
+    @staticmethod
+    def extract_model_keys(properties: dict) -> list[str]:
+        return [
+            key
+            for key in properties
+            if key in VALID_MODEL_KEYS
+        ]
 
     @staticmethod
     def validate_model_type_set(id_: str, model_type: str, unset_property_line_number: int):
@@ -351,11 +355,7 @@ class Event:
         model_id_line_number = properties.get('model_id_line_number')
         unset_property_line_number = properties.get('unset_property_line_number')
 
-        model_keys = [
-            key
-            for key in properties
-            if key in VALID_MODEL_KEYS
-        ]
+        model_keys = Model.extract_model_keys(properties)
 
         Event.validate_model_xor_type_set(id_, model_type, model_id, unset_property_line_number)
         Event.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
