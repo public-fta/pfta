@@ -16,6 +16,7 @@ from pfta.constants import (
     LINE_EXPLAINER, VALID_CLASSES, CLASS_EXPLAINER,
     BOOLEAN_FROM_STRING, IS_PAGED_EXPLAINER,
     GATE_TYPE_FROM_STRING, GATE_TYPE_EXPLAINER,
+    VALID_MODEL_TYPES, VALID_MODEL_KEYS, MODEL_TYPE_EXPLAINER,
     VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS,
     VALID_ID_REGEX, ID_EXPLAINER,
 )
@@ -51,6 +52,10 @@ class InvalidIdException(FaultTreeTextException):
 
 
 class InvalidFloatException(FaultTreeTextException):
+    pass
+
+
+class InvalidModelTypeException(FaultTreeTextException):
     pass
 
 
@@ -301,16 +306,16 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
             properties[key] = value
             continue
 
-        if key == 'probability':
-            try:
-                properties['probability'] = float(value)  # TODO: handle distributions
-            except ValueError:
-                raise InvalidFloatException(parsed_line.number, f'unable to convert `{value}` to float')
+        if key == 'model_type':
+            if value not in VALID_MODEL_TYPES:
+                raise InvalidModelTypeException(parsed_line.number, f'invalid value `{value}`', MODEL_TYPE_EXPLAINER)
+
+            properties['model_type'] = value
             continue
 
-        if key == 'intensity':
+        if key in VALID_MODEL_KEYS:
             try:
-                properties['intensity'] = float(value)  # TODO: handle distributions
+                properties[key] = float(value)  # TODO: handle distributions
             except ValueError:
                 raise InvalidFloatException(parsed_line.number, f'unable to convert `{value}` to float')
             continue

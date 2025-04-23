@@ -13,7 +13,7 @@ import unittest
 from pfta.parsing import (
     InvalidLineException, SmotheredObjectException, DanglingPropertyException,
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
-    InvalidFloatException, InvalidBooleanException, InvalidGateTypeException,
+    InvalidFloatException, InvalidModelTypeException, InvalidBooleanException, InvalidGateTypeException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
     split_by_comma, is_valid_id,
     parse_line, parse_paragraph, parse_assembly,
@@ -410,6 +410,47 @@ class TestParsing(unittest.TestCase):
         )
 
     def test_parse_event_properties(self):
+        # Reasonable event
+        try:
+            parse_event_properties(
+                ParsedAssembly(
+                    class_='Event',
+                    id_='EV-001',
+                    object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
+                    property_lines=[
+                        ParsedLine(5, LineType.PROPERTY, info={'key': 'model_type', 'value': 'Undeveloped'})
+                    ],
+                ),
+            )
+        except InvalidModelTypeException:
+            self.fail('InvalidModelTypeException should not have been raised')
+
+        # Invalid model type
+        self.assertRaises(
+            InvalidModelTypeException,
+            parse_event_properties,
+            ParsedAssembly(
+                class_='Event',
+                id_='EV-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'model_type', 'value': 'uNdeVELopED'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            InvalidModelTypeException,
+            parse_event_properties,
+            ParsedAssembly(
+                class_='Event',
+                id_='EV-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'model_type', 'value': 'Constant'})
+                ],
+            ),
+        )
+
         # Invalid float
         self.assertRaises(
             InvalidFloatException,

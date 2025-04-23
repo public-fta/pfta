@@ -56,9 +56,32 @@ GATE_TYPE_EXPLAINER = (
     f'Gate type must be {natural_join_backticks(tuple(GATE_TYPE_FROM_STRING.keys()), "or")} (case-sensitive).'
 )
 
+VALID_KEY_COMBOS_FROM_MODEL_TYPE = {
+    'Undeveloped': (
+        (),
+    ),
+    'Fixed': (
+        ('probability', 'intensity'),
+    ),
+    'ConstantRate': (
+        ('failure_rate', 'repair_rate'),
+        ('failure_rate', 'mean_repair_time'),
+        ('mean_failure_time', 'repair_rate'),
+        ('mean_failure_time', 'mean_repair_time'),
+    ),
+}
+VALID_MODEL_TYPES = tuple(VALID_KEY_COMBOS_FROM_MODEL_TYPE.keys())
+VALID_MODEL_KEYS = tuple(
+    key
+    for combos in VALID_KEY_COMBOS_FROM_MODEL_TYPE.values()
+    for combo in combos
+    for key in combo
+)
+MODEL_TYPE_EXPLAINER = f'Recognised model types are {natural_join_backticks(VALID_MODEL_TYPES)}'
+
 VALID_KEYS_FROM_CLASS = {
     'FaultTree': ('time_unit', 'time', 'seed', 'sample_size'),
-    'Event': ('label', 'probability', 'intensity', 'comment'),
+    'Event': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),
     'Gate': ('label', 'is_paged', 'type', 'inputs', 'comment'),
 }
 KEY_EXPLAINER_FROM_CLASS = {
