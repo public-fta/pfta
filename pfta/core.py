@@ -255,11 +255,11 @@ class Event:
     """
     Class representing a primary event.
     """
-    def __init__(self, id_: str, index: int, event_properties: dict):
-        label = event_properties.get('label')
-        comment = event_properties.get('comment')
-        model_type = event_properties.get('model_type')
-        unset_property_line_number = event_properties.get('unset_property_line_number')
+    def __init__(self, id_: str, index: int, properties: dict):
+        label = properties.get('label')
+        comment = properties.get('comment')
+        model_type = properties.get('model_type')
+        unset_property_line_number = properties.get('unset_property_line_number')
 
         Event.validate_model_type_set(id_, model_type, unset_property_line_number)
         # TODO: validate probability and intensity values valid (when evaluated at times across sample size)
@@ -293,14 +293,14 @@ class Gate:
     """
     Class representing a gate.
     """
-    def __init__(self, id_: str, gate_properties: dict):
-        label = gate_properties.get('label')
-        is_paged = gate_properties.get('is_paged', False)
-        type_ = gate_properties.get('type')
-        input_ids = gate_properties.get('input_ids')
-        input_ids_line_number = gate_properties.get('input_ids_line_number')
-        comment = gate_properties.get('comment')
-        unset_property_line_number = gate_properties.get('unset_property_line_number')
+    def __init__(self, id_: str, properties: dict):
+        label = properties.get('label')
+        is_paged = properties.get('is_paged', False)
+        type_ = properties.get('type')
+        input_ids = properties.get('input_ids')
+        input_ids_line_number = properties.get('input_ids_line_number')
+        comment = properties.get('comment')
+        unset_property_line_number = properties.get('unset_property_line_number')
 
         Gate.validate_type_set(id_, type_, unset_property_line_number)
         Gate.validate_input_ids_set(id_, input_ids, unset_property_line_number)
