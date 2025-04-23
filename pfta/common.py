@@ -22,7 +22,7 @@ def natural_repr(self):
     return f'{class_name}({argument_sequence})'
 
 
-def natural_join(items: list) -> str:
+def natural_join(items: tuple | list) -> str:
     if not items:
         return ''
 
@@ -36,3 +36,7 @@ def natural_join(items: list) -> str:
 
     joined_to_penultimate = ', '.join(str(item) for item in items[0:-1])
     return f'{joined_to_penultimate}, and {items[-1]}'
+
+
+def natural_join_backticks(items: tuple | list) -> str:
+    return natural_join([f'`{item}`' for item in items])

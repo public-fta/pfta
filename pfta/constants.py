@@ -11,6 +11,8 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import enum
 import re
 
+from pfta.common import natural_join_backticks
+
 
 class LineType(enum.Enum):
     BLANK = 0
@@ -56,7 +58,7 @@ VALID_KEYS_FROM_CLASS = {
     'Gate': ('label', 'is_paged', 'type', 'inputs', 'comment'),
 }
 KEY_EXPLAINER_FROM_CLASS = {
-    'FaultTree': 'Recognised keys are `time_unit` and `time`.',
-    'Event': 'Recognised keys are `label`, `probability`, `intensity`, and `comment`.',
-    'Gate': 'Recognised keys are `label`, `is_paged`, `type`, `inputs`, and `comment`.',
+    'FaultTree': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["FaultTree"])}.',
+    'Event': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["Event"])}.',
+    'Gate': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["Gate"])}.',
 }
