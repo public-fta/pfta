@@ -19,7 +19,7 @@ from pfta.constants import (
     VALID_MODEL_TYPES, VALID_MODEL_KEYS, MODEL_TYPE_EXPLAINER,
     VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS,
     VALID_ID_REGEX, ID_EXPLAINER,
-    DISTRIBUTION_FROM_NAME_PARAMETERS,
+    DISTRIBUTION_FROM_NAME_PARAMETERS, DISTRIBUTION_EXPLAINER,
 )
 from pfta.sampling import Distribution, ConstantDistribution
 from pfta.woe import FaultTreeTextException, ImplementationError
@@ -343,7 +343,7 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
         if key in VALID_MODEL_KEYS:
             try:
                 properties[key] = parse_distribution(value)
-            except FaultTreeTextException as exception:
+            except (InvalidFloatException, InvalidDistributionException) as exception:
                 raise InvalidFloatException(parsed_line.number, exception.message, exception.explainer)
             continue
 
@@ -403,8 +403,8 @@ def parse_distribution(string: str) -> Distribution:
     except ValueError:
         raise InvalidDistributionException(
             None,
-            f'unable to convert `{string}` to a distribution or float',
-            # TODO: distribution explainer
+            f'unable to convert `{string}` to a distribution',
+            DISTRIBUTION_EXPLAINER,
         )
 
     return ConstantDistribution(value)

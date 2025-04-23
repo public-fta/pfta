@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import enum
 import re
 
-from pfta.common import natural_join_backticks
+from pfta.common import natural_join, natural_join_backticks
 from pfta.sampling import LogNormalDistribution, NormalDistribution, TriangularDistribution, UniformDistribution
 
 
@@ -97,3 +97,11 @@ DISTRIBUTION_FROM_NAME_PARAMETERS = {
     ('triangular', ('lower', 'upper', 'mode')): TriangularDistribution,
     ('uniform', ('lower', 'upper')): UniformDistribution,
 }
+DISTRIBUTION_EXPLAINER = '\n'.join([
+    f'Recognised distributions are:',
+    *[
+        f'- {name}({natural_join([f"{parameter}=<value>" for parameter in parameters], penultimate_separator=None)})'
+        for name, parameters in DISTRIBUTION_FROM_NAME_PARAMETERS.keys()
+    ],
+    '- <value> (for a point value)',
+])
