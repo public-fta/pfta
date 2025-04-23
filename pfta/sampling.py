@@ -14,6 +14,9 @@ from pfta.common import natural_repr
 
 
 class Distribution:
+    def __init__(self, line_number: int):
+        self.line_number = line_number
+
     def __repr__(self):
         return natural_repr(self)
 
@@ -22,17 +25,19 @@ class Distribution:
 
 
 class DeltaDistribution(Distribution):
-    def __init__(self, value: float):
+    def __init__(self, value: float, line_number: int):
         self.value = value
+        super().__init__(line_number)
 
     def generate_samples(self, count: int) -> list[float]:
         return [self.value for _ in range(count)]
 
 
 class LogNormalDistribution(Distribution):
-    def __init__(self, mu: float, sigma: float):
+    def __init__(self, mu: float, sigma: float, line_number: int):
         self.mu = mu
         self.sigma = sigma
+        super().__init__(line_number)
 
     def generate_samples(self, count: int) -> list[float]:
         mu = self.mu
@@ -42,9 +47,10 @@ class LogNormalDistribution(Distribution):
 
 
 class NormalDistribution(Distribution):
-    def __init__(self, mu: float, sigma: float):
+    def __init__(self, mu: float, sigma: float, line_number: int):
         self.mu = mu
         self.sigma = sigma
+        super().__init__(line_number)
 
     def generate_samples(self, count: int) -> list[float]:
         mu = self.mu
@@ -54,10 +60,11 @@ class NormalDistribution(Distribution):
 
 
 class TriangularDistribution(Distribution):
-    def __init__(self, lower: float, upper: float, mode: float):
+    def __init__(self, lower: float, upper: float, mode: float, line_number: int):
         self.lower = lower
         self.upper = upper
         self.mode = mode
+        super().__init__(line_number)
 
     def generate_samples(self, count: int) -> list[float]:
         low = self.lower
@@ -68,9 +75,10 @@ class TriangularDistribution(Distribution):
 
 
 class UniformDistribution(Distribution):
-    def __init__(self, lower: float, upper: float):
+    def __init__(self, lower: float, upper: float, line_number: int):
         self.lower = lower
         self.upper = upper
+        super().__init__(line_number)
 
     def generate_samples(self, count: int) -> list[float]:
         a = self.lower

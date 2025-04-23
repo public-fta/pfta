@@ -342,7 +342,7 @@ def parse_model_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key in VALID_MODEL_KEYS:
             try:
-                properties[key] = parse_distribution(value)
+                properties[key] = parse_distribution(value, parsed_line.number)
             except (InvalidFloatException, InvalidDistributionException) as exception:
                 raise InvalidDistributionException(parsed_line.number, exception.message, exception.explainer)
             continue
@@ -374,7 +374,7 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key in VALID_MODEL_KEYS:
             try:
-                properties[key] = parse_distribution(value)
+                properties[key] = parse_distribution(value, parsed_line.number)
             except (InvalidFloatException, InvalidDistributionException) as exception:
                 raise InvalidDistributionException(parsed_line.number, exception.message, exception.explainer)
             continue
@@ -428,12 +428,12 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
     return properties
 
 
-def parse_distribution(string: str) -> Distribution:
+def parse_distribution(string: str, line_number: int) -> Distribution:
     for (name, parameters), distribution_class in DISTRIBUTION_FROM_NAME_PARAMETERS.items():
         distribution_pattern = compile_distribution_pattern(name, parameters)
         if distribution_match := re.match(distribution_pattern, string):
             float_from_parameter = parse_distribution_parameters(distribution_match)
-            return distribution_class(**float_from_parameter)
+            return distribution_class(**float_from_parameter, line_number=line_number)
 
     try:
         value = float(string)
@@ -444,7 +444,7 @@ def parse_distribution(string: str) -> Distribution:
             DISTRIBUTION_EXPLAINER,
         )
 
-    return DeltaDistribution(value)
+    return DeltaDistribution(value, line_number)
 
 
 def parse_distribution_parameters(distribution_match: re.Match) -> dict[str, float]:
