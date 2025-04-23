@@ -379,6 +379,11 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
                 raise InvalidDistributionException(parsed_line.number, exception.message, exception.explainer)
             continue
 
+        if key == 'model':
+            properties['model_id'] = value
+            properties['model_id_line_number'] = parsed_line.number
+            continue
+
         raise ImplementationError(f'bad key `{key}`')
 
     properties['unset_property_line_number'] = parsed_assembly.last_line_number() + 1

@@ -12,8 +12,9 @@ import textwrap
 import unittest
 
 from pfta.core import (
-    DuplicateIdException, UnsetPropertyException, InvalidModelKeyComboException,
-    NegativeValueException, SubUnitValueException, UnknownInputException, CircularInputsException,
+    DuplicateIdException, UnsetPropertyException, ModelPropertyClashException, InvalidModelKeyComboException,
+    NegativeValueException, SubUnitValueException,
+    UnknownModelException, UnknownInputException, CircularInputsException,
     FaultTree, Model, Event, Gate,
 )
 
@@ -82,6 +83,21 @@ class TestCore(unittest.TestCase):
             textwrap.dedent('''
                 - time: 1
                 - sample_size: 0.9999
+            '''),
+        )
+
+        # Unknown models
+        self.assertRaises(
+            UnknownModelException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+
+                Event: EV-001
+                - model: MD-NO
+
+                Model: MD-YES
+                - model_type: Undeveloped
             '''),
         )
 
@@ -195,6 +211,22 @@ class TestCore(unittest.TestCase):
             )
         except InvalidModelKeyComboException:
             self.fail('InvalidModelKeyComboException should not have been raised')
+
+        # Model property clash
+        self.assertRaises(
+            ModelPropertyClashException,
+            Event,
+            'EV-001',
+            0,
+            {'label': 'First event', 'model_type': 'ConstantRate', 'model_id': 'MD-001'},
+        )
+        self.assertRaises(
+            ModelPropertyClashException,
+            Event,
+            'EV-001',
+            0,
+            {'label': 'First event', 'model_id': 'MD-001', 'mean_failure_time': '100', 'failure_rate': '10'},
+        )
 
         # Invalid model key combo
         self.assertRaises(

@@ -44,6 +44,10 @@ class UnsetPropertyException(FaultTreeTextException):
     pass
 
 
+class ModelPropertyClashException(FaultTreeTextException):
+    pass
+
+
 class InvalidModelKeyComboException(FaultTreeTextException):
     pass
 
@@ -53,6 +57,10 @@ class NegativeValueException(FaultTreeTextException):
 
 
 class SubUnitValueException(FaultTreeTextException):
+    pass
+
+
+class UnknownModelException(FaultTreeTextException):
     pass
 
 
@@ -126,6 +134,7 @@ class FaultTree:
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
         # Identifier conveniences
+        model_from_id = {model.id_: model for model in models}
         event_from_id = {event.id_: event for event in events}
         gate_from_id = {gate.id_: gate for gate in gates}
         all_input_ids = {
@@ -137,6 +146,7 @@ class FaultTree:
         # Validation
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
         FaultTree.validate_sample_size(sample_size, sample_size_raw, sample_size_line_number)
+        FaultTree.validate_event_models(event_from_id, model_from_id)
         FaultTree.validate_gate_inputs(event_from_id, gate_from_id)
         FaultTree.validate_cycle_free(gate_from_id)
 
@@ -212,6 +222,15 @@ class FaultTree:
     def validate_sample_size(sample_size: float, sample_size_raw: int, sample_size_line_number: int):
         if sample_size < 1:
             raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
+
+    @staticmethod
+    def validate_event_models(event_from_id: dict[str, 'Event'], model_from_id: dict[str, 'Model']):
+        for event in event_from_id.values():
+            if event.model_id is None:
+                continue
+
+            if event.model_id not in model_from_id.keys():
+                raise UnknownModelException(event.model_id_line_number, f'no model with identifier `{event.model_id}`')
 
     @staticmethod
     def validate_gate_inputs(event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']):
@@ -328,6 +347,8 @@ class Event:
         label = properties.get('label')
         comment = properties.get('comment')
         model_type = properties.get('model_type')
+        model_id = properties.get('model_id')
+        model_id_line_number = properties.get('model_id_line_number')
         unset_property_line_number = properties.get('unset_property_line_number')
 
         model_keys = [
@@ -336,7 +357,7 @@ class Event:
             if key in VALID_MODEL_KEYS
         ]
 
-        Event.validate_model_type_set(id_, model_type, unset_property_line_number)
+        Event.validate_model_xor_type_set(id_, model_type, model_id, unset_property_line_number)
         Event.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
         # TODO: validate probability and intensity values valid (when evaluated at times across sample size)
 
@@ -344,6 +365,8 @@ class Event:
         self.index = index
         self.label = label
         self.comment = comment
+        self.model_id = model_id
+        self.model_id_line_number = model_id_line_number
 
         self.is_used = None
         self.computed_expression = None
@@ -357,15 +380,35 @@ class Event:
         return Expression(Term(encoding))
 
     @staticmethod
-    def validate_model_type_set(id_: str, model_type: str, unset_property_line_number: int):
-        if model_type is None:
+    def validate_model_xor_type_set(id_: str, model_type: str, model_id: str, unset_property_line_number: int):
+        is_model_type_set = model_type is not None
+        is_model_set = model_id is not None
+
+        if is_model_type_set and is_model_set:
+            raise ModelPropertyClashException(
+                unset_property_line_number,
+                f'both `model_type` and `model` have been set for event `{id_}`',
+            )
+
+        if not is_model_type_set and not is_model_set:
             raise UnsetPropertyException(
                 unset_property_line_number,
-                f'mandatory property `model_type` has not been set for event `{id_}`',
+                f'one of `model_type` or `model` has not been set for event `{id_}`',
             )
 
     @staticmethod
     def validate_model_key_combo(id_: str, model_type: str, model_keys: list[str], unset_property_line_number: int):
+        if model_type is None:
+            if model_keys:
+                message = (
+                    f'both `model` and model keys '
+                    f'{{{natural_join_backticks(model_keys, penultimate_separator=None)}}} '
+                    f'have been set for event `{id_}`'
+                )
+                raise ModelPropertyClashException(unset_property_line_number, message)
+            else:
+                return
+
         model_key_set = set(model_keys)
         valid_key_sets = [
             set(combo)

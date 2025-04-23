@@ -82,8 +82,8 @@ MODEL_TYPE_EXPLAINER = f'Recognised model types are {natural_join_backticks(VALI
 
 VALID_KEYS_FROM_CLASS = {
     'FaultTree': ('time_unit', 'time', 'seed', 'sample_size'),
-    'Model': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),  # TODO: make `Event` accept key `model`
-    'Event': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),
+    'Model': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),
+    'Event': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS, 'model'),
     'Gate': ('label', 'comment', 'is_paged', 'type', 'inputs'),
 }
 KEY_EXPLAINER_FROM_CLASS = {
