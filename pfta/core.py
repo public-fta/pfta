@@ -61,6 +61,9 @@ class CircularInputsException(FaultTreeTextException):
 
 
 class FaultTree:
+    """
+    Class representing a fault tree.
+    """
     def __init__(self, fault_tree_text: str):
         # Parsing
         parsed_lines = parse_lines(fault_tree_text)
@@ -249,6 +252,9 @@ class FaultTree:
 
 
 class Event:
+    """
+    Class representing a primary event.
+    """
     def __init__(self, id_: str, index: int, event_properties: dict):
         label = event_properties.get('label')
         probability = event_properties.get('probability')
@@ -277,6 +283,9 @@ class Event:
 
 
 class Gate:
+    """
+    Class representing a gate.
+    """
     def __init__(self, id_: str, gate_properties: dict):
         label = gate_properties.get('label')
         is_paged = gate_properties.get('is_paged', False)
