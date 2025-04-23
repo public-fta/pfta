@@ -14,11 +14,11 @@ from pfta.common import natural_repr
 
 
 class Distribution:
-    def generate_samples(self, count: int) -> list[float]:
-        raise NotImplementedError
-
     def __repr__(self):
         return natural_repr(self)
+
+    def generate_samples(self, count: int) -> list[float]:
+        raise NotImplementedError
 
 
 class DeltaDistribution(Distribution):
