@@ -344,7 +344,7 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
             try:
                 properties[key] = parse_distribution(value)
             except (InvalidFloatException, InvalidDistributionException) as exception:
-                raise InvalidFloatException(parsed_line.number, exception.message, exception.explainer)
+                raise InvalidDistributionException(parsed_line.number, exception.message, exception.explainer)
             continue
 
         raise ImplementationError(f'bad key `{key}`')

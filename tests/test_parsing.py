@@ -14,6 +14,7 @@ from pfta.parsing import (
     InvalidLineException, SmotheredObjectException, DanglingPropertyException,
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
     InvalidFloatException, InvalidModelTypeException, InvalidBooleanException, InvalidGateTypeException,
+    InvalidDistributionException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
     split_by_comma, is_valid_id,
     parse_line, parse_paragraph, parse_assembly,
@@ -451,9 +452,9 @@ class TestParsing(unittest.TestCase):
             ),
         )
 
-        # Invalid float
+        # Invalid distribution
         self.assertRaises(
-            InvalidFloatException,
+            InvalidDistributionException,
             parse_event_properties,
             ParsedAssembly(
                 class_='Event',
