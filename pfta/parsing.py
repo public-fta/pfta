@@ -57,6 +57,10 @@ class InvalidFloatException(FaultTreeTextException):
     pass
 
 
+class InvalidIntegerException(FaultTreeTextException):
+    pass
+
+
 class InvalidModelTypeException(FaultTreeTextException):
     pass
 
@@ -307,9 +311,9 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key == 'sample_size':
             try:
-                properties['sample_size'] = float(value)
+                properties['sample_size'] = int(value)
             except ValueError:
-                raise InvalidFloatException(parsed_line.number, f'unable to convert `{value}` to float')
+                raise InvalidIntegerException(parsed_line.number, f'unable to convert `{value}` to integer')
 
             properties['sample_size_raw'] = value
             properties['sample_size_line_number'] = value

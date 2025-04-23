@@ -219,7 +219,7 @@ class FaultTree:
                 raise NegativeValueException(times_line_number, f'negative time `{time_raw}`')
 
     @staticmethod
-    def validate_sample_size(sample_size: float, sample_size_raw: int, sample_size_line_number: int):
+    def validate_sample_size(sample_size: int, sample_size_raw: str, sample_size_line_number: int):
         if sample_size < 1:
             raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
 

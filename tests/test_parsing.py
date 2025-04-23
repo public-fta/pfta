@@ -13,7 +13,8 @@ import unittest
 from pfta.parsing import (
     InvalidLineException, SmotheredObjectException, DanglingPropertyException,
     InvalidKeyException, DuplicateKeyException, InvalidClassException,
-    InvalidFloatException, InvalidModelTypeException, InvalidBooleanException, InvalidGateTypeException,
+    InvalidFloatException, InvalidIntegerException,
+    InvalidModelTypeException, InvalidBooleanException, InvalidGateTypeException,
     InvalidDistributionException,
     ParsedLine, ParsedParagraph, ParsedAssembly,
     split_by_comma, is_valid_id,
@@ -406,6 +407,56 @@ class TestParsing(unittest.TestCase):
                 object_line=None,
                 property_lines=[
                     ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3.1, foo'})
+                ],
+            ),
+        )
+
+        # Invalid integer
+        self.assertRaises(
+            InvalidIntegerException,
+            parse_fault_tree_properties,
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'sample_size', 'value': 'foo'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            InvalidIntegerException,
+            parse_fault_tree_properties,
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'sample_size', 'value': '1.000001'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            InvalidIntegerException,
+            parse_fault_tree_properties,
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'sample_size', 'value': 'inf'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            InvalidIntegerException,
+            parse_fault_tree_properties,
+            ParsedAssembly(
+                class_='FaultTree',
+                id_=None,
+                object_line=None,
+                property_lines=[
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'sample_size', 'value': 'nan'})
                 ],
             ),
         )

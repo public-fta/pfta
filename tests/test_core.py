@@ -77,14 +77,6 @@ class TestCore(unittest.TestCase):
                 - sample_size: -100
             '''),
         )
-        self.assertRaises(
-            SubUnitValueException,
-            FaultTree,
-            textwrap.dedent('''
-                - time: 1
-                - sample_size: 0.9999
-            '''),
-        )
 
         # Unknown models
         self.assertRaises(
