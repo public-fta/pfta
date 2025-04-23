@@ -322,6 +322,8 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         raise ImplementationError(f'bad key `{key}`')
 
+    properties['unset_property_line_number'] = parsed_assembly.last_line_number() + 1
+
     return properties
 
 

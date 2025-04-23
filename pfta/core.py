@@ -257,17 +257,16 @@ class Event:
     """
     def __init__(self, id_: str, index: int, event_properties: dict):
         label = event_properties.get('label')
-        probability = event_properties.get('probability')
-        intensity = event_properties.get('intensity')
         comment = event_properties.get('comment')
+        model_type = event_properties.get('model_type')
+        unset_property_line_number = event_properties.get('unset_property_line_number')
 
+        Event.validate_model_type_set(id_, model_type, unset_property_line_number)
         # TODO: validate probability and intensity values valid (when evaluated at times across sample size)
 
         self.id_ = id_
         self.index = index
         self.label = label
-        self.probability = probability
-        self.intensity = intensity
         self.comment = comment
 
         self.is_used = None
@@ -280,6 +279,14 @@ class Event:
     def compute_expression(self) -> Expression:
         encoding = 1 << self.index
         return Expression(Term(encoding))
+
+    @staticmethod
+    def validate_model_type_set(id_: str, model_type: str, unset_property_line_number: int):
+        if model_type is None:
+            raise UnsetPropertyException(
+                unset_property_line_number,
+                f'mandatory property `model_type` has not been set for event `{id_}`',
+            )
 
 
 class Gate:

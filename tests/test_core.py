@@ -14,7 +14,7 @@ import unittest
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException,
     NegativeValueException, SubUnitValueException, UnknownInputException, CircularInputsException,
-    FaultTree, Gate,
+    FaultTree, Event, Gate,
 )
 
 
@@ -28,8 +28,10 @@ class TestCore(unittest.TestCase):
                 - time: 1
 
                 Event: EV-001
+                - model_type: Undeveloped
 
                 Event: EV-001
+                - model_type: Undeveloped
             '''),
         )
 
@@ -95,6 +97,7 @@ class TestCore(unittest.TestCase):
                 - inputs: EV-YES, EV-NO
 
                 Event: EV-YES
+                - model_type: Undeveloped
             '''),
         )
 
@@ -136,6 +139,20 @@ class TestCore(unittest.TestCase):
                 - type: OR
                 - inputs: Paper, Spock
             '''),
+        )
+
+    def test_event(self):
+        # Reasonable event
+        try:
+            Event('EV-001', 0, {'label': 'First event', 'model_type': 'Undeveloped'})
+        except UnsetPropertyException:
+            self.fail('UnsetPropertyException should not have been raised')
+
+        # Unset model type
+        self.assertRaises(
+            UnsetPropertyException,
+            Event,
+            'EV-001', 0, {'label': 'First event'},
         )
 
     def test_gate(self):
