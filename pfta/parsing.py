@@ -322,6 +322,38 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
     return properties
 
 
+def parse_model_properties(parsed_assembly: ParsedAssembly) -> dict:
+    properties = {}
+
+    for parsed_line in parsed_assembly.property_lines:
+        key = parsed_line.info['key']
+        value = parsed_line.info['value']
+
+        if key in ('label', 'comment'):
+            properties[key] = value
+            continue
+
+        if key == 'model_type':
+            if value not in VALID_MODEL_TYPES:
+                raise InvalidModelTypeException(parsed_line.number, f'invalid value `{value}`', MODEL_TYPE_EXPLAINER)
+
+            properties['model_type'] = value
+            continue
+
+        if key in VALID_MODEL_KEYS:
+            try:
+                properties[key] = parse_distribution(value)
+            except (InvalidFloatException, InvalidDistributionException) as exception:
+                raise InvalidDistributionException(parsed_line.number, exception.message, exception.explainer)
+            continue
+
+        raise ImplementationError(f'bad key `{key}`')
+
+    properties['unset_property_line_number'] = parsed_assembly.last_line_number() + 1
+
+    return properties
+
+
 def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
     properties = {}
 

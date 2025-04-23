@@ -8,6 +8,27 @@
 - time: 0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
 
 
+Model: M123
+- model_type: ConstantRate
+- failure_rate: 2.60e-06
+- repair_rate: 0
+
+Model: M456
+- model_type: ConstantRate
+- failure_rate: 3.50e-05
+- repair_rate: 0
+
+Model: M78
+- model_type: ConstantRate
+- failure_rate: 5.00e-06
+- repair_rate: 0
+
+Model: M910
+- model_type: ConstantRate
+- failure_rate: 8.00e-06
+- repair_rate: 0
+
+
 Event: 1
 - model_type: ConstantRate
 - failure_rate: 2.60e-06

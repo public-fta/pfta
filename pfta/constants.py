@@ -35,7 +35,7 @@ LINE_EXPLAINER = '\n'.join([
     '    <blank line>           (used before the next declaration)',
 ])
 
-VALID_CLASSES = ('Event', 'Gate')
+VALID_CLASSES = ('Model', 'Event', 'Gate')
 CLASS_EXPLAINER = f'An object must have class {natural_join_backticks(VALID_CLASSES, "or")}.'
 
 VALID_ID_REGEX = re.compile(r'[a-z0-9_-]+', flags=re.IGNORECASE)
@@ -82,11 +82,13 @@ MODEL_TYPE_EXPLAINER = f'Recognised model types are {natural_join_backticks(VALI
 
 VALID_KEYS_FROM_CLASS = {
     'FaultTree': ('time_unit', 'time', 'seed', 'sample_size'),
+    'Model': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),  # TODO: make `Event` accept key `model`
     'Event': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),
     'Gate': ('label', 'is_paged', 'type', 'inputs', 'comment'),
 }
 KEY_EXPLAINER_FROM_CLASS = {
     'FaultTree': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["FaultTree"])}.',
+    'Model': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["Model"])}.',
     'Event': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["Event"])}.',
     'Gate': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["Gate"])}.',
 }

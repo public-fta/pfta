@@ -13,7 +13,7 @@ from pfta.common import natural_repr, format_cut_set, natural_join_backticks
 from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
-    parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
+    parse_fault_tree_properties, parse_model_properties, parse_event_properties, parse_gate_properties,
 )
 from pfta.presentation import Table
 from pfta.utilities import find_cycles
@@ -76,6 +76,7 @@ class FaultTree:
 
         # Initialisation for main instantiation loop
         fault_tree_properties = {}
+        models = []
         events = []
         gates = []
         seen_ids = set()
@@ -93,6 +94,11 @@ class FaultTree:
 
             if class_ == 'FaultTree':
                 fault_tree_properties = parse_fault_tree_properties(parsed_assembly)
+                continue
+
+            if class_ == 'Model':
+                model_properties = parse_model_properties(parsed_assembly)
+                models.append(Model(id_, model_properties))
                 continue
 
             if class_ == 'Event':
@@ -150,6 +156,7 @@ class FaultTree:
         self.times = times
         self.seed = seed
         self.sample_size = sample_size
+        self.models = models
         self.events = events
         self.gates = gates
 
@@ -253,6 +260,64 @@ class FaultTree:
     def compute_gate_expressions(event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']):
         for gate in gate_from_id.values():
             gate.compute_expression(event_from_id, gate_from_id)
+
+
+class Model:
+    """
+    Class representing a failure model (to be shared between multiple events).
+    """
+    def __init__(self, id_: str, properties: dict):
+        label = properties.get('label')
+        comment = properties.get('comment')
+        model_type = properties.get('model_type')
+        unset_property_line_number = properties.get('unset_property_line_number')
+
+        model_keys = [
+            key
+            for key in properties
+            if key in VALID_MODEL_KEYS
+        ]
+
+        Model.validate_model_type_set(id_, model_type, unset_property_line_number)
+        Model.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
+
+        self.id_ = id_
+        self.label = label
+        self.comment = comment
+
+    def __repr__(self):
+        return natural_repr(self)
+
+    @staticmethod
+    def validate_model_type_set(id_: str, model_type: str, unset_property_line_number: int):
+        if model_type is None:
+            raise UnsetPropertyException(
+                unset_property_line_number,
+                f'mandatory property `model_type` has not been set for model `{id_}`',
+            )
+
+    @staticmethod
+    def validate_model_key_combo(id_: str, model_type: str, model_keys: list[str], unset_property_line_number: int):
+        model_key_set = set(model_keys)
+        valid_key_sets = [
+            set(combo)
+            for combo in VALID_KEY_COMBOS_FROM_MODEL_TYPE[model_type]
+        ]
+
+        if model_key_set not in valid_key_sets:
+            message = (
+                f'invalid model key combination '
+                f'{{{natural_join_backticks(model_keys, penultimate_separator=None)}}} for model `{id_}`'
+            )
+            explainer = '\n'.join([
+                f'Recognised key combinations for model type `{model_type}` are:',
+                *[
+                    f'- {{{natural_join_backticks(combo, penultimate_separator=None)}}}'
+                    for combo in VALID_KEY_COMBOS_FROM_MODEL_TYPE[model_type]
+                ]
+            ])
+
+            raise InvalidModelKeyComboException(unset_property_line_number, message, explainer)
 
 
 class Event:

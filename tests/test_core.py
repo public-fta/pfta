@@ -14,7 +14,7 @@ import unittest
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException, InvalidModelKeyComboException,
     NegativeValueException, SubUnitValueException, UnknownInputException, CircularInputsException,
-    FaultTree, Event, Gate,
+    FaultTree, Model, Event, Gate,
 )
 
 
@@ -139,6 +139,37 @@ class TestCore(unittest.TestCase):
                 - type: OR
                 - inputs: Paper, Spock
             '''),
+        )
+
+    def test_model(self):
+        # Reasonable model
+        try:
+            Model('MD-001', {'label': 'First model', 'model_type': 'Undeveloped'})
+        except (UnsetPropertyException, InvalidModelKeyComboException):
+            self.fail('UnsetPropertyException or InvalidModelKeyComboException should not have been raised')
+
+        # Unset model type
+        self.assertRaises(
+            UnsetPropertyException,
+            Model,
+            'MD-001', {'label': 'First model'},
+        )
+
+        # Reasonable model key combo
+        try:
+            Model(
+                'MD-001',
+                {'label': 'First model', 'model_type': 'ConstantRate', 'mean_failure_time': '100', 'repair_rate': '10'},
+            )
+        except InvalidModelKeyComboException:
+            self.fail('InvalidModelKeyComboException should not have been raised')
+
+        # Invalid model key combo
+        self.assertRaises(
+            InvalidModelKeyComboException,
+            Model,
+            'MD-001',
+            {'label': 'First model', 'model_type': 'ConstantRate', 'mean_failure_time': '100', 'failure_rate': '10'},
         )
 
     def test_event(self):
