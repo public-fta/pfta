@@ -331,7 +331,7 @@ class Gate:
 
     def compile_cut_set_table(self, events: list[Event]) -> Table:
         headings = [
-            'encoding',
+            'cut_set',
             'order',
             # TODO: computed quantities
         ]
