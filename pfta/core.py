@@ -308,19 +308,19 @@ class Event:
         ]
 
         if model_key_set not in valid_key_sets:
-            key_combo_explainer = '\n'.join([
+            message = (
+                f'invalid model key combination '
+                f'{{{natural_join_backticks(model_keys, penultimate_separator=None)}}} for event `{id_}`'
+            )
+            explainer = '\n'.join([
                 f'Recognised key combinations for model type `{model_type}` are:',
                 *[
-                    f'- {{{natural_join_backticks(combo)}}}'
+                    f'- {{{natural_join_backticks(combo, penultimate_separator=None)}}}'
                     for combo in VALID_KEY_COMBOS_FROM_MODEL_TYPE[model_type]
                 ]
             ])
 
-            raise InvalidModelKeyComboException(
-                unset_property_line_number,
-                f'invalid model key combination {{{natural_join_backticks(model_keys)}}} for event `{id_}`',
-                key_combo_explainer,
-            )
+            raise InvalidModelKeyComboException(unset_property_line_number, message, explainer)
 
 
 class Gate:
