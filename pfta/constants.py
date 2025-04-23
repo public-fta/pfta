@@ -92,7 +92,7 @@ KEY_EXPLAINER_FROM_CLASS = {
 }
 
 DISTRIBUTION_FROM_NAME_PARAMETERS = {
-    ('log_normal', ('mu', 'sigma')): LogNormalDistribution,
+    ('lognormal', ('mu', 'sigma')): LogNormalDistribution,
     ('normal', ('mu', 'sigma')): NormalDistribution,
     ('triangular', ('lower', 'upper', 'mode')): TriangularDistribution,
     ('uniform', ('lower', 'upper')): UniformDistribution,
