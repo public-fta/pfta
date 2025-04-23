@@ -24,6 +24,18 @@ class ConstantDistribution(Distribution):
         return [self.value for _ in range(count)]
 
 
+class LogNormalDistribution(Distribution):
+    def __init__(self, mu: float, sigma: float):
+        self.mu = mu
+        self.sigma = sigma
+
+    def generate_samples(self, count: int) -> list[float]:
+        mu = self.mu
+        sigma = self.sigma
+
+        return [random.lognormvariate(mu, sigma) for _ in range(count)]
+
+
 class TriangularDistribution(Distribution):
     def __init__(self, lower: float, upper: float, mode: float):
         self.lower = lower
