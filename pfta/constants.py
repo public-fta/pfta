@@ -12,6 +12,7 @@ import enum
 import re
 
 from pfta.common import natural_join_backticks
+from pfta.sampling import LogNormalDistribution, NormalDistribution, TriangularDistribution, UniformDistribution
 
 
 class LineType(enum.Enum):
@@ -88,4 +89,11 @@ KEY_EXPLAINER_FROM_CLASS = {
     'FaultTree': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["FaultTree"])}.',
     'Event': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["Event"])}.',
     'Gate': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["Gate"])}.',
+}
+
+DISTRIBUTION_FROM_NAME_PARAMETERS = {
+    ('log_normal', ('mu', 'sigma')): LogNormalDistribution,
+    ('normal', ('mu', 'sigma')): NormalDistribution,
+    ('triangular', ('lower', 'upper', 'mode')): TriangularDistribution,
+    ('uniform', ('lower', 'upper')): UniformDistribution,
 }

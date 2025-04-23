@@ -19,7 +19,9 @@ from pfta.constants import (
     VALID_MODEL_TYPES, VALID_MODEL_KEYS, MODEL_TYPE_EXPLAINER,
     VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS,
     VALID_ID_REGEX, ID_EXPLAINER,
+    DISTRIBUTION_FROM_NAME_PARAMETERS,
 )
+from pfta.sampling import Distribution, ConstantDistribution
 from pfta.woe import FaultTreeTextException, ImplementationError
 
 
@@ -64,6 +66,10 @@ class InvalidBooleanException(FaultTreeTextException):
 
 
 class InvalidGateTypeException(FaultTreeTextException):
+    pass
+
+
+class InvalidDistributionException(FaultTreeTextException):
     pass
 
 
@@ -126,6 +132,27 @@ def split_by_comma(string: str) -> list[str]:
 
 def is_valid_id(string: str) -> bool:
     return bool(re.fullmatch(VALID_ID_REGEX, string))
+
+
+def compile_distribution_pattern(name: str, parameters: tuple[str]) -> re.Pattern:
+    if not parameters:
+        raise ImplementationError('distribution should have at least one parameter')
+
+    leading_parameters = parameters[:-1]
+    last_parameter = parameters[-1]
+
+    leading_parameters_pattern = (
+        r'\s*'
+        + ''.join(
+            fr'{parameter}\s*=\s*(?P<{parameter}>\S+?)\s*,\s*'  # mandatory comma
+            for parameter in leading_parameters
+        )
+    )
+    last_parameter_pattern = (
+        fr'{last_parameter}\s*=\s*(?P<{last_parameter}>\S+?)\s*,?\s*'  # optional comma
+    )
+
+    return re.compile(fr'{name}\s*\({leading_parameters_pattern}{last_parameter_pattern}\)')
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
@@ -315,9 +342,9 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
 
         if key in VALID_MODEL_KEYS:
             try:
-                properties[key] = float(value)  # TODO: handle distributions
-            except ValueError:
-                raise InvalidFloatException(parsed_line.number, f'unable to convert `{value}` to float')
+                properties[key] = parse_distribution(value)
+            except FaultTreeTextException as exception:
+                raise InvalidFloatException(parsed_line.number, exception.message, exception.explainer)
             continue
 
         raise ImplementationError(f'bad key `{key}`')
@@ -362,3 +389,34 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
     properties['unset_property_line_number'] = parsed_assembly.last_line_number() + 1
 
     return properties
+
+
+def parse_distribution(string: str) -> Distribution:
+    for (name, parameters), distribution_class in DISTRIBUTION_FROM_NAME_PARAMETERS.items():
+        distribution_pattern = compile_distribution_pattern(name, parameters)
+        if distribution_match := re.match(distribution_pattern, string):
+            float_from_parameter = parse_distribution_parameters(distribution_match)
+            return distribution_class(**float_from_parameter)
+
+    try:
+        value = float(string)
+    except ValueError:
+        raise InvalidDistributionException(
+            None,
+            f'unable to convert `{string}` to a distribution or float',
+            # TODO: distribution explainer
+        )
+
+    return ConstantDistribution(value)
+
+
+def parse_distribution_parameters(distribution_match: re.Match) -> dict[str, float]:
+    float_from_parameter = {}
+
+    for parameter, string in distribution_match.groupdict().items():
+        try:
+            float_from_parameter[parameter] = float(string)
+        except ValueError:
+            raise InvalidFloatException(None, f'unable to convert `{string}` to float')
+
+    return float_from_parameter

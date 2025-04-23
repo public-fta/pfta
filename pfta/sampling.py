@@ -10,10 +10,15 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import random
 
+from pfta.common import natural_repr
+
 
 class Distribution:
     def generate_samples(self, count: int) -> list[float]:
         raise NotImplementedError
+
+    def __repr__(self):
+        return natural_repr(self)
 
 
 class ConstantDistribution(Distribution):
