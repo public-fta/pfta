@@ -9,7 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 from pfta.boolean import Term, Expression
-from pfta.common import natural_repr
+from pfta.common import natural_repr, format_cut_set
 from pfta.constants import LineType, GateType
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
@@ -337,7 +337,7 @@ class Gate:
         ]
         data = [
             [
-                '.'.join(events[index].id_ for index in term.event_indices()),
+                format_cut_set(events[index].id_ for index in term.event_indices()),
                 term.order(),
             ]
             for term in sorted(self.computed_expression.terms)

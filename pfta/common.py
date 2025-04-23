@@ -8,6 +8,8 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+from typing import Iterable
+
 
 def none_aware_dict_eq(self, other):
     if other is None:
@@ -40,3 +42,7 @@ def natural_join(items: tuple | list, penultimate_separator: str = 'and') -> str
 
 def natural_join_backticks(items: tuple | list, penultimate_separator: str = 'and') -> str:
     return natural_join([f'`{item}`' for item in items], penultimate_separator)
+
+
+def format_cut_set(event_ids: Iterable[str]):
+    return '.'.join(event_ids)
