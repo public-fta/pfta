@@ -204,9 +204,9 @@ class FaultTree:
         return Table(headings, data)
 
     def compile_event_table(self) -> Table:
-        headings = ['index', 'id', 'label', 'is_used', 'model']  # TODO: computed quantities
+        headings = ['id', 'label', 'is_used', 'model']  # TODO: computed quantities
         data = [
-            [event.index, event.id_, event.label, event.is_used, event.model_id]
+            [event.id_, event.label, event.is_used, event.model_id]
             for event in self.events
             # TODO: time dependence and sample number dependence
         ]
