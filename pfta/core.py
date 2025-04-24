@@ -168,7 +168,8 @@ class FaultTree:
         FaultTree.mark_used_events(events, all_input_ids)
         FaultTree.mark_top_gates(gates, all_input_ids)
 
-        # Generation of parameter samples
+        # Finalisation of modelling
+        FaultTree.determine_actual_model_types(events, model_from_id)
         FaultTree.generate_parameter_samples(events, model_from_id, seed, len(times), sample_size)
 
         # Computation of expressions
@@ -299,6 +300,11 @@ class FaultTree:
     def mark_top_gates(gates: list['Gate'], all_input_ids: set[str]):
         for gate in gates:
             gate.is_top_gate = gate.id_ not in all_input_ids
+
+    @staticmethod
+    def determine_actual_model_types(events: list['Event'], model_from_id: dict[str, 'Model']):
+        for event in events:
+            event.determine_actual_model_type(model_from_id)
 
     @staticmethod
     def generate_parameter_samples(events: list['Event'], model_from_id: dict[str, 'Model'],
@@ -469,11 +475,17 @@ class Event:
 
         # Fields to be set by fault tree
         self.is_used = None
+        self.actual_model_type = None
         self.parameter_samples = None
         self.computed_expression = None
 
     def __repr__(self):
         return natural_repr(self)
+
+    @memoise('actual_model_type')
+    def determine_actual_model_type(self, model_from_id: dict[str, Model]) -> str:
+        model_owner = model_from_id.get(self.model_id, self)
+        return model_owner.model_type
 
     @memoise('parameter_samples')
     def generate_parameter_samples(self, model_from_id: dict[str, Model],
