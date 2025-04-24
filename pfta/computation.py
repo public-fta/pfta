@@ -72,3 +72,47 @@ def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> floa
         return float('nan')
 
     return lambda_ / (lambda_+mu) * -math.expm1(-(lambda_+mu) * t)
+
+
+def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
+    """
+    Instantaneous failure intensity ω(t) for a component with constant failure and repair rates λ and μ.
+
+    Explicitly, ω(t) = λ (1−q(t)), where q(t) is the corresponding failure probability.
+
+    |  λ  |  μ  |  t  |  ω  | Explanation
+    | --- | --- | --- | --- | -----------
+    |  0  | any | any |  0  | 0 (1−q(t)) = 0.finite = 0
+    | inf | i|n | any | nan | {i (1−q(t)) = i.1 = i if λ/μ=0; λ (1−[1−exp(−λ.t)]) = 0 if λ/μ=inf}
+    |     | oth | 0|n | nan | i . 1 [1−exp(−i.0|n)] = nan (since i is independent of 0|n)
+    |     |     | oth |  μ  | λ (1−λ/(λ+μ).1) = λ μ/(λ+μ) = μ
+    | nan | i|n | any | nan | {nan (per above) if λ=inf}
+    |     | oth | 0|n | nan | {nan (per above) if λ=inf}                                      # mergeable with previous
+    |     |     | oth | nan | {0 (per above) if λ=0; μ (per above) if λ=inf}                  # mergeable with previous
+    | oth | inf | any |  λ  | λ (1−q(t)) = λ.(1−0) = λ
+    |     | nan | any | nan | λ (1−q(t)) = λ.(1−nan) = nan
+    |     | oth | any | :-) | computable
+    """
+    if lambda_ == 0:
+        return 0.
+
+    if math.isinf(lambda_):
+        if math.isinf(mu) or math.isnan(mu):
+            return float('nan')
+
+        if t == 0 or math.isnan(t):
+            return float('nan')
+
+        return mu
+
+    if math.isnan(lambda_):
+        return float('nan')
+
+    if math.isinf(mu):
+        return lambda_
+
+    if math.isnan(mu):
+        return float('nan')
+
+    q = constant_rate_model_probability(t, lambda_, mu)
+    return lambda_ * (1 - q)
