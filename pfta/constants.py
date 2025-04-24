@@ -46,7 +46,7 @@ BOOLEAN_FROM_STRING = {
     'False': False,
 }
 IS_PAGED_EXPLAINER = (
-    f'Boolean property must be {natural_join_backticks(tuple(BOOLEAN_FROM_STRING.keys()), "or")} (case-sensitive).'
+    f'Boolean property must be {natural_join_backticks(tuple(BOOLEAN_FROM_STRING), "or")} (case-sensitive).'
 )
 
 GATE_TYPE_FROM_STRING = {
@@ -54,7 +54,7 @@ GATE_TYPE_FROM_STRING = {
     'AND': GateType.AND,
 }
 GATE_TYPE_EXPLAINER = (
-    f'Gate type must be {natural_join_backticks(tuple(GATE_TYPE_FROM_STRING.keys()), "or")} (case-sensitive).'
+    f'Gate type must be {natural_join_backticks(tuple(GATE_TYPE_FROM_STRING), "or")} (case-sensitive).'
 )
 
 VALID_KEY_COMBOS_FROM_MODEL_TYPE = {
@@ -71,7 +71,7 @@ VALID_KEY_COMBOS_FROM_MODEL_TYPE = {
         ('mean_failure_time', 'mean_repair_time'),
     ),
 }
-VALID_MODEL_TYPES = tuple(VALID_KEY_COMBOS_FROM_MODEL_TYPE.keys())
+VALID_MODEL_TYPES = tuple(VALID_KEY_COMBOS_FROM_MODEL_TYPE)
 VALID_MODEL_KEYS = tuple(
     key
     for combos in VALID_KEY_COMBOS_FROM_MODEL_TYPE.values()

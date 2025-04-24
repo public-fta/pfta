@@ -16,7 +16,7 @@ def find_cycles(adjacency_dict: dict):
     infection_cycles = set()
     infection_chain = []
 
-    clean_nodes = set(adjacency_dict.keys())
+    clean_nodes = set(adjacency_dict)
     infected_nodes = set()
     # dead_nodes need not be tracked
 

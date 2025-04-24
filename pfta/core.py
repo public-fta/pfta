@@ -250,7 +250,7 @@ class FaultTree:
             if event.model_id is None:
                 continue
 
-            if event.model_id not in model_from_id.keys():
+            if event.model_id not in model_from_id:
                 raise UnknownModelException(event.model_id_line_number, f'no model with identifier `{event.model_id}`')
 
     @staticmethod
@@ -326,7 +326,7 @@ class Model:
         unset_property_line_number = properties.get('unset_property_line_number')
 
         model_dict = Model.extract_model_dict(properties)
-        model_keys = list(model_dict.keys())
+        model_keys = list(model_dict)
 
         Model.validate_model_type_set(id_, model_type, unset_property_line_number)
         Model.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
@@ -418,7 +418,7 @@ class Event:
         unset_property_line_number = properties.get('unset_property_line_number')
 
         model_dict = Model.extract_model_dict(properties)
-        model_keys = list(model_dict.keys())
+        model_keys = list(model_dict)
 
         Event.validate_model_xor_type_set(id_, model_type, model_id, unset_property_line_number)
         Event.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
