@@ -302,6 +302,7 @@ class Model:
         self.label = label
         self.comment = comment
 
+        self.model_type = model_type
         self.model_properties = model_properties
 
     def __repr__(self):
@@ -373,6 +374,7 @@ class Event:
         self.model_id = model_id
         self.model_id_line_number = model_id_line_number
 
+        self.model_type = model_type
         self.model_properties = model_properties
 
         self.is_used = None
