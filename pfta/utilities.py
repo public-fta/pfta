@@ -9,6 +9,13 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 
+def invert_robust(x: float) -> float:
+    try:
+        return 1 / x
+    except ZeroDivisionError:
+        return float('inf')
+
+
 def find_cycles(adjacency_dict: dict):
     """
     Find cycles of a directed graph via three-state (clean, infected, dead) depth-first search.

@@ -13,6 +13,7 @@ import traceback
 
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr, format_cut_set, natural_join_backticks
+from pfta.computation import constant_rate_model_probability
 from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
@@ -20,7 +21,7 @@ from pfta.parsing import (
 )
 from pfta.presentation import Table
 from pfta.sampling import Distribution
-from pfta.utilities import find_cycles
+from pfta.utilities import invert_robust, find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
 
 
@@ -177,7 +178,10 @@ class FaultTree:
         FaultTree.compute_gate_expressions(event_from_id, gate_from_id)
 
         # Computation of quantities
-        # TODO: compute quantities over times and samples
+        FaultTree.compute_event_probabilities(events, times, sample_size)
+        # TODO: compute event intensities
+        # TODO: compute gate probabilities
+        # TODO: compute gate intensities
 
         # Finalisation
         self.time_unit = time_unit
@@ -323,6 +327,11 @@ class FaultTree:
     def compute_gate_expressions(event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']):
         for gate in gate_from_id.values():
             gate.compute_expression(event_from_id, gate_from_id)
+
+    @staticmethod
+    def compute_event_probabilities(events: list['Event'], times: list[float], sample_size: int):
+        for event in events:
+            event.compute_probabilities(times, sample_size)
 
 
 class Model:
@@ -478,6 +487,7 @@ class Event:
         self.actual_model_type = None
         self.parameter_samples = None
         self.computed_expression = None
+        self.computed_probabilities = None
 
     def __repr__(self):
         return natural_repr(self)
@@ -499,6 +509,34 @@ class Event:
     def compute_expression(self) -> Expression:
         encoding = 1 << self.index
         return Expression(Term(encoding))
+
+    @memoise('computed_probabilities')
+    def compute_probabilities(self, times: list[float], sample_size: int) -> list[float]:
+        if self.actual_model_type == 'Undeveloped':
+            return [0. for _ in range(len(times) * sample_size)]
+
+        if self.actual_model_type == 'Fixed':
+            return self.parameter_samples['probability']
+
+        time_values = [t for t in times for _ in range(sample_size)]
+
+        if self.actual_model_type == 'ConstantRate':
+            try:
+                failure_rate_samples = self.parameter_samples['failure_rate']
+            except KeyError:
+                failure_rate_samples = [invert_robust(x) for x in self.parameter_samples['mean_failure_time']]
+
+            try:
+                repair_rate_samples = self.parameter_samples['repair_rate']
+            except KeyError:
+                repair_rate_samples = [invert_robust(x) for x in self.parameter_samples['mean_repair_time']]
+
+            return [
+                constant_rate_model_probability(t, lambda_, mu)
+                for t, lambda_, mu in zip(time_values, failure_rate_samples, repair_rate_samples)
+            ]
+
+        raise ImplementationError(f'bad actual_model_type {self.actual_model_type}')
 
     @staticmethod
     def validate_model_xor_type_set(id_: str, model_type: str, model_id: str, unset_property_line_number: int):
