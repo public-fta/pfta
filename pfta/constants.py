@@ -72,12 +72,12 @@ VALID_KEY_COMBOS_FROM_MODEL_TYPE = {
     ),
 }
 VALID_MODEL_TYPES = tuple(VALID_KEY_COMBOS_FROM_MODEL_TYPE)
-VALID_MODEL_KEYS = tuple(
-    key
+VALID_MODEL_KEYS = tuple({
+    key: None  # dict to remove duplicates but preserve order
     for combos in VALID_KEY_COMBOS_FROM_MODEL_TYPE.values()
     for combo in combos
     for key in combo
-)
+})
 MODEL_TYPE_EXPLAINER = f'Recognised model types are {natural_join_backticks(VALID_MODEL_TYPES)}'
 
 VALID_KEYS_FROM_CLASS = {
