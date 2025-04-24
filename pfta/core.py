@@ -204,11 +204,21 @@ class FaultTree:
         return Table(headings, data)
 
     def compile_event_table(self) -> Table:
-        headings = ['id', 'label', 'is_used', 'model']  # TODO: computed quantities
+        headings = [
+            'id', 'label', 'is_used', 'model',
+            'time', 'sample',
+            'computed_probability',
+            # TODO: computed intensity and rate
+        ]
         data = [
-            [event.id_, event.label, event.is_used, event.model_id]
+            [
+                event.id_, event.label, event.is_used, event.model_id,
+                time, sample_index,
+                event.computed_probabilities[time_index * self.sample_size + sample_index],
+            ]
             for event in self.events
-            # TODO: time dependence and sample number dependence
+            for time_index, time in enumerate(self.times)
+            for sample_index in range(self.sample_size)
         ]
         return Table(headings, data)
 
