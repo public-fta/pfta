@@ -80,6 +80,10 @@ class DistributionSamplingError(FaultTreeTextException):
     pass
 
 
+class InvalidProbabilityValueException(FaultTreeTextException):
+    pass
+
+
 class FaultTree:
     """
     Class representing a fault tree.
@@ -400,9 +404,37 @@ class Model:
                     traceback.format_exc(),
                 )
 
+            try:
+                Model.validate_samples(parameter, samples=[s for samples in samples_by_time for s in samples])
+            except (InvalidProbabilityValueException, NegativeValueException) as exception:
+                raise exception.__class__(
+                    distribution.line_number,
+                    f'{exception.message} whilst sampling from `{distribution}`:',
+                )
+
             samples_by_time_from_parameter[parameter] = samples_by_time
 
         return samples_by_time_from_parameter
+
+    @staticmethod
+    def validate_samples(parameter: str, samples: list[float]):
+        if parameter == 'probability':
+            try:
+                bad_value = next(value for value in samples if value < 0 or value > 1)
+            except StopIteration:
+                return
+
+            raise InvalidProbabilityValueException(None, f'invalid `probability` value `{bad_value}` encountered')
+
+        if parameter in ('intensity', 'failure_rate', 'repair_rate', 'mean_repair_time', 'mean_failure_time'):
+            try:
+                bad_value = next(value for value in samples if value < 0)
+            except StopIteration:
+                return
+
+            raise NegativeValueException(None, f'negative `{parameter}` value `{bad_value}` encountered')
+
+        raise ImplementationError(f'bad parameter `{parameter}`')
 
 
 class Event:

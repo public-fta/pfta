@@ -14,10 +14,11 @@ import unittest
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException, ModelPropertyClashException, InvalidModelKeyComboException,
     NegativeValueException, SubUnitValueException,
-    UnknownModelException, UnknownInputException, CircularInputsException, DistributionSamplingError,
+    UnknownModelException, UnknownInputException, CircularInputsException,
+    DistributionSamplingError, InvalidProbabilityValueException,
     FaultTree, Model, Event, Gate,
 )
-from pfta.sampling import LogNormalDistribution
+from pfta.sampling import LogNormalDistribution, UniformDistribution
 
 
 class TestCore(unittest.TestCase):
@@ -186,6 +187,20 @@ class TestCore(unittest.TestCase):
             DistributionSamplingError,
             Model.generate_parameter_samples,
             {'failure_rate': LogNormalDistribution(mu=1, sigma=1e6, line_number=6)}, 1, 100,
+        )
+
+        # Invalid probability
+        self.assertRaises(
+            InvalidProbabilityValueException,
+            Model.generate_parameter_samples,
+            {'probability': UniformDistribution(lower=3, upper=4, line_number=6)}, 1, 100,
+        )
+
+        # Negative failure rate
+        self.assertRaises(
+            NegativeValueException,
+            Model.generate_parameter_samples,
+            {'failure_rate': UniformDistribution(lower=-4, upper=-3, line_number=6)}, 1, 100,
         )
 
     def test_event(self):
