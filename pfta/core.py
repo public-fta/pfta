@@ -8,6 +8,8 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import traceback
+
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr, format_cut_set, natural_join_backticks
 from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
@@ -70,6 +72,10 @@ class UnknownInputException(FaultTreeTextException):
 
 
 class CircularInputsException(FaultTreeTextException):
+    pass
+
+
+class DistributionSamplingError(FaultTreeTextException):
     pass
 
 
@@ -154,6 +160,9 @@ class FaultTree:
         # Marking of objects
         FaultTree.mark_used_events(events, all_input_ids)
         FaultTree.mark_top_gates(gates, all_input_ids)
+
+        # Sampling of distributions
+        FaultTree.sample_model_distributions(models, times, sample_size)
 
         # Computation of expressions
         FaultTree.compute_event_expressions(events)
@@ -272,6 +281,11 @@ class FaultTree:
             gate.is_top_gate = gate.id_ not in all_input_ids
 
     @staticmethod
+    def sample_model_distributions(models: list['Model'], times: list[float], sample_size: int):
+        for model in models:
+            model.sample_distributions(times, sample_size)
+
+    @staticmethod
     def compute_event_expressions(events: list['Event']):
         for event in events:
             event.compute_expression()
@@ -298,15 +312,41 @@ class Model:
         Model.validate_model_type_set(id_, model_type, unset_property_line_number)
         Model.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
 
+        # Direct fields (from parameters or properties)
         self.id_ = id_
         self.label = label
         self.comment = comment
 
+        # Indirect fields
         self.model_type = model_type
         self.model_properties = model_properties
 
+        # Fields to be set by fault tree
+        self.model_samples = None
+
     def __repr__(self):
         return natural_repr(self)
+
+    @memoise('model_samples')
+    def sample_distributions(self, times: list[float], sample_size: int) -> dict[str, dict[float, list[float]]]:
+        samples_from_time_from_parameter = {}
+
+        for parameter, distribution in self.model_properties.items():
+            try:
+                samples_from_time = {
+                    time: distribution.generate_samples(sample_size)
+                    for time in times
+                }
+            except (ValueError, OverflowError) as exception:
+                raise DistributionSamplingError(
+                    distribution.line_number,
+                    f'`{exception.__class__.__name__}` raised whilst sampling from `{distribution}`:',
+                    traceback.format_exc(),
+                )
+
+            samples_from_time_from_parameter[parameter] = samples_from_time
+
+        return samples_from_time_from_parameter
 
     @staticmethod
     def extract_model_subset(properties: dict) -> dict[str, Distribution]:
@@ -367,6 +407,7 @@ class Event:
         Event.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
         # TODO: validate probability and intensity values valid (when evaluated at times across sample size)
 
+        # Direct fields (from parameters or properties)
         self.id_ = id_
         self.index = index
         self.label = label
@@ -374,9 +415,11 @@ class Event:
         self.model_id = model_id
         self.model_id_line_number = model_id_line_number
 
+        # Indirect fields
         self.model_type = model_type
         self.model_properties = model_properties
 
+        # Fields to be set by fault tree
         self.is_used = None
         self.computed_expression = None
 
@@ -456,6 +499,7 @@ class Gate:
         Gate.validate_type_set(id_, type_, unset_property_line_number)
         Gate.validate_input_ids_set(id_, input_ids, unset_property_line_number)
 
+        # Direct fields (from parameters or properties)
         self.id_ = id_
         self.label = label
         self.is_paged = is_paged
@@ -464,6 +508,7 @@ class Gate:
         self.input_ids_line_number = input_ids_line_number
         self.comment = comment
 
+        # Fields to be set by fault tree
         self.is_top_gate = None
         self.computed_expression = None
 
