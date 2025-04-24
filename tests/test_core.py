@@ -14,9 +14,10 @@ import unittest
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException, ModelPropertyClashException, InvalidModelKeyComboException,
     NegativeValueException, SubUnitValueException,
-    UnknownModelException, UnknownInputException, CircularInputsException,
+    UnknownModelException, UnknownInputException, CircularInputsException, DistributionSamplingError,
     FaultTree, Model, Event, Gate,
 )
+from pfta.sampling import LogNormalDistribution
 
 
 class TestCore(unittest.TestCase):
@@ -178,6 +179,13 @@ class TestCore(unittest.TestCase):
             Model,
             'MD-001',
             {'label': 'First model', 'model_type': 'ConstantRate', 'mean_failure_time': '100', 'failure_rate': '10'},
+        )
+
+        # Overflow when sampling a distribution
+        self.assertRaises(
+            DistributionSamplingError,
+            Model.generate_parameter_samples,
+            {'failure_rate': LogNormalDistribution(mu=1, sigma=1e6, line_number=6)}, 1, 100,
         )
 
     def test_event(self):
