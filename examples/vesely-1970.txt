@@ -30,54 +30,34 @@ Model: M910
 
 
 Event: 1
-- model_type: ConstantRate
-- failure_rate: 2.60e-06
-- repair_rate: 0
+- model: M123
 
 Event: 2
-- model_type: ConstantRate
-- failure_rate: 2.60e-06
-- repair_rate: 0
+- model: M123
 
 Event: 3
-- model_type: ConstantRate
-- failure_rate: 2.60e-06
-- repair_rate: 0
+- model: M123
 
 Event: 4
-- model_type: ConstantRate
-- failure_rate: 3.50e-05
-- repair_rate: 0
+- model: M456
 
 Event: 5
-- model_type: ConstantRate
-- failure_rate: 3.50e-05
-- repair_rate: 0
+- model: M456
 
 Event: 6
-- model_type: ConstantRate
-- failure_rate: 3.50e-05
-- repair_rate: 0
+- model: M456
 
 Event: 7
-- model_type: ConstantRate
-- failure_rate: 5.00e-06
-- repair_rate: 0
+- model: M78
 
 Event: 8
-- model_type: ConstantRate
-- failure_rate: 5.00e-06
-- repair_rate: 0
+- model: M78
 
 Event: 9
-- model_type: ConstantRate
-- failure_rate: 8.00e-06
-- repair_rate: 0
+- model: M910
 
 Event: 10
-- model_type: ConstantRate
-- failure_rate: 8.00e-06
-- repair_rate: 0
+- model: M910
 
 
 Gate: TOP
