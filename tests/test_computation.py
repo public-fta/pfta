@@ -101,6 +101,13 @@ class TestComputation(unittest.TestCase):
         )
         self.assertTrue(
             math.isclose(
+                constant_rate_model_probability(lambda_=69, mu=420, t=INF),
+                69/(69+420),
+                rel_tol=1e-15,
+            ),
+        )
+        self.assertTrue(
+            math.isclose(
                 constant_rate_model_probability(lambda_=3, mu=4, t=5),
                 0.4285714285714283012092817079861691868990917608624530832108001585160503999788026,  # WolframAlpha
                 rel_tol=1e-15,
