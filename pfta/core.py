@@ -8,6 +8,8 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import traceback
+
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr, format_cut_set, natural_join_backticks
 from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
@@ -70,6 +72,10 @@ class UnknownInputException(FaultTreeTextException):
 
 
 class CircularInputsException(FaultTreeTextException):
+    pass
+
+
+class DistributionSamplingError(FaultTreeTextException):
     pass
 
 
@@ -157,8 +163,8 @@ class FaultTree:
         FaultTree.mark_used_events(events, all_input_ids)
         FaultTree.mark_top_gates(gates, all_input_ids)
 
-        # Sampling of distributions
-        # TODO
+        # Generation of parameter samples
+        FaultTree.generate_parameter_samples(events, model_from_id, len(times), sample_size)
 
         # Computation of expressions
         FaultTree.compute_event_expressions(events)
@@ -290,6 +296,12 @@ class FaultTree:
             gate.is_top_gate = gate.id_ not in all_input_ids
 
     @staticmethod
+    def generate_parameter_samples(events: list['Event'], model_from_id: dict[str, 'Model'],
+                                   time_count: int, sample_size: int):
+        for event in events:
+            event.generate_parameter_samples(model_from_id, time_count, sample_size)
+
+    @staticmethod
     def compute_event_expressions(events: list['Event']):
         for event in events:
             event.compute_expression()
@@ -310,8 +322,8 @@ class Model:
         model_type = properties.get('model_type')
         unset_property_line_number = properties.get('unset_property_line_number')
 
-        model_properties = Model.extract_model_subset(properties)
-        model_keys = list(model_properties.keys())
+        model_dict = Model.extract_model_dict(properties)
+        model_keys = list(model_dict.keys())
 
         Model.validate_model_type_set(id_, model_type, unset_property_line_number)
         Model.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
@@ -323,17 +335,16 @@ class Model:
 
         # Indirect fields
         self.model_type = model_type
-        self.model_properties = model_properties
+        self.model_dict = model_dict
 
         # Fields to be set by fault tree
         self.is_used = None
-        self.model_samples = None
 
     def __repr__(self):
         return natural_repr(self)
 
     @staticmethod
-    def extract_model_subset(properties: dict) -> dict[str, Distribution]:
+    def extract_model_dict(properties: dict) -> dict[str, Distribution]:
         return {
             key: properties[key]
             for key in properties
@@ -371,6 +382,25 @@ class Model:
 
             raise InvalidModelKeyComboException(unset_property_line_number, message, explainer)
 
+    @staticmethod
+    def generate_parameter_samples(model_dict: dict[str, Distribution],
+                                   time_count: int, sample_size: int) -> dict[str, list[list[float]]]:
+        samples_by_time_from_parameter = {}
+
+        for parameter, distribution in model_dict.items():
+            try:
+                samples_by_time = [distribution.generate_samples(sample_size) for _ in range(time_count)]
+            except (ValueError, OverflowError) as exception:
+                raise DistributionSamplingError(
+                    distribution.line_number,
+                    f'`{exception.__class__.__name__}` raised whilst sampling from `{distribution}`:',
+                    traceback.format_exc(),
+                )
+
+            samples_by_time_from_parameter[parameter] = samples_by_time
+
+        return samples_by_time_from_parameter
+
 
 class Event:
     """
@@ -384,12 +414,11 @@ class Event:
         model_id_line_number = properties.get('model_id_line_number')
         unset_property_line_number = properties.get('unset_property_line_number')
 
-        model_properties = Model.extract_model_subset(properties)
-        model_keys = list(model_properties.keys())
+        model_dict = Model.extract_model_dict(properties)
+        model_keys = list(model_dict.keys())
 
         Event.validate_model_xor_type_set(id_, model_type, model_id, unset_property_line_number)
         Event.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
-        # TODO: validate probability and intensity values valid (when evaluated at times across sample size)
 
         # Direct fields (from parameters or properties)
         self.id_ = id_
@@ -401,14 +430,23 @@ class Event:
 
         # Indirect fields
         self.model_type = model_type
-        self.model_properties = model_properties
+        self.model_dict = model_dict
 
         # Fields to be set by fault tree
         self.is_used = None
+        self.parameter_samples = None
         self.computed_expression = None
 
     def __repr__(self):
         return natural_repr(self)
+
+    @memoise('parameter_samples')
+    def generate_parameter_samples(self, model_from_id: dict[str, Model],
+                                   time_count: int, sample_size: int) -> dict[str, list[list[float]]]:
+        model_owner = model_from_id.get(self.model_id, self)
+        model_dict = model_owner.model_dict
+
+        return Model.generate_parameter_samples(model_dict, time_count, sample_size)
 
     @memoise('computed_expression')
     def compute_expression(self) -> Expression:
