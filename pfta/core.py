@@ -8,6 +8,7 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import random
 import traceback
 
 from pfta.boolean import Term, Expression
@@ -164,7 +165,7 @@ class FaultTree:
         FaultTree.mark_top_gates(gates, all_input_ids)
 
         # Generation of parameter samples
-        FaultTree.generate_parameter_samples(events, model_from_id, len(times), sample_size)
+        FaultTree.generate_parameter_samples(events, model_from_id, seed, len(times), sample_size)
 
         # Computation of expressions
         FaultTree.compute_event_expressions(events)
@@ -297,7 +298,9 @@ class FaultTree:
 
     @staticmethod
     def generate_parameter_samples(events: list['Event'], model_from_id: dict[str, 'Model'],
-                                   time_count: int, sample_size: int):
+                                   seed: str, time_count: int, sample_size: int):
+        random.seed(seed, version=2)
+
         for event in events:
             event.generate_parameter_samples(model_from_id, time_count, sample_size)
 
