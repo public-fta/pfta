@@ -196,17 +196,17 @@ class FaultTree:
         return natural_repr(self)
 
     def compile_model_table(self) -> Table:
-        headings = ['id', 'is_used', 'label', 'comment']
+        headings = ['id', 'is_used', 'label']
         data = [
-            [model.id_, model.is_used, model.label, model.comment]
+            [model.id_, model.is_used, model.label]
             for model in self.models
         ]
         return Table(headings, data)
 
     def compile_event_table(self) -> Table:
-        headings = ['index', 'id', 'is_used', 'model', 'label', 'comment']  # TODO: computed quantities
+        headings = ['index', 'id', 'is_used', 'model', 'label']  # TODO: computed quantities
         data = [
-            [event.index, event.id_, event.is_used, event.model_id, event.label, event.comment]
+            [event.index, event.id_, event.is_used, event.model_id, event.label]
             for event in self.events
             # TODO: time dependence and sample number dependence
         ]
@@ -217,13 +217,13 @@ class FaultTree:
             'id', 'is_top_gate', 'is_paged',
             'type', 'inputs',
             # TODO: computed quantities
-            'label', 'comment',
+            'label',
         ]
         data = [
             [
                 gate.id_, gate.is_top_gate, gate.is_paged,
                 gate.type_.name, ','.join(gate.input_ids),
-                gate.label, gate.comment,
+                gate.label,
             ]
             for gate in self.gates
             # TODO: time dependence and sample number dependence
