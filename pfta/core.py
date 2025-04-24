@@ -8,8 +8,6 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
-import traceback
-
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr, format_cut_set, natural_join_backticks
 from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
@@ -72,10 +70,6 @@ class UnknownInputException(FaultTreeTextException):
 
 
 class CircularInputsException(FaultTreeTextException):
-    pass
-
-
-class DistributionSamplingError(FaultTreeTextException):
     pass
 
 
@@ -164,7 +158,7 @@ class FaultTree:
         FaultTree.mark_top_gates(gates, all_input_ids)
 
         # Sampling of distributions
-        FaultTree.sample_model_distributions(models, times, sample_size)
+        # TODO
 
         # Computation of expressions
         FaultTree.compute_event_expressions(events)
@@ -296,11 +290,6 @@ class FaultTree:
             gate.is_top_gate = gate.id_ not in all_input_ids
 
     @staticmethod
-    def sample_model_distributions(models: list['Model'], times: list[float], sample_size: int):
-        for model in models:
-            model.sample_distributions(times, sample_size)
-
-    @staticmethod
     def compute_event_expressions(events: list['Event']):
         for event in events:
             event.compute_expression()
@@ -342,27 +331,6 @@ class Model:
 
     def __repr__(self):
         return natural_repr(self)
-
-    @memoise('model_samples')
-    def sample_distributions(self, times: list[float], sample_size: int) -> dict[str, dict[float, list[float]]]:
-        samples_from_time_from_parameter = {}
-
-        for parameter, distribution in self.model_properties.items():
-            try:
-                samples_from_time = {
-                    time: distribution.generate_samples(sample_size)
-                    for time in times
-                }
-            except (ValueError, OverflowError) as exception:
-                raise DistributionSamplingError(
-                    distribution.line_number,
-                    f'`{exception.__class__.__name__}` raised whilst sampling from `{distribution}`:',
-                    traceback.format_exc(),
-                )
-
-            samples_from_time_from_parameter[parameter] = samples_from_time
-
-        return samples_from_time_from_parameter
 
     @staticmethod
     def extract_model_subset(properties: dict) -> dict[str, Distribution]:
