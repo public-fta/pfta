@@ -144,6 +144,7 @@ class FaultTree:
         model_from_id = {model.id_: model for model in models}
         event_from_id = {event.id_: event for event in events}
         gate_from_id = {gate.id_: gate for gate in gates}
+        all_used_model_ids = {event.model_id for event in events}
         all_input_ids = {
             input_id
             for gate in gates
@@ -158,6 +159,7 @@ class FaultTree:
         FaultTree.validate_cycle_free(gate_from_id)
 
         # Marking of objects
+        FaultTree.mark_used_models(models, all_used_model_ids)
         FaultTree.mark_used_events(events, all_input_ids)
         FaultTree.mark_top_gates(gates, all_input_ids)
 
@@ -271,6 +273,11 @@ class FaultTree:
             raise CircularInputsException(None, message)
 
     @staticmethod
+    def mark_used_models(models: list['Model'], all_used_model_ids: set[str]):
+        for model in models:
+            model.is_used = model.id_ in all_used_model_ids
+
+    @staticmethod
     def mark_used_events(events: list['Event'], all_input_ids: set[str]):
         for event in events:
             event.is_used = event.id_ in all_input_ids
@@ -322,6 +329,7 @@ class Model:
         self.model_properties = model_properties
 
         # Fields to be set by fault tree
+        self.is_used = None
         self.model_samples = None
 
     def __repr__(self):
