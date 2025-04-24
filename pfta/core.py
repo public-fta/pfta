@@ -397,12 +397,12 @@ class Model:
 
     @staticmethod
     def generate_parameter_samples(model_dict: dict[str, Distribution],
-                                   time_count: int, sample_size: int) -> dict[str, list[list[float]]]:
-        samples_by_time_from_parameter = {}
+                                   time_count: int, sample_size: int) -> dict[str, list[float]]:
+        samples_from_parameter = {}
 
         for parameter, distribution in model_dict.items():
             try:
-                samples_by_time = [distribution.generate_samples(sample_size) for _ in range(time_count)]
+                samples = distribution.generate_samples(time_count * sample_size)
             except (ValueError, OverflowError) as exception:
                 raise DistributionSamplingError(
                     distribution.line_number,
@@ -411,16 +411,16 @@ class Model:
                 )
 
             try:
-                Model.validate_samples(parameter, samples=[s for samples in samples_by_time for s in samples])
+                Model.validate_samples(parameter, samples)
             except (InvalidProbabilityValueException, NegativeValueException) as exception:
                 raise exception.__class__(
                     distribution.line_number,
                     f'{exception.message} whilst sampling from `{distribution}`:',
                 )
 
-            samples_by_time_from_parameter[parameter] = samples_by_time
+            samples_from_parameter[parameter] = samples
 
-        return samples_by_time_from_parameter
+        return samples_from_parameter
 
     @staticmethod
     def validate_samples(parameter: str, samples: list[float]):
@@ -489,7 +489,7 @@ class Event:
 
     @memoise('parameter_samples')
     def generate_parameter_samples(self, model_from_id: dict[str, Model],
-                                   time_count: int, sample_size: int) -> dict[str, list[list[float]]]:
+                                   time_count: int, sample_size: int) -> dict[str, list[float]]:
         model_owner = model_from_id.get(self.model_id, self)
         model_dict = model_owner.model_dict
 
