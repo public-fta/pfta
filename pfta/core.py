@@ -16,6 +16,7 @@ from pfta.parsing import (
     parse_fault_tree_properties, parse_model_properties, parse_event_properties, parse_gate_properties,
 )
 from pfta.presentation import Table
+from pfta.sampling import Distribution
 from pfta.utilities import find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
 
@@ -291,7 +292,8 @@ class Model:
         model_type = properties.get('model_type')
         unset_property_line_number = properties.get('unset_property_line_number')
 
-        model_keys = Model.extract_model_keys(properties)
+        model_properties = Model.extract_model_subset(properties)
+        model_keys = list(model_properties.keys())
 
         Model.validate_model_type_set(id_, model_type, unset_property_line_number)
         Model.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
@@ -300,16 +302,18 @@ class Model:
         self.label = label
         self.comment = comment
 
+        self.model_properties = model_properties
+
     def __repr__(self):
         return natural_repr(self)
 
     @staticmethod
-    def extract_model_keys(properties: dict) -> list[str]:
-        return [
-            key
+    def extract_model_subset(properties: dict) -> dict[str, Distribution]:
+        return {
+            key: properties[key]
             for key in properties
             if key in VALID_MODEL_KEYS
-        ]
+        }
 
     @staticmethod
     def validate_model_type_set(id_: str, model_type: str, unset_property_line_number: int):
@@ -355,7 +359,8 @@ class Event:
         model_id_line_number = properties.get('model_id_line_number')
         unset_property_line_number = properties.get('unset_property_line_number')
 
-        model_keys = Model.extract_model_keys(properties)
+        model_properties = Model.extract_model_subset(properties)
+        model_keys = list(model_properties.keys())
 
         Event.validate_model_xor_type_set(id_, model_type, model_id, unset_property_line_number)
         Event.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
@@ -367,6 +372,8 @@ class Event:
         self.comment = comment
         self.model_id = model_id
         self.model_id_line_number = model_id_line_number
+
+        self.model_properties = model_properties
 
         self.is_used = None
         self.computed_expression = None
