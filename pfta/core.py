@@ -185,10 +185,18 @@ class FaultTree:
     def __repr__(self):
         return natural_repr(self)
 
-    def compile_event_table(self) -> Table:
-        headings = ['index', 'id', 'is_used', 'label', 'comment']  # TODO: computed quantities
+    def compile_model_table(self) -> Table:
+        headings = ['id', 'is_used', 'label', 'comment']
         data = [
-            [event.index, event.id_, event.is_used, event.label, event.comment]
+            [model.id_, model.is_used, model.label, model.comment]
+            for model in self.models
+        ]
+        return Table(headings, data)
+
+    def compile_event_table(self) -> Table:
+        headings = ['index', 'id', 'is_used', 'model', 'label', 'comment']  # TODO: computed quantities
+        data = [
+            [event.index, event.id_, event.is_used, event.model_id, event.label, event.comment]
             for event in self.events
             # TODO: time dependence and sample number dependence
         ]

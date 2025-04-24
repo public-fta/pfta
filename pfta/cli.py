@@ -64,6 +64,7 @@ def main():
         print(f'Error in `{fault_tree_text_file_name}`{line_parenthetical}: {message}{explainer_tail}', file=sys.stderr)
         sys.exit(1)
 
+    model_table = fault_tree.compile_model_table()
     event_table = fault_tree.compile_event_table()
     gate_table = fault_tree.compile_gate_table()
     cut_set_table_from_gate_id = fault_tree.compile_cut_set_tables()
@@ -76,6 +77,7 @@ def main():
     mkdir_robust(output_directory_name)
     mkdir_robust(cut_sets_directory_name)
 
+    model_table.write_tsv(f'{output_directory_name}/models.tsv')
     event_table.write_tsv(f'{output_directory_name}/events.tsv')
     gate_table.write_tsv(f'{output_directory_name}/gates.tsv')
     for gate_id, cut_set_table in cut_set_table_from_gate_id.items():
