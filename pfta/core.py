@@ -180,6 +180,7 @@ class FaultTree:
         # Computation of quantities
         FaultTree.compute_event_probabilities(events, times, sample_size)
         FaultTree.compute_event_intensities(events, times, sample_size)
+        FaultTree.compute_event_rates(events)
         # TODO: compute gate probabilities
         # TODO: compute gate intensities
 
@@ -209,7 +210,7 @@ class FaultTree:
             'time', 'sample',
             'computed_probability',
             'computed_intensity',
-            # TODO: computed rate
+            'computed_rate',
         ]
         data = [
             [
@@ -217,6 +218,7 @@ class FaultTree:
                 time, sample_index,
                 event.computed_probabilities[time_index * self.sample_size + sample_index],
                 event.computed_intensities[time_index * self.sample_size + sample_index],
+                event.computed_rates[time_index * self.sample_size + sample_index],
             ]
             for event in self.events
             for time_index, time in enumerate(self.times)
@@ -347,6 +349,11 @@ class FaultTree:
     def compute_event_intensities(events: list['Event'], times: list[float], sample_size: int):
         for event in events:
             event.compute_intensities(times, sample_size)
+
+    @staticmethod
+    def compute_event_rates(events: list['Event']):
+        for event in events:
+            event.compute_rates()
 
 
 class Model:
@@ -504,6 +511,7 @@ class Event:
         self.computed_expression = None
         self.computed_probabilities = None
         self.computed_intensities = None
+        self.computed_rates = None
 
     def __repr__(self):
         return natural_repr(self)
@@ -581,6 +589,13 @@ class Event:
             ]
 
         raise ImplementationError(f'bad actual_model_type {self.actual_model_type}')
+
+    @memoise('computed_rates')
+    def compute_rates(self) -> list[float]:
+        return [
+            omega / (1 - q)
+            for q, omega in zip(self.computed_probabilities, self.computed_intensities)
+        ]
 
     @staticmethod
     def validate_model_xor_type_set(id_: str, model_type: str, model_id: str, unset_property_line_number: int):
