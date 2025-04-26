@@ -13,7 +13,7 @@ import traceback
 
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr, format_cut_set, natural_join_backticks
-from pfta.computation import constant_rate_model_probability
+from pfta.computation import constant_rate_model_probability, constant_rate_model_intensity
 from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
@@ -179,7 +179,7 @@ class FaultTree:
 
         # Computation of quantities
         FaultTree.compute_event_probabilities(events, times, sample_size)
-        # TODO: compute event intensities
+        FaultTree.compute_event_intensities(events, times, sample_size)
         # TODO: compute gate probabilities
         # TODO: compute gate intensities
 
@@ -208,13 +208,15 @@ class FaultTree:
             'id', 'label', 'is_used', 'model',
             'time', 'sample',
             'computed_probability',
-            # TODO: computed intensity and rate
+            'computed_intensity',
+            # TODO: computed rate
         ]
         data = [
             [
                 event.id_, event.label, event.is_used, event.model_id,
                 time, sample_index,
                 event.computed_probabilities[time_index * self.sample_size + sample_index],
+                event.computed_intensities[time_index * self.sample_size + sample_index],
             ]
             for event in self.events
             for time_index, time in enumerate(self.times)
@@ -340,6 +342,11 @@ class FaultTree:
     def compute_event_probabilities(events: list['Event'], times: list[float], sample_size: int):
         for event in events:
             event.compute_probabilities(times, sample_size)
+
+    @staticmethod
+    def compute_event_intensities(events: list['Event'], times: list[float], sample_size: int):
+        for event in events:
+            event.compute_intensities(times, sample_size)
 
 
 class Model:
@@ -496,6 +503,7 @@ class Event:
         self.parameter_samples = None
         self.computed_expression = None
         self.computed_probabilities = None
+        self.computed_intensities = None
 
     def __repr__(self):
         return natural_repr(self)
@@ -541,6 +549,34 @@ class Event:
 
             return [
                 constant_rate_model_probability(t, lambda_, mu)
+                for t, lambda_, mu in zip(time_values, failure_rate_samples, repair_rate_samples)
+            ]
+
+        raise ImplementationError(f'bad actual_model_type {self.actual_model_type}')
+
+    @memoise('computed_intensities')
+    def compute_intensities(self, times: list[float], sample_size: int) -> list[float]:
+        if self.actual_model_type == 'Undeveloped':
+            return [0. for _ in range(len(times) * sample_size)]
+
+        if self.actual_model_type == 'Fixed':
+            return self.parameter_samples['intensity']
+
+        time_values = [t for t in times for _ in range(sample_size)]
+
+        if self.actual_model_type == 'ConstantRate':
+            try:
+                failure_rate_samples = self.parameter_samples['failure_rate']
+            except KeyError:
+                failure_rate_samples = [invert_robust(x) for x in self.parameter_samples['mean_failure_time']]
+
+            try:
+                repair_rate_samples = self.parameter_samples['repair_rate']
+            except KeyError:
+                repair_rate_samples = [invert_robust(x) for x in self.parameter_samples['mean_repair_time']]
+
+            return [
+                constant_rate_model_intensity(t, lambda_, mu)
                 for t, lambda_, mu in zip(time_values, failure_rate_samples, repair_rate_samples)
             ]
 
