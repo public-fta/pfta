@@ -186,21 +186,21 @@ class TestCore(unittest.TestCase):
         self.assertRaises(
             DistributionSamplingError,
             Model.generate_parameter_samples,
-            {'failure_rate': LogNormalDistribution(mu=1, sigma=1e6, line_number=6)}, 1, 100,
+            {'failure_rate': LogNormalDistribution(mu=1, sigma=1e6, line_number=6)}, 100,
         )
 
         # Invalid probability
         self.assertRaises(
             InvalidProbabilityValueException,
             Model.generate_parameter_samples,
-            {'probability': UniformDistribution(lower=3, upper=4, line_number=6)}, 1, 100,
+            {'probability': UniformDistribution(lower=3, upper=4, line_number=6)}, 100,
         )
 
         # Negative failure rate
         self.assertRaises(
             NegativeValueException,
             Model.generate_parameter_samples,
-            {'failure_rate': UniformDistribution(lower=-4, upper=-3, line_number=6)}, 1, 100,
+            {'failure_rate': UniformDistribution(lower=-4, upper=-3, line_number=6)}, 100,
         )
 
     def test_event(self):
