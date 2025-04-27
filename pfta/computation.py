@@ -182,9 +182,12 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
 
     for order in range(1, term_count + 1):
         term_combos = itertools.combinations(terms, order)
-        latest_term = sum(
-            computational_cache.probability(Term.conjunction(*terms), flattened_index)
-            for terms in term_combos
+        latest_term = (
+            (-1)**(order - 1)
+            * sum(
+                computational_cache.probability(Term.conjunction(*terms), flattened_index)
+                for terms in term_combos
+            )
         )
 
         partial_sum += latest_term
