@@ -22,7 +22,7 @@ if typing.TYPE_CHECKING:
 
 
 class ComputationalCache:
-    def __init__(self, events: list['Event']):
+    def __init__(self, tolerance: float, events: list['Event']):
         probability_from_index_from_term = {
             event.computed_expression.sole_term(): dict(enumerate(event.computed_probabilities))
             for event in events
@@ -32,6 +32,7 @@ class ComputationalCache:
             for event in events
         }
 
+        self.tolerance = tolerance
         self.probability_from_index_from_term = collections.defaultdict(dict, probability_from_index_from_term)
         self.intensity_from_index_from_term = collections.defaultdict(dict, intensity_from_index_from_term)
 
@@ -174,7 +175,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
                − ∑{1≤i<j≤N} q[C_i C_j]
                + ∑{1≤i<j<k≤N} q[C_i C_j C_k]
                − ... .
-    TODO: For performance, we truncate after the latest term divided by the partial sum falls below a threshold.
+    For performance, we truncate after the latest term divided by the partial sum falls below the tolerance.
     """
     term_count = len(terms)
     partial_sum = 0
@@ -188,7 +189,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
 
         partial_sum += latest_term
 
-        if latest_term == 0 or abs(latest_term / partial_sum) < 1e-6:  # TODO: refactor to fault tree property
+        if latest_term == 0 or abs(latest_term / partial_sum) < computational_cache.tolerance:
             break
 
     return partial_sum

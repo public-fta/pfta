@@ -69,6 +69,10 @@ class SubUnitValueException(FaultTreeTextException):
     pass
 
 
+class InvalidToleranceException(FaultTreeTextException):
+    pass
+
+
 class UnknownModelException(FaultTreeTextException):
     pass
 
@@ -148,6 +152,9 @@ class FaultTree:
         sample_size = fault_tree_properties.get('sample_size', 1)
         sample_size_raw = fault_tree_properties.get('sample_size_raw')
         sample_size_line_number = fault_tree_properties.get('sample_size_line_number')
+        tolerance = fault_tree_properties.get('tolerance', 1e-6)
+        tolerance_raw = fault_tree_properties.get('tolerance_raw')
+        tolerance_line_number = fault_tree_properties.get('tolerance_line_number')
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
         # Identifier conveniences
@@ -164,6 +171,7 @@ class FaultTree:
         # Validation
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
         FaultTree.validate_sample_size(sample_size, sample_size_raw, sample_size_line_number)
+        FaultTree.validate_tolerance(tolerance, tolerance_raw, tolerance_line_number)
         FaultTree.validate_event_models(event_from_id, model_from_id)
         FaultTree.validate_gate_inputs(event_from_id, gate_from_id)
         FaultTree.validate_cycle_free(gate_from_id)
@@ -190,7 +198,7 @@ class FaultTree:
         FaultTree.compute_event_rates(events)
 
         # Prepare cache for computation of gate quantities
-        computational_cache = ComputationalCache(events)
+        computational_cache = ComputationalCache(tolerance, events)
 
         # Computation of gate quantities
         FaultTree.compute_gate_probabilities(gates, flattened_size, computational_cache)
@@ -201,6 +209,7 @@ class FaultTree:
         self.times = times
         self.seed = seed
         self.sample_size = sample_size
+        self.tolerance = tolerance
         self.models = models
         self.events = events
         self.gates = gates
@@ -283,6 +292,14 @@ class FaultTree:
     def validate_sample_size(sample_size: int, sample_size_raw: str, sample_size_line_number: int):
         if sample_size < 1:
             raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
+
+    @staticmethod
+    def validate_tolerance(tolerance: float, tolerance_raw: str, tolerance_line_number: int):
+        if not 0 < tolerance < 1:
+            raise InvalidToleranceException(
+                tolerance_line_number,
+                f'tolerance {tolerance_raw} not strictly between zero and unity',
+            )
 
     @staticmethod
     def validate_event_models(event_from_id: dict[str, 'Event'], model_from_id: dict[str, 'Model']):

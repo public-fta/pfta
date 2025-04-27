@@ -13,7 +13,7 @@ import unittest
 
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException, ModelPropertyClashException, InvalidModelKeyComboException,
-    NegativeValueException, SubUnitValueException,
+    NegativeValueException, SubUnitValueException, InvalidToleranceException,
     UnknownModelException, UnknownInputException, CircularInputsException,
     DistributionSamplingError, InvalidProbabilityValueException,
     FaultTree, Model, Event, Gate,
@@ -77,6 +77,72 @@ class TestCore(unittest.TestCase):
             textwrap.dedent('''
                 - time: 1
                 - sample_size: -100
+            '''),
+        )
+
+        # Bad tolerance
+        self.assertRaises(
+            InvalidToleranceException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - tolerance: -1
+            '''),
+        )
+        self.assertRaises(
+            InvalidToleranceException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - tolerance: -1e-16
+            '''),
+        )
+        self.assertRaises(
+            InvalidToleranceException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - tolerance: 0
+            '''),
+        )
+        self.assertRaises(
+            InvalidToleranceException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - tolerance: 1
+            '''),
+        )
+        self.assertRaises(
+            InvalidToleranceException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - tolerance: 1.0000000000000001
+            '''),
+        )
+        self.assertRaises(
+            InvalidToleranceException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - tolerance: 2
+            '''),
+        )
+        self.assertRaises(
+            InvalidToleranceException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - tolerance: nan
+            '''),
+        )
+        self.assertRaises(
+            InvalidToleranceException,
+            FaultTree,
+            textwrap.dedent('''
+                - time: 1
+                - tolerance: inf
             '''),
         )
 

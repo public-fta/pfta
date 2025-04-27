@@ -316,7 +316,17 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
                 raise InvalidIntegerException(parsed_line.number, f'unable to convert `{value}` to integer')
 
             properties['sample_size_raw'] = value
-            properties['sample_size_line_number'] = value
+            properties['sample_size_line_number'] = parsed_line.number
+            continue
+
+        if key == 'tolerance':
+            try:
+                properties['tolerance'] = float(value)
+            except ValueError:
+                raise InvalidFloatException(parsed_line.number, f'unable to convert `{value}` to float')
+
+            properties['tolerance_raw'] = value
+            properties['tolerance_line_number'] = parsed_line.number
             continue
 
         raise ImplementationError(f'bad key `{key}`')
