@@ -10,6 +10,19 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import math
 
+from pfta.boolean import Term
+from pfta.common import natural_repr
+
+
+class ComputationalCache:
+    def __init__(self, probabilities_from_term: dict[Term, list[float]],
+                 intensities_from_term: dict[Term, list[float]]):
+        self.probabilities_from_term = probabilities_from_term
+        self.intensities_from_term = intensities_from_term
+
+    def __repr__(self):
+        return natural_repr(self)
+
 
 def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> float:
     """

@@ -13,7 +13,7 @@ import traceback
 
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr, format_cut_set, natural_join_backticks
-from pfta.computation import constant_rate_model_probability, constant_rate_model_intensity
+from pfta.computation import ComputationalCache, constant_rate_model_probability, constant_rate_model_intensity
 from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
@@ -169,7 +169,7 @@ class FaultTree:
         FaultTree.mark_used_events(events, all_input_ids)
         FaultTree.mark_top_gates(gates, all_input_ids)
 
-        # Flattened count (loop over times and samples)
+        # Prepare flattened count (loop over times and samples)
         flattened_count = len(times) * sample_size
 
         # Finalisation of modelling
@@ -180,10 +180,23 @@ class FaultTree:
         FaultTree.compute_event_expressions(events)
         FaultTree.compute_gate_expressions(event_from_id, gate_from_id)
 
-        # Computation of quantities
+        # Computation of event quantities
         FaultTree.compute_event_probabilities(events, times, sample_size)
         FaultTree.compute_event_intensities(events, times, sample_size)
         FaultTree.compute_event_rates(events)
+
+        # Prepare cache for computation of gate quantities
+        probabilities_from_term = {
+            event.computed_expression.sole_term(): event.computed_probabilities
+            for event in events
+        }
+        intensities_from_term = {
+            event.computed_expression.sole_term(): event.computed_intensities
+            for event in events
+        }
+        computational_cache = ComputationalCache(probabilities_from_term, intensities_from_term)
+
+        # Computation of gate quantities
         # TODO: compute gate probabilities
         # TODO: compute gate intensities
 
@@ -195,6 +208,7 @@ class FaultTree:
         self.models = models
         self.events = events
         self.gates = gates
+        self.computational_cache = computational_cache
 
     def __repr__(self):
         return natural_repr(self)

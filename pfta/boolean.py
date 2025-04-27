@@ -10,6 +10,8 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import itertools
 
+from pfta.woe import ImplementationError
+
 
 class Term:
     """
@@ -122,6 +124,12 @@ class Expression:
 
     def __repr__(self):
         return f'Expression({", ".join(repr(t) for t in self.terms)})'
+
+    def sole_term(self) -> Term:
+        if len(self.terms) != 1:
+            raise ImplementationError(f'`{self}` does not have a sole term')
+
+        return next(iter(self.terms))
 
     @staticmethod
     def conjunction(*expressions: 'Expression') -> 'Expression':
