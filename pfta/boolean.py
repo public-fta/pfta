@@ -116,6 +116,13 @@ class Term:
 
         return Expression(*necessary_terms)
 
+    @staticmethod
+    def divide(numerator: 'Term', denominator: 'Term') -> 'Term':
+        """
+        Compute the result of removing from the numerator all factors in the denominator.
+        """
+        return Term(numerator.encoding & ~denominator.encoding)
+
 
 class Expression:
     """
