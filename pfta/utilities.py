@@ -8,12 +8,27 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import math
+from typing import Iterable
+
 
 def invert_robust(x: float) -> float:
     try:
         return 1 / x
     except ZeroDivisionError:
         return float('inf')
+
+
+def product_descending(factors: Iterable[float]) -> float:
+    """
+    Compute a product after sorting the factors in descending order.
+
+    Needed to prevent cut set quantity computations from depending on event declaration order,
+    due to the nature of floating-point arithmetic:
+        0.1 * 0.3 * 0.5 * 0.823 = 0.012344999999999998
+        0.823 * 0.5 * 0.3 * 0.1 = 0.012345
+    """
+    return math.prod(sorted(factors, reverse=True))
 
 
 def find_cycles(adjacency_dict: dict):

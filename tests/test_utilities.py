@@ -8,12 +8,20 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import math
 import unittest
 
-from pfta.utilities import find_cycles
+from pfta.utilities import find_cycles, product_descending
 
 
 class TestUtilities(unittest.TestCase):
+    def test_product_descending(self):
+        factors_1 = [0.1, 0.3, 0.5, 0.823]
+        factors_2 = [0.823, 0.5, 0.3, 0.1]
+        self.assertEqual(set(factors_1), set(factors_2))
+        self.assertNotEqual(math.prod(factors_1), math.prod(factors_2))
+        self.assertEqual(product_descending(factors_1), product_descending(factors_2))
+
     def test_find_cycles(self):
         self.assertEqual(
             find_cycles({}),
