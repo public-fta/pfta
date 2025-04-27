@@ -275,7 +275,7 @@ class FaultTree:
 
     def compile_cut_set_tables(self) -> dict[str, Table]:
         return {
-            gate.id_: gate.compile_cut_set_table(self.events)
+            gate.id_: gate.compile_cut_set_table(self.events, self.times, self.sample_size, self.computational_cache)
             for gate in self.gates
         }
 
@@ -774,19 +774,26 @@ class Gate:
             for q, omega in zip(self.computed_probabilities, self.computed_intensities)
         ]
 
-    def compile_cut_set_table(self, events: list[Event]) -> Table:
+    def compile_cut_set_table(self, events: list[Event], times: list[float], sample_size: int,
+                              computational_cache: ComputationalCache) -> Table:
         headings = [
             'cut_set',
             'order',
-            # TODO: computed quantities
+            'time', 'sample',
+            'computed_probability',
+            'computed_intensity',
         ]
         data = [
             [
                 format_cut_set(events[index].id_ for index in term.event_indices()),
                 term.order(),
+                time, sample_index,
+                computational_cache.probability_from_index_from_term[term][time_index * sample_size + sample_index],
+                computational_cache.intensity_from_index_from_term[term][time_index * sample_size + sample_index],
             ]
             for term in sorted(self.computed_expression.terms)
-            # TODO: time dependence and sample number dependence
+            for time_index, time in enumerate(times)
+            for sample_index in range(sample_size)
         ]
         return Table(headings, data)
 
