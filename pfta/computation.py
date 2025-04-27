@@ -247,11 +247,11 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
     term_count = len(terms)
     partial_sum = 0
 
-    def omega(term: Term) -> float:
-        return computational_cache.intensity(term, flattened_index)
-
     def q(term: Term) -> float:
         return computational_cache.probability(term, flattened_index)
+
+    def omega(term: Term) -> float:
+        return computational_cache.intensity(term, flattened_index)
 
     def omega_r(combo: tuple[Term, ...]) -> float:
         return redundant_intensity_mini_term(combo, terms, flattened_index, computational_cache)
@@ -292,11 +292,11 @@ def redundant_intensity_mini_term(terms_subset: tuple[Term, ...], terms: list[Te
     term_count = len(terms)
     partial_sum = 0
 
-    def omega(term: Term) -> float:
-        return computational_cache.intensity(term, flattened_index)
-
     def q(term: Term) -> float:
         return computational_cache.probability(term, flattened_index)
+
+    def omega(term: Term) -> float:
+        return computational_cache.intensity(term, flattened_index)
 
     gcd = Term.gcd
     and_ = Term.conjunction
