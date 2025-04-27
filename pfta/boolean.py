@@ -52,6 +52,12 @@ class Term:
             if digit == '1'
         )
 
+    def factors(self) -> frozenset['Term']:
+        return frozenset(
+            Term.create_from_event_index(event_index)
+            for event_index in self.event_indices()
+        )
+
     def implies(self, other: 'Term') -> bool:
         """
         Decide whether a term implies another.

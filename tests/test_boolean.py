@@ -20,6 +20,16 @@ class TestBoolean(unittest.TestCase):
         self.assertEqual(Term(0b1010010).event_indices(), {1, 4, 6})
         self.assertEqual(Term(2 ** 69420).event_indices(), {69420})
 
+    def test_factors(self):
+        self.assertEqual(
+            Term(0b10110).factors(),
+            {Term(0b10000), Term(0b00100), Term(0b00010)},
+        )
+        self.assertEqual(
+            Term(2 ** 69420 + 2 ** 100 + 2).factors(),
+            {Term(2 ** 69420), Term(2 ** 100), Term(2)},
+        )
+
     def test_term_implies(self):
         # A implies True
         self.assertTrue(Term(1).implies(Term(0)))
@@ -42,7 +52,7 @@ class TestBoolean(unittest.TestCase):
         self.assertEqual(Term.create_from_event_index(2), Term(0b00100))
         self.assertEqual(Term.create_from_event_index(3), Term(0b01000))
         self.assertEqual(Term.create_from_event_index(4), Term(0b10000))
-        self.assertEqual(Term.create_from_event_index(12345), Term(2 ** 12345))
+        self.assertEqual(Term.create_from_event_index(69420), Term(2 ** 69420))
 
     def test_term_conjunction(self):
         # (Empty conjunction) = True
