@@ -15,7 +15,7 @@ import typing
 
 from pfta.boolean import Term
 from pfta.common import natural_repr
-from pfta.utilities import descending_product
+from pfta.utilities import descending_product, descending_sum
 
 if typing.TYPE_CHECKING:
     from pfta.core import Event
@@ -43,7 +43,7 @@ class ComputationalCache:
         """
         Instantaneous failure probability of a Boolean term (minimal cut set).
 
-        From `MATHS.md`, the failure product of a minimal cut set `C = x y z ...` is given by
+        From `MATHS.md`, the failure probability of a minimal cut set `C = x y z ...` is given by
             q[C] = q[x] q[y] q[z] ...,
         a straight product of the failure probabilities of its constituent primary events (i.e. factors).
         """
@@ -55,6 +55,29 @@ class ComputationalCache:
             self.probability_from_index_from_term[term][index] = probability
 
         return self.probability_from_index_from_term[term][index]
+
+    def intensity(self, term, index) -> float:
+        """
+        Instantaneous failure intensity of a Boolean term (minimal cut set).
+
+        From `MATHS.md`, the failure intensity of a minimal cut set `C = x y z ...`
+        is given by a product-rule-style expression, where each term is the product of
+        one primary event's failure intensity and the remaining primary events' failure probabilities:
+            ω[C] =   ω[x] q[y] q[z] ...
+                   + q[x] ω[y] q[z] ...
+                   + q[x] q[y] ω[z] ...
+                   + ...
+                 = ∑{e|C} ω[e] q[C÷e].
+        """
+        if index not in self.intensity_from_index_from_term[term]:
+            intensity = descending_sum(
+                self.intensity_from_index_from_term[factor][index]
+                * self.probability_from_index_from_term[term / factor][index]
+                for factor in term.factors()
+            )
+            self.intensity_from_index_from_term[term][index] = intensity
+
+        return self.intensity_from_index_from_term[term][index]
 
 
 def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> float:
@@ -192,5 +215,97 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
 
         if latest_term == 0 or abs(latest_term / partial_sum) < computational_cache.tolerance:
             break
+
+    return partial_sum
+
+
+def disjunction_intensity(terms: list[Term], flattened_index: int, computational_cache: ComputationalCache) -> float:
+    """
+    Instantaneous failure intensity of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
+
+    From `MATHS.md`, for a gate `T` represented as a disjunction of `N` minimal cut sets,
+        T = C_1 + C_2 + ... + C_N,
+    the failure intensity `ω[T]` of the top gate is given by
+        ω[T] = ω^1[T] − ω^2[T],
+    where
+        ω^1[T] =   ∑{1≤i≤N} ω[C_i]
+                 − ∑{1≤i<j≤N} ω[gcd(C_i,C_j)] q[C_i C_j ÷ gcd(C_i,C_j)]
+                 + ... ,
+        ω^2[T] =   ∑{1≤i≤N} ω_r[{C_i}]
+                 − ∑{1≤i<j≤N} ω_r[{C_i,C_j}]
+                 + ... ,
+        ω_r[{C_i,C_j,...}]
+               =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
+                 − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
+                 + ... .
+    For performance, we truncate after the latest `ω^1 + ω^2` term divided by the partial sum falls below the tolerance.
+    """
+    term_count = len(terms)
+    partial_sum = 0
+
+    def omega(term: Term) -> float:
+        return computational_cache.intensity(term, flattened_index)
+
+    def q(term: Term) -> float:
+        return computational_cache.probability(term, flattened_index)
+
+    def omega_r(combo: tuple[Term, ...]) -> float:
+        return redundant_intensity_mini_term(combo, terms, flattened_index, computational_cache)
+
+    gcd = Term.gcd
+    and_ = Term.conjunction
+
+    for order in range(1, term_count + 1):
+        combos = itertools.combinations(terms, order)
+        latest_omega_1_term = (
+            (-1)**(order - 1) * sum(omega(gcd(*combo)) * q(and_(*combo) / gcd(*combo)) for combo in combos)
+        )
+        latest_omega_2_term = (
+            (-1)**(order - 1) * sum(omega_r(combo) for combo in combos)
+        )
+        latest_term = latest_omega_1_term + latest_omega_2_term
+
+        if latest_term == 0 or abs(latest_term / partial_sum) < computational_cache.tolerance:
+            break
+
+    return partial_sum
+
+
+def redundant_intensity_mini_term(terms_subset: tuple[Term, ...], terms: list[Term], flattened_index: int,
+                                  computational_cache: ComputationalCache) -> float:
+    """
+    Contributing mini-term `ω_r[{C_i,C_j,...}]` in the redundant contribution `ω^2[T]` to failure intensity.
+
+    This is the redundant contribution to the failure intensity of `T = C_1 + C_2 + ... + C_N`
+    from the combinational subset `{C_i,C_j,...}` of terms already being failed.
+
+    From `MATHS.md`,
+        ω_r[{C_i,C_j,...}]
+               =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
+                 − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
+                 + ... .
+    """
+    term_count = len(terms)
+    partial_sum = 0
+
+    def omega(term: Term) -> float:
+        return computational_cache.intensity(term, flattened_index)
+
+    def q(term: Term) -> float:
+        return computational_cache.probability(term, flattened_index)
+
+    gcd = Term.gcd
+    and_ = Term.conjunction
+
+    for order in range(1, term_count + 1):
+        combos = itertools.combinations(terms, order)
+        latest_term = (
+            (-1)**(order - 1)
+            * sum(
+                omega(gcd(*terms_subset) / and_(*combo)) * q(and_(*combo, *terms_subset) / gcd(*terms_subset))
+                for combo in combos
+            )
+        )
+        partial_sum += latest_term
 
     return partial_sum

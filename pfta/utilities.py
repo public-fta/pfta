@@ -31,6 +31,18 @@ def descending_product(factors: Iterable[float]) -> float:
     return math.prod(sorted(factors, reverse=True))
 
 
+def descending_sum(terms: Iterable[float]) -> float:
+    """
+    Compute a sum after sorting the terms in descending order.
+
+    Needed to prevent cut set quantity computations from depending on event declaration order,
+    due to the nature of floating-point arithmetic:
+        1e-9 + 2.5e-12 + 5e-13 + 5e-10 + 2.5e-12 = 1.5054999999999998e-09
+        1e-9 + 5e-10 + 2.5e-12 + 2.5e-12 + 5e-13 = 1.5055e-09
+    """
+    return sum(sorted(terms, reverse=True))
+
+
 def find_cycles(adjacency_dict: dict):
     """
     Find cycles of a directed graph via three-state (clean, infected, dead) depth-first search.

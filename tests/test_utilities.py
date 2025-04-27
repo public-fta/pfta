@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import math
 import unittest
 
-from pfta.utilities import find_cycles, descending_product
+from pfta.utilities import find_cycles, descending_product, descending_sum
 
 
 class TestUtilities(unittest.TestCase):
@@ -21,6 +21,13 @@ class TestUtilities(unittest.TestCase):
         self.assertEqual(set(factors_1), set(factors_2))
         self.assertNotEqual(math.prod(factors_1), math.prod(factors_2))
         self.assertEqual(descending_product(factors_1), descending_product(factors_2))
+
+    def test_descending_sum(self):
+        terms_1 = [1e-9, 2.5e-12, 5e-13, 5e-10, 2.5e-12]
+        terms_2 = [1e-9, 5e-10, 2.5e-12, 2.5e-12, 5e-13]
+        self.assertEqual(set(terms_1), set(terms_2))
+        self.assertNotEqual(sum(terms_1), sum(terms_2))
+        self.assertEqual(descending_sum(terms_1), descending_sum(terms_2))
 
     def test_find_cycles(self):
         self.assertEqual(
