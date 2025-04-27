@@ -80,6 +80,7 @@ def main():
     model_table.write_tsv(f'{output_directory_name}/models.tsv')
     event_table.write_tsv(f'{output_directory_name}/events.tsv')
     gate_table.write_tsv(f'{output_directory_name}/gates.tsv')
+
     for gate_id, cut_set_table in cut_set_table_from_gate_id.items():
         cut_set_table.write_tsv(f'{cut_sets_directory_name}/{gate_id}.tsv')
 
