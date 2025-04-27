@@ -14,7 +14,7 @@ from pfta.boolean import Term, Expression
 
 
 class TestBoolean(unittest.TestCase):
-    def test_event_indices(self):
+    def test_term_event_indices(self):
         self.assertEqual(Term(0).event_indices(), set())
         self.assertEqual(Term(1).event_indices(), {0})
         self.assertEqual(Term(0b1010010).event_indices(), {1, 4, 6})
@@ -35,6 +35,14 @@ class TestBoolean(unittest.TestCase):
 
         # ADE does not imply ABC (due to BC)
         self.assertFalse(Term(0b11001).implies(Term(0b00111)))
+
+    def test_term_create_from_event_index(self):
+        self.assertEqual(Term.create_from_event_index(0), Term(0b00001))
+        self.assertEqual(Term.create_from_event_index(1), Term(0b00010))
+        self.assertEqual(Term.create_from_event_index(2), Term(0b00100))
+        self.assertEqual(Term.create_from_event_index(3), Term(0b01000))
+        self.assertEqual(Term.create_from_event_index(4), Term(0b10000))
+        self.assertEqual(Term.create_from_event_index(12345), Term(2 ** 12345))
 
     def test_term_conjunction(self):
         # (Empty conjunction) = True

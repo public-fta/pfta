@@ -65,6 +65,11 @@ class Term:
         return ~self.encoding & other.encoding == 0
 
     @staticmethod
+    def create_from_event_index(event_index: int) -> 'Term':
+        encoding = 1 << event_index
+        return Term(encoding)
+
+    @staticmethod
     def conjunction(*terms: 'Term') -> 'Term':
         """
         Compute the conjunction (AND) of a sequence of terms.

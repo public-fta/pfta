@@ -539,8 +539,7 @@ class Event:
 
     @memoise('computed_expression')
     def compute_expression(self) -> Expression:
-        encoding = 1 << self.index
-        return Expression(Term(encoding))
+        return Expression(Term.create_from_event_index(self.index))
 
     @memoise('computed_probabilities')
     def compute_probabilities(self, times: list[float], sample_size: int) -> list[float]:
