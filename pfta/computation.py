@@ -49,7 +49,7 @@ class ComputationalCache:
         """
         if index not in self.probability_from_index_from_term[term]:
             def q(e: Term) -> float:
-                return self.probability_from_index_from_term[e][index]
+                return self.probability(e, index)
 
             probability = descending_product(q(factor) for factor in term.factors())
 
@@ -72,10 +72,10 @@ class ComputationalCache:
         """
         if index not in self.intensity_from_index_from_term[term]:
             def q(e: Term) -> float:
-                return self.probability_from_index_from_term[e][index]
+                return self.probability(e, index)
 
             def omega(e: Term) -> float:
-                return self.intensity_from_index_from_term[e][index]
+                return self.intensity(e, index)
 
             intensity = descending_sum(omega(factor) * q(term / factor) for factor in term.factors())
 
