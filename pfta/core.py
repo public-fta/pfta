@@ -16,7 +16,7 @@ from pfta.common import natural_repr, format_cut_set, natural_join_backticks
 from pfta.computation import (
     ComputationalCache,
     constant_rate_model_probability, constant_rate_model_intensity,
-    disjunction_probability,
+    disjunction_probability, disjunction_intensity,
 )
 from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
@@ -202,7 +202,7 @@ class FaultTree:
 
         # Computation of gate quantities
         FaultTree.compute_gate_probabilities(gates, flattened_size, computational_cache)
-        # TODO: compute gate intensities
+        FaultTree.compute_gate_intensities(gates, flattened_size, computational_cache)
 
         # Finalisation
         self.time_unit = time_unit
@@ -254,7 +254,7 @@ class FaultTree:
             'type', 'inputs',
             'time', 'sample',
             'computed_probability',
-            # TODO: computed intensity
+            'computed_intensity',
             # TODO: computed rate
         ]
         data = [
@@ -263,6 +263,7 @@ class FaultTree:
                 gate.type_.name, ','.join(gate.input_ids),
                 time, sample_index,
                 gate.computed_probabilities[time_index * self.sample_size + sample_index],
+                gate.computed_intensities[time_index * self.sample_size + sample_index],
             ]
             for gate in self.gates
             for time_index, time in enumerate(self.times)
@@ -395,6 +396,11 @@ class FaultTree:
     def compute_gate_probabilities(gates: list['Gate'], flattened_size: int, computational_cache: ComputationalCache):
         for gate in gates:
             gate.compute_probabilities(flattened_size, computational_cache)
+
+    @staticmethod
+    def compute_gate_intensities(gates: list['Gate'], flattened_size: int, computational_cache: ComputationalCache):
+        for gate in gates:
+            gate.compute_intensities(flattened_size, computational_cache)
 
 
 class Model:
@@ -717,6 +723,7 @@ class Gate:
         self.is_top_gate = None
         self.computed_expression = None
         self.computed_probabilities = None
+        self.computed_intensities = None
 
     def __repr__(self):
         return natural_repr(self)
@@ -742,6 +749,13 @@ class Gate:
     def compute_probabilities(self, flattened_size: int, computational_cache: ComputationalCache) -> list[float]:
         return [
             disjunction_probability(self.computed_expression.terms, flattened_index, computational_cache)
+            for flattened_index in range(flattened_size)
+        ]
+
+    @memoise('computed_intensities')
+    def compute_intensities(self, flattened_size: int, computational_cache: ComputationalCache) -> list[float]:
+        return [
+            disjunction_intensity(self.computed_expression.terms, flattened_index, computational_cache)
             for flattened_index in range(flattened_size)
         ]
 
