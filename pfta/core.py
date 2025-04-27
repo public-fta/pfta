@@ -203,6 +203,7 @@ class FaultTree:
         # Computation of gate quantities
         FaultTree.compute_gate_probabilities(gates, flattened_size, computational_cache)
         FaultTree.compute_gate_intensities(gates, flattened_size, computational_cache)
+        FaultTree.compute_gate_rates(gates)
 
         # Finalisation
         self.time_unit = time_unit
@@ -255,7 +256,7 @@ class FaultTree:
             'time', 'sample',
             'computed_probability',
             'computed_intensity',
-            # TODO: computed rate
+            'computed_rate',
         ]
         data = [
             [
@@ -264,6 +265,7 @@ class FaultTree:
                 time, sample_index,
                 gate.computed_probabilities[time_index * self.sample_size + sample_index],
                 gate.computed_intensities[time_index * self.sample_size + sample_index],
+                gate.computed_rates[time_index * self.sample_size + sample_index],
             ]
             for gate in self.gates
             for time_index, time in enumerate(self.times)
@@ -401,6 +403,11 @@ class FaultTree:
     def compute_gate_intensities(gates: list['Gate'], flattened_size: int, computational_cache: ComputationalCache):
         for gate in gates:
             gate.compute_intensities(flattened_size, computational_cache)
+
+    @staticmethod
+    def compute_gate_rates(gates: list['Gate']):
+        for gate in gates:
+            gate.compute_rates()
 
 
 class Model:
@@ -724,6 +731,7 @@ class Gate:
         self.computed_expression = None
         self.computed_probabilities = None
         self.computed_intensities = None
+        self.computed_rates = None
 
     def __repr__(self):
         return natural_repr(self)
@@ -757,6 +765,13 @@ class Gate:
         return [
             disjunction_intensity(self.computed_expression.terms, flattened_index, computational_cache)
             for flattened_index in range(flattened_size)
+        ]
+
+    @memoise('computed_rates')
+    def compute_rates(self) -> list[float]:
+        return [
+            omega / (1 - q)
+            for q, omega in zip(self.computed_probabilities, self.computed_intensities)
         ]
 
     def compile_cut_set_table(self, events: list[Event]) -> Table:
