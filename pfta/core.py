@@ -169,12 +169,12 @@ class FaultTree:
         FaultTree.mark_used_events(events, all_input_ids)
         FaultTree.mark_top_gates(gates, all_input_ids)
 
-        # Prepare flattened count (loop over times and samples)
-        flattened_count = len(times) * sample_size
+        # Prepare flattened size (loop over times and samples)
+        flattened_size = len(times) * sample_size
 
         # Finalisation of modelling
         FaultTree.determine_actual_model_types(events, model_from_id)
-        FaultTree.generate_parameter_samples(events, model_from_id, seed, flattened_count)
+        FaultTree.generate_parameter_samples(events, model_from_id, seed, flattened_size)
 
         # Computation of expressions
         FaultTree.compute_event_expressions(events)
@@ -341,11 +341,11 @@ class FaultTree:
 
     @staticmethod
     def generate_parameter_samples(events: list['Event'], model_from_id: dict[str, 'Model'],
-                                   seed: str, flattened_count: int):
+                                   seed: str, flattened_size: int):
         random.seed(seed, version=2)
 
         for event in events:
-            event.generate_parameter_samples(model_from_id, flattened_count)
+            event.generate_parameter_samples(model_from_id, flattened_size)
 
     @staticmethod
     def compute_event_expressions(events: list['Event']):
@@ -444,12 +444,12 @@ class Model:
             raise InvalidModelKeyComboException(unset_property_line_number, message, explainer)
 
     @staticmethod
-    def generate_parameter_samples(model_dict: dict[str, Distribution], flattened_count: int) -> dict[str, list[float]]:
+    def generate_parameter_samples(model_dict: dict[str, Distribution], flattened_size: int) -> dict[str, list[float]]:
         samples_from_parameter = {}
 
         for parameter, distribution in model_dict.items():
             try:
-                samples = distribution.generate_samples(flattened_count)
+                samples = distribution.generate_samples(flattened_size)
             except (ValueError, OverflowError) as exception:
                 raise DistributionSamplingError(
                     distribution.line_number,
@@ -539,11 +539,11 @@ class Event:
 
     @memoise('parameter_samples')
     def generate_parameter_samples(self, model_from_id: dict[str, Model],
-                                   flattened_count: int) -> dict[str, list[float]]:
+                                   flattened_size: int) -> dict[str, list[float]]:
         model_owner = model_from_id.get(self.model_id, self)
         model_dict = model_owner.model_dict
 
-        return Model.generate_parameter_samples(model_dict, flattened_count)
+        return Model.generate_parameter_samples(model_dict, flattened_size)
 
     @memoise('computed_expression')
     def compute_expression(self) -> Expression:
