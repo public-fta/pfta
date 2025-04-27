@@ -25,7 +25,7 @@ from pfta.parsing import (
 )
 from pfta.presentation import Table
 from pfta.sampling import Distribution
-from pfta.utilities import invert_robust, find_cycles
+from pfta.utilities import robust_invert, find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
 
 
@@ -587,12 +587,12 @@ class Event:
             try:
                 failure_rate_samples = self.parameter_samples['failure_rate']
             except KeyError:
-                failure_rate_samples = [invert_robust(x) for x in self.parameter_samples['mean_failure_time']]
+                failure_rate_samples = [robust_invert(x) for x in self.parameter_samples['mean_failure_time']]
 
             try:
                 repair_rate_samples = self.parameter_samples['repair_rate']
             except KeyError:
-                repair_rate_samples = [invert_robust(x) for x in self.parameter_samples['mean_repair_time']]
+                repair_rate_samples = [robust_invert(x) for x in self.parameter_samples['mean_repair_time']]
 
             return [
                 constant_rate_model_probability(t, lambda_, mu)
@@ -615,12 +615,12 @@ class Event:
             try:
                 failure_rate_samples = self.parameter_samples['failure_rate']
             except KeyError:
-                failure_rate_samples = [invert_robust(x) for x in self.parameter_samples['mean_failure_time']]
+                failure_rate_samples = [robust_invert(x) for x in self.parameter_samples['mean_failure_time']]
 
             try:
                 repair_rate_samples = self.parameter_samples['repair_rate']
             except KeyError:
-                repair_rate_samples = [invert_robust(x) for x in self.parameter_samples['mean_repair_time']]
+                repair_rate_samples = [robust_invert(x) for x in self.parameter_samples['mean_repair_time']]
 
             return [
                 constant_rate_model_intensity(t, lambda_, mu)

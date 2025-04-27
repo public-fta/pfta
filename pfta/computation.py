@@ -15,7 +15,7 @@ import typing
 
 from pfta.boolean import Term
 from pfta.common import natural_repr
-from pfta.utilities import product_descending
+from pfta.utilities import descending_product
 
 if typing.TYPE_CHECKING:
     from pfta.core import Event
@@ -48,7 +48,7 @@ class ComputationalCache:
         a straight product of the failure probabilities of its constituent primary events (i.e. factors).
         """
         if index not in self.probability_from_index_from_term[term]:
-            probability = product_descending(
+            probability = descending_product(
                 self.probability_from_index_from_term[factor][index]
                 for factor in term.factors()
             )

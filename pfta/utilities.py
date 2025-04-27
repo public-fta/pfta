@@ -12,14 +12,14 @@ import math
 from typing import Iterable
 
 
-def invert_robust(x: float) -> float:
+def robust_invert(x: float) -> float:
     try:
         return 1 / x
     except ZeroDivisionError:
         return float('inf')
 
 
-def product_descending(factors: Iterable[float]) -> float:
+def descending_product(factors: Iterable[float]) -> float:
     """
     Compute a product after sorting the factors in descending order.
 
