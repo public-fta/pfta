@@ -13,7 +13,11 @@ import traceback
 
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr, format_cut_set, natural_join_backticks
-from pfta.computation import ComputationalCache, constant_rate_model_probability, constant_rate_model_intensity
+from pfta.computation import (
+    ComputationalCache,
+    constant_rate_model_probability, constant_rate_model_intensity,
+    disjunction_probability,
+)
 from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
@@ -189,7 +193,7 @@ class FaultTree:
         computational_cache = ComputationalCache(events)
 
         # Computation of gate quantities
-        # TODO: compute gate probabilities
+        FaultTree.compute_gate_probabilities(gates, flattened_size, computational_cache)
         # TODO: compute gate intensities
 
         # Finalisation
@@ -239,15 +243,21 @@ class FaultTree:
         headings = [
             'id', 'label', 'is_top_gate', 'is_paged',
             'type', 'inputs',
-            # TODO: computed quantities
+            'time', 'sample',
+            'computed_probability',
+            # TODO: computed intensity
+            # TODO: computed rate
         ]
         data = [
             [
                 gate.id_, gate.label, gate.is_top_gate, gate.is_paged,
                 gate.type_.name, ','.join(gate.input_ids),
+                time, sample_index,
+                gate.computed_probabilities[time_index * self.sample_size + sample_index],
             ]
             for gate in self.gates
-            # TODO: time dependence and sample number dependence
+            for time_index, time in enumerate(self.times)
+            for sample_index in range(self.sample_size)
         ]
         return Table(headings, data)
 
@@ -363,6 +373,11 @@ class FaultTree:
     def compute_event_rates(events: list['Event']):
         for event in events:
             event.compute_rates()
+
+    @staticmethod
+    def compute_gate_probabilities(gates: list['Gate'], flattened_size: int, computational_cache: ComputationalCache):
+        for gate in gates:
+            gate.compute_probabilities(flattened_size, computational_cache)
 
 
 class Model:
@@ -684,6 +699,7 @@ class Gate:
         # Fields to be set by fault tree
         self.is_top_gate = None
         self.computed_expression = None
+        self.computed_probabilities = None
 
     def __repr__(self):
         return natural_repr(self)
@@ -704,6 +720,13 @@ class Gate:
             raise ImplementationError(f'bad gate type `{self.type_}`')
 
         return boolean_operator(*input_expressions)
+
+    @memoise('computed_probabilities')
+    def compute_probabilities(self, flattened_size: int, computational_cache: ComputationalCache) -> list[float]:
+        return [
+            disjunction_probability(self.computed_expression.terms, flattened_index, computational_cache)
+            for flattened_index in range(flattened_size)
+        ]
 
     def compile_cut_set_table(self, events: list[Event]) -> Table:
         headings = [

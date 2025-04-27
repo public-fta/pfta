@@ -9,9 +9,11 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import collections
+import itertools
 import math
 import typing
 
+from pfta.boolean import Term
 from pfta.common import natural_repr
 
 if typing.TYPE_CHECKING:
@@ -34,6 +36,23 @@ class ComputationalCache:
 
     def __repr__(self):
         return natural_repr(self)
+
+    def probability(self, term, index) -> float:
+        """
+        Instantaneous failure probability of a Boolean term (minimal cut set).
+
+        From `MATHS.md`, the failure product of a minimal cut set `C = x y z ...` is given by
+            q[C] = q[x] q[y] q[z] ...,
+        a straight product of the failure probabilities of its constituent primary events (i.e. factors).
+        """
+        if index not in self.probability_from_index_from_term[term]:
+            probability = math.prod(  # TODO: replace with descending product
+                self.probability_from_index_from_term[factor][index]
+                for factor in term.factors()
+            )
+            self.probability_from_index_from_term[term][index] = probability
+
+        return self.probability_from_index_from_term[term][index]
 
 
 def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> float:
@@ -141,3 +160,33 @@ def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
 
     q = constant_rate_model_probability(t, lambda_, mu)
     return lambda_ * (1 - q)
+
+
+def disjunction_probability(terms: list[Term], flattened_index: int, computational_cache: ComputationalCache) -> float:
+    """
+    Instantaneous failure probability of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
+
+    From `MATHS.md`, for a gate `T` represented as a disjunction of `N` minimal cut sets,
+        T = C_1 + C_2 + ... + C_N,
+    the failure probability `q[T]` of the top gate is given by the inclusion–exclusion principle,
+        q[T] =   ∑{1≤i≤N} q[C_i]
+               − ∑{1≤i<j≤N} q[C_i C_j]
+               + ∑{1≤i<j<k≤N} q[C_i C_j C_k]
+               − ... .
+    TODO: For performance, we truncate after the latest term divided by the partial sum falls below a threshold.
+    """
+    term_count = len(terms)
+    partial_sum = 0
+
+    for order in range(1, term_count + 1):
+        term_combos = itertools.combinations(terms, order)
+        latest_term = sum(
+            computational_cache.probability(Term.conjunction(*terms), flattened_index)
+            for terms in term_combos
+        )
+
+        # TODO: threshold logic to break loop
+
+        partial_sum += latest_term
+
+    return partial_sum
