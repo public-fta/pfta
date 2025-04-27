@@ -152,7 +152,7 @@ class FaultTree:
         sample_size = fault_tree_properties.get('sample_size', 1)
         sample_size_raw = fault_tree_properties.get('sample_size_raw')
         sample_size_line_number = fault_tree_properties.get('sample_size_line_number')
-        tolerance = fault_tree_properties.get('tolerance', 1e-6)
+        tolerance = fault_tree_properties.get('tolerance', 0)
         tolerance_raw = fault_tree_properties.get('tolerance_raw')
         tolerance_line_number = fault_tree_properties.get('tolerance_line_number')
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
@@ -295,10 +295,10 @@ class FaultTree:
 
     @staticmethod
     def validate_tolerance(tolerance: float, tolerance_raw: str, tolerance_line_number: int):
-        if not 0 < tolerance < 1:
+        if not 0 <= tolerance < 1:
             raise InvalidToleranceException(
                 tolerance_line_number,
-                f'tolerance {tolerance_raw} not strictly between zero and unity',
+                f'tolerance {tolerance_raw} negative or not less than unity',
             )
 
     @staticmethod

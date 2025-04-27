@@ -102,14 +102,6 @@ class TestCore(unittest.TestCase):
             FaultTree,
             textwrap.dedent('''
                 - time: 1
-                - tolerance: 0
-            '''),
-        )
-        self.assertRaises(
-            InvalidToleranceException,
-            FaultTree,
-            textwrap.dedent('''
-                - time: 1
                 - tolerance: 1
             '''),
         )
