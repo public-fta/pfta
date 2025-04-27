@@ -782,6 +782,7 @@ class Gate:
             'time', 'sample',
             'computed_probability',
             'computed_intensity',
+            'computed_rate',
         ]
         data = [
             [
@@ -790,6 +791,7 @@ class Gate:
                 time, sample_index,
                 computational_cache.probability(term, index=time_index * sample_size + sample_index),
                 computational_cache.intensity(term, index=time_index * sample_size + sample_index),
+                computational_cache.rate(term, index=time_index * sample_size + sample_index),
             ]
             for term in sorted(self.computed_expression.terms)
             for time_index, time in enumerate(times)

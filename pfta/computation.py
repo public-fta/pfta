@@ -83,6 +83,15 @@ class ComputationalCache:
 
         return self._intensity_from_index_from_term[term][index]
 
+    def rate(self, term, index) -> float:
+        """
+        Instantaneous failure rate of a Boolean term (minimal cut set).
+        """
+        q = self.probability(term, index)
+        omega = self.intensity(term, index)
+
+        return omega / (1 - q)
+
 
 def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> float:
     """
