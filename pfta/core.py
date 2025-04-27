@@ -186,15 +186,7 @@ class FaultTree:
         FaultTree.compute_event_rates(events)
 
         # Prepare cache for computation of gate quantities
-        probabilities_from_term = {
-            event.computed_expression.sole_term(): event.computed_probabilities
-            for event in events
-        }
-        intensities_from_term = {
-            event.computed_expression.sole_term(): event.computed_intensities
-            for event in events
-        }
-        computational_cache = ComputationalCache(probabilities_from_term, intensities_from_term)
+        computational_cache = ComputationalCache(events)
 
         # Computation of gate quantities
         # TODO: compute gate probabilities

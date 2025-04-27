@@ -8,17 +8,29 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import collections
 import math
+import typing
 
-from pfta.boolean import Term
 from pfta.common import natural_repr
+
+if typing.TYPE_CHECKING:
+    from pfta.core import Event
 
 
 class ComputationalCache:
-    def __init__(self, probabilities_from_term: dict[Term, list[float]],
-                 intensities_from_term: dict[Term, list[float]]):
-        self.probabilities_from_term = probabilities_from_term
-        self.intensities_from_term = intensities_from_term
+    def __init__(self, events: list['Event']):
+        probability_from_index_from_term = {
+            event.computed_expression.sole_term(): dict(enumerate(event.computed_probabilities))
+            for event in events
+        }
+        intensity_from_index_from_term = {
+            event.computed_expression.sole_term(): dict(enumerate(event.computed_intensities))
+            for event in events
+        }
+
+        self.probability_from_index_from_term = collections.defaultdict(dict, probability_from_index_from_term)
+        self.intensity_from_index_from_term = collections.defaultdict(dict, intensity_from_index_from_term)
 
     def __repr__(self):
         return natural_repr(self)
