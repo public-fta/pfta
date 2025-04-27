@@ -214,7 +214,9 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
 
     for order in range(1, term_count + 1):
         combos = itertools.combinations(terms, order)
+
         latest_term = (-1)**(order - 1) * sum(q(and_(*combo)) for combo in combos)
+
         partial_sum += latest_term
 
         if latest_term == 0 or abs(robust_divide(latest_term, partial_sum)) < computational_cache.tolerance:
@@ -261,6 +263,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
 
     for order in range(1, term_count + 1):
         combos = itertools.combinations(terms, order)
+
         latest_omega_1_term = (
             (-1)**(order - 1) * sum(omega(gcd(*combo)) * q(and_(*combo) / gcd(*combo)) for combo in combos)
         )
@@ -268,6 +271,8 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
             (-1)**(order - 1) * sum(omega_r(combo) for combo in combos)
         )
         latest_term = latest_omega_1_term + latest_omega_2_term
+
+        partial_sum += latest_term
 
         if latest_term == 0 or abs(robust_divide(latest_term, partial_sum)) < computational_cache.tolerance:
             break
@@ -303,6 +308,7 @@ def redundant_intensity_mini_term(terms_subset: tuple[Term, ...], terms: list[Te
 
     for order in range(1, term_count + 1):
         combos = itertools.combinations(terms, order)
+
         latest_term = (
             (-1)**(order - 1)
             * sum(
@@ -310,6 +316,7 @@ def redundant_intensity_mini_term(terms_subset: tuple[Term, ...], terms: list[Te
                 for combo in combos
             )
         )
+
         partial_sum += latest_term
 
     return partial_sum
