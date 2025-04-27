@@ -48,10 +48,11 @@ class ComputationalCache:
         a straight product of the failure probabilities of its constituent primary events (i.e. factors).
         """
         if index not in self.probability_from_index_from_term[term]:
-            probability = descending_product(
-                self.probability_from_index_from_term[factor][index]
-                for factor in term.factors()
-            )
+            def q(e: Term) -> float:
+                return self.probability_from_index_from_term[e][index]
+
+            probability = descending_product(q(factor) for factor in term.factors())
+
             self.probability_from_index_from_term[term][index] = probability
 
         return self.probability_from_index_from_term[term][index]
@@ -70,11 +71,14 @@ class ComputationalCache:
                  = ∑{e|C} ω[e] q[C÷e].
         """
         if index not in self.intensity_from_index_from_term[term]:
-            intensity = descending_sum(
-                self.intensity_from_index_from_term[factor][index]
-                * self.probability_from_index_from_term[term / factor][index]
-                for factor in term.factors()
-            )
+            def q(e: Term) -> float:
+                return self.probability_from_index_from_term[e][index]
+
+            def omega(e: Term) -> float:
+                return self.intensity_from_index_from_term[e][index]
+
+            intensity = descending_sum(omega(factor) * q(term / factor) for factor in term.factors())
+
             self.intensity_from_index_from_term[term][index] = intensity
 
         return self.intensity_from_index_from_term[term][index]
