@@ -14,6 +14,25 @@ from pfta.boolean import Term, Expression
 
 
 class TestBoolean(unittest.TestCase):
+    def test_term_division(self):
+        # A / True = A
+        self.assertEqual(Term(1) / Term(0), Term(1))
+
+        # A / B = A
+        self.assertEqual(Term(0b01) / Term(0b10), Term(0b01))
+
+        # AC / True = AC
+        self.assertEqual(Term(0b101) / Term(0), Term(0b101))
+
+        # AC / B = AC
+        self.assertEqual(Term(0b101) / Term(0b010), Term(0b101))
+
+        # ABCE / BC = AE
+        self.assertEqual(Term(0b10111) / Term(0b00110), Term(0b10001))
+
+        # ABCE / BCD = AE
+        self.assertEqual(Term(0b10111) / Term(0b01110), Term(0b10001))
+
     def test_term_event_indices(self):
         self.assertEqual(Term(0).event_indices(), set())
         self.assertEqual(Term(1).event_indices(), {0})
@@ -139,25 +158,6 @@ class TestBoolean(unittest.TestCase):
                 Term(0b011010),  # BDE
             ),
         )
-
-    def test_term_divide(self):
-        # A / True = A
-        self.assertEqual(Term.divide(Term(1), Term(0)), Term(1))
-
-        # A / B = A
-        self.assertEqual(Term.divide(Term(0b01), Term(0b10)), Term(0b01))
-
-        # AC / True = AC
-        self.assertEqual(Term.divide(Term(0b101), Term(0)), Term(0b101))
-
-        # AC / B = AC
-        self.assertEqual(Term.divide(Term(0b101), Term(0b010)), Term(0b101))
-
-        # ABCE / BC = AE
-        self.assertEqual(Term.divide(Term(0b10111), Term(0b00110)), Term(0b10001))
-
-        # ABCE / BCD = AE
-        self.assertEqual(Term.divide(Term(0b10111), Term(0b01110)), Term(0b10001))
 
     def test_term_gcd(self):
         # Empty sequence not allowed

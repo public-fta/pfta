@@ -33,6 +33,12 @@ class Term:
     def __lt__(self, other):
         return (self.order(), self.encoding) < (other.order(), other.encoding)
 
+    def __truediv__(self, other) -> 'Term':
+        """
+        Compute the result of removing from the numerator (self) all factors in the denominator (other).
+        """
+        return Term(self.encoding & ~other.encoding)
+
     def __hash__(self):
         return hash(self.encoding)
 
@@ -115,13 +121,6 @@ class Term:
                 necessary_terms.add(term)
 
         return Expression(*necessary_terms)
-
-    @staticmethod
-    def divide(numerator: 'Term', denominator: 'Term') -> 'Term':
-        """
-        Compute the result of removing from the numerator all factors in the denominator.
-        """
-        return Term(numerator.encoding & ~denominator.encoding)
 
     @staticmethod
     def gcd(*terms: 'Term') -> 'Term':
