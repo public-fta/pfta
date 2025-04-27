@@ -12,6 +12,10 @@ import math
 from typing import Iterable
 
 
+def robust_divide(x: float, y: float) -> float:
+    return x * robust_invert(y)
+
+
 def robust_invert(x: float) -> float:
     try:
         return 1 / x

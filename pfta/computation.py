@@ -15,7 +15,7 @@ import typing
 
 from pfta.boolean import Term
 from pfta.common import natural_repr
-from pfta.utilities import descending_product, descending_sum
+from pfta.utilities import robust_divide, descending_product, descending_sum
 
 if typing.TYPE_CHECKING:
     from pfta.core import Event
@@ -217,7 +217,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
         latest_term = (-1)**(order - 1) * sum(q(and_(*combo)) for combo in combos)
         partial_sum += latest_term
 
-        if latest_term == 0 or abs(latest_term / partial_sum) < computational_cache.tolerance:
+        if latest_term == 0 or abs(robust_divide(latest_term, partial_sum)) < computational_cache.tolerance:
             break
 
     return partial_sum
@@ -269,7 +269,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         )
         latest_term = latest_omega_1_term + latest_omega_2_term
 
-        if latest_term == 0 or abs(latest_term / partial_sum) < computational_cache.tolerance:
+        if latest_term == 0 or abs(robust_divide(latest_term, partial_sum)) < computational_cache.tolerance:
             break
 
     return partial_sum
