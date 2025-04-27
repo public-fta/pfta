@@ -19,7 +19,7 @@ from pfta.constants import (
     VALID_MODEL_TYPES, VALID_MODEL_KEYS, MODEL_TYPE_EXPLAINER,
     VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS,
     VALID_ID_REGEX, ID_EXPLAINER,
-    DISTRIBUTION_FROM_NAME_PARAMETERS, DISTRIBUTION_EXPLAINER,
+    DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME, DISTRIBUTION_EXPLAINER,
 )
 from pfta.sampling import Distribution, DeltaDistribution
 from pfta.woe import FaultTreeTextException, ImplementationError
@@ -433,7 +433,7 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
 
 
 def parse_distribution(string: str, line_number: int) -> Distribution:
-    for (name, parameters), distribution_class in DISTRIBUTION_FROM_NAME_PARAMETERS.items():
+    for name, (distribution_class, parameters) in DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME.items():
         distribution_pattern = compile_distribution_pattern(name, parameters)
         if distribution_match := re.match(distribution_pattern, string):
             float_from_parameter = parse_distribution_parameters(distribution_match)

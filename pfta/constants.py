@@ -93,17 +93,17 @@ KEY_EXPLAINER_FROM_CLASS = {
     'Gate': f'Recognised keys are {natural_join_backticks(VALID_KEYS_FROM_CLASS["Gate"])}.',
 }
 
-DISTRIBUTION_FROM_NAME_PARAMETERS = {
-    ('lognormal', ('mu', 'sigma')): LogNormalDistribution,
-    ('normal', ('mu', 'sigma')): NormalDistribution,
-    ('triangular', ('lower', 'upper', 'mode')): TriangularDistribution,
-    ('uniform', ('lower', 'upper')): UniformDistribution,
+DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME = {
+    'lognormal': (LogNormalDistribution, ('mu', 'sigma')),
+    'normal': (NormalDistribution, ('mu', 'sigma')),
+    'triangular':(TriangularDistribution, ('lower', 'upper', 'mode')),
+    'uniform': (UniformDistribution, ('lower', 'upper')),
 }
 DISTRIBUTION_EXPLAINER = '\n'.join([
     f'Recognised distributions are:',
     *[
         f'- {name}({natural_join([f"{parameter}=<value>" for parameter in parameters], penultimate_separator=None)})'
-        for name, parameters in DISTRIBUTION_FROM_NAME_PARAMETERS.keys()
+        for name, (_, parameters) in DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME.items()
     ],
     '- <value> (for a point value)',
 ])
