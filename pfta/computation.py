@@ -186,8 +186,9 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
             for terms in term_combos
         )
 
-        # TODO: threshold logic to break loop
-
         partial_sum += latest_term
+
+        if latest_term == 0 or abs(latest_term / partial_sum) < 1e-6:  # TODO: refactor to fault tree property
+            break
 
     return partial_sum
