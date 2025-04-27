@@ -788,8 +788,8 @@ class Gate:
                 format_cut_set(events[index].id_ for index in term.event_indices()),
                 term.order(),
                 time, sample_index,
-                computational_cache.probability_from_index_from_term[term][time_index * sample_size + sample_index],
-                computational_cache.intensity_from_index_from_term[term][time_index * sample_size + sample_index],
+                computational_cache.probability(term, index=time_index * sample_size + sample_index),
+                computational_cache.intensity(term, index=time_index * sample_size + sample_index),
             ]
             for term in sorted(self.computed_expression.terms)
             for time_index, time in enumerate(times)

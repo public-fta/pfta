@@ -33,8 +33,8 @@ class ComputationalCache:
         }
 
         self.tolerance = tolerance
-        self.probability_from_index_from_term = collections.defaultdict(dict, probability_from_index_from_term)
-        self.intensity_from_index_from_term = collections.defaultdict(dict, intensity_from_index_from_term)
+        self._probability_from_index_from_term = collections.defaultdict(dict, probability_from_index_from_term)
+        self._intensity_from_index_from_term = collections.defaultdict(dict, intensity_from_index_from_term)
 
     def __repr__(self):
         return natural_repr(self)
@@ -47,15 +47,15 @@ class ComputationalCache:
             q[C] = q[x] q[y] q[z] ...,
         a straight product of the failure probabilities of its constituent primary events (i.e. factors).
         """
-        if index not in self.probability_from_index_from_term[term]:
+        if index not in self._probability_from_index_from_term[term]:
             def q(e: Term) -> float:
                 return self.probability(e, index)
 
             probability = descending_product(q(factor) for factor in term.factors())
 
-            self.probability_from_index_from_term[term][index] = probability
+            self._probability_from_index_from_term[term][index] = probability
 
-        return self.probability_from_index_from_term[term][index]
+        return self._probability_from_index_from_term[term][index]
 
     def intensity(self, term, index) -> float:
         """
@@ -70,7 +70,7 @@ class ComputationalCache:
                    + ...
                  = ∑{e|C} ω[e] q[C÷e].
         """
-        if index not in self.intensity_from_index_from_term[term]:
+        if index not in self._intensity_from_index_from_term[term]:
             def q(e: Term) -> float:
                 return self.probability(e, index)
 
@@ -79,9 +79,9 @@ class ComputationalCache:
 
             intensity = descending_sum(omega(factor) * q(term / factor) for factor in term.factors())
 
-            self.intensity_from_index_from_term[term][index] = intensity
+            self._intensity_from_index_from_term[term][index] = intensity
 
-        return self.intensity_from_index_from_term[term][index]
+        return self._intensity_from_index_from_term[term][index]
 
 
 def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> float:
