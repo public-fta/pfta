@@ -180,16 +180,14 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
     term_count = len(terms)
     partial_sum = 0
 
+    def q(term: Term) -> float:
+        return computational_cache.probability(term, flattened_index)
+
+    and_ = Term.conjunction
+
     for order in range(1, term_count + 1):
         combos = itertools.combinations(terms, order)
-        latest_term = (
-            (-1)**(order - 1)
-            * sum(
-                computational_cache.probability(Term.conjunction(*combo), flattened_index)
-                for combo in combos
-            )
-        )
-
+        latest_term = (-1)**(order - 1) * sum(q(and_(*combo)) for combo in combos)
         partial_sum += latest_term
 
         if latest_term == 0 or abs(latest_term / partial_sum) < computational_cache.tolerance:
