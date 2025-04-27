@@ -123,6 +123,21 @@ class Term:
         """
         return Term(numerator.encoding & ~denominator.encoding)
 
+    @staticmethod
+    def gcd(*terms: 'Term') -> 'Term':
+        """
+        Compute the greatest common divisor of a sequence of terms.
+        """
+        try:
+            gcd_encoding = terms[0].encoding
+        except IndexError:
+            raise ValueError('cannot take gcd of an empty sequence of terms')
+
+        for term in terms[1:]:
+            gcd_encoding &= term.encoding
+
+        return Term(gcd_encoding)
+
 
 class Expression:
     """

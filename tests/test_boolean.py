@@ -159,6 +159,46 @@ class TestBoolean(unittest.TestCase):
         # ABCE / BCD = AE
         self.assertEqual(Term.divide(Term(0b10111), Term(0b01110)), Term(0b10001))
 
+    def test_term_gcd(self):
+        # Empty sequence not allowed
+        self.assertRaises(ValueError, Term.gcd)
+
+        # gcd(True) = True
+        self.assertEqual(Term.gcd(Term(0)), Term(0))
+
+        # gcd(A) = A
+        self.assertEqual(Term.gcd(Term(1)), Term(1))
+
+        # gcd(A, B) = True
+        self.assertEqual(Term.gcd(Term(0b01), Term(0b10)), Term(0b00))
+
+        # gcd(A, B, C, D) = True
+        self.assertEqual(Term.gcd(Term(0b0001), Term(0b0010), Term(0b0100), Term(0b1000)), Term(0b0000))
+
+        # gcd(AB, B, BC, BD) = B
+        self.assertEqual(Term.gcd(Term(0b0011), Term(0b0010), Term(0b0110), Term(0b1010)), Term(0b0010))
+
+        # gcd(ABD, BD, BCD, BD) = BD
+        self.assertEqual(Term.gcd(Term(0b1011), Term(0b1010), Term(0b1110), Term(0b1010)), Term(0b1010))
+
+        # gcd(AB, B, BCD, BD) = BD
+        self.assertEqual(Term.gcd(Term(0b0011), Term(0b0010), Term(0b1110), Term(0b1010)), Term(0b0010))
+
+        # gcd(AB, BC, CD, DE) = True
+        self.assertEqual(Term.gcd(Term(0b00011), Term(0b00110), Term(0b01100), Term(0b11000)), Term(0b00000))
+
+        # gcd(True, ABCD) = True
+        self.assertEqual(Term.gcd(Term(0b0000), Term(0b1111)), Term(0b0000))
+
+        # gcd(ACD, ABCD, AD) = AD
+        self.assertEqual(Term.gcd(Term(0b1101), Term(0b1111), Term(0b1001)), Term(0b1001))
+
+        # gcd(ABCD, ABCD, ABCD) = ABCD
+        self.assertEqual(Term.gcd(Term(0b1111), Term(0b1111), Term(0b1111)), Term(0b1111))
+
+        # gcd(ABCDEFG) = ABCDEFG
+        self.assertEqual(Term.gcd(Term(0b1111111)), Term(0b1111111))
+
     def test_expression_conjunction(self):
         # (Empty conjunction) = True
         self.assertEqual(
