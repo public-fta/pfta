@@ -21,7 +21,7 @@ from pfta.constants import (
     VALID_ID_REGEX, ID_EXPLAINER,
     DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME, DISTRIBUTION_EXPLAINER,
 )
-from pfta.sampling import Distribution, DeltaDistribution
+from pfta.sampling import Distribution, DegenerateDistribution
 from pfta.woe import FaultTreeTextException, ImplementationError
 
 
@@ -458,7 +458,7 @@ def parse_distribution(string: str, line_number: int) -> Distribution:
             DISTRIBUTION_EXPLAINER,
         )
 
-    return DeltaDistribution(value, line_number)
+    return DegenerateDistribution(value, line_number)
 
 
 def parse_distribution_parameters(distribution_match: re.Match) -> dict[str, float]:

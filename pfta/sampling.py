@@ -30,7 +30,7 @@ class Distribution:
         raise NotImplementedError
 
 
-class DeltaDistribution(Distribution):
+class DegenerateDistribution(Distribution):
     def __init__(self, value: float, line_number: int):
         self.value = value
         super().__init__(line_number)
