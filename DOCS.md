@@ -54,4 +54,28 @@ The choice of `model_type` determines the other properties that may be set:
 A declared failure model may be utilised by an event.
 
 
+### Events
+
+An event declaration may either:
+
+1. Utilise a declared failure model:
+
+   ```
+   Event: <identifier>
+   - label: <string>      (optional)
+   - comment: <string>    (optional)
+   - model: <identifier>
+   ```
+
+2. Utilise its own failure model properties:
+
+   ```
+   Event: <identifier>
+   - label: <string>                                 (optional)
+   - comment: <string>                               (optional)
+   - model_type: Undeveloped | Fixed | ConstantRate
+   # <followed by the properties relevant to the chosen `model_type`>
+   ```
+
+
 ## Core objects
