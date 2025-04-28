@@ -12,7 +12,9 @@ import enum
 import re
 
 from pfta.common import natural_join, natural_join_backticks
-from pfta.sampling import LogNormalDistribution, NormalDistribution, TriangularDistribution, UniformDistribution
+from pfta.sampling import (
+    LogNormalDistribution, LogUniformDistribution, NormalDistribution, TriangularDistribution, UniformDistribution,
+)
 
 
 class LineType(enum.Enum):
@@ -95,6 +97,7 @@ KEY_EXPLAINER_FROM_CLASS = {
 
 DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME = {
     'lognormal': (LogNormalDistribution, ('mu', 'sigma')),
+    'loguniform': (LogUniformDistribution, ('lower', 'upper')),
     'normal': (NormalDistribution, ('mu', 'sigma')),
     'triangular':(TriangularDistribution, ('lower', 'upper', 'mode')),
     'uniform': (UniformDistribution, ('lower', 'upper')),

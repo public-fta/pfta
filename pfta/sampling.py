@@ -8,6 +8,7 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import math
 import random
 
 from pfta.common import natural_repr
@@ -44,6 +45,19 @@ class LogNormalDistribution(Distribution):
         sigma = self.sigma
 
         return [random.lognormvariate(mu, sigma) for _ in range(count)]
+
+
+class LogUniformDistribution(Distribution):
+    def __init__(self, lower: float, upper: float, line_number: int):
+        self.lower = lower
+        self.upper = upper
+        super().__init__(line_number)
+
+    def generate_samples(self, count: int) -> list[float]:
+        a = self.lower
+        b = self.upper
+
+        return [math.exp(random.uniform(math.log(a), math.log(b))) for _ in range(count)]
 
 
 class NormalDistribution(Distribution):

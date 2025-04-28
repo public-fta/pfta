@@ -22,7 +22,7 @@ Event: MAT
 Event: LTR
 - label: Lighter fails to ignite candle
 - model_type: Fixed
-- probability: 0.01
+- probability: loguniform(lower=0.001, upper=0.01)
 - intensity: 0
 
 Event: EXT
