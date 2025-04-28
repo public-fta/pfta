@@ -19,7 +19,7 @@ Free and open-source fault tree analysis.
 PFTA reads a textual representation of a fault tree. For example:
 
 ```
-- time: 1, 2, 3, 5, 10, 100, 1000
+- times: 1, 2, 3, 5, 10, 100, 1000
 - time_unit: h
 - seed: candle
 - sample_size: 1000
@@ -98,7 +98,7 @@ options:
 from pfta.core import FaultTree
 
 fault_tree = FaultTree('''
-- time: nan
+- times: nan
 
 Event: A
 - model_type: Fixed

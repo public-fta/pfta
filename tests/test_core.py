@@ -28,7 +28,7 @@ class TestCore(unittest.TestCase):
             DuplicateIdException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
 
                 Event: EV-001
                 - model_type: Undeveloped
@@ -47,19 +47,19 @@ class TestCore(unittest.TestCase):
 
         # Negative time
         try:
-            FaultTree('- time: 0, nan')
+            FaultTree('- times: 0, nan')
         except NegativeValueException:
             self.fail('NegativeValueException should not have been raised')
 
         self.assertRaises(
             NegativeValueException,
             FaultTree,
-            '- time: -1',
+            '- times: -1',
         )
         self.assertRaises(
             NegativeValueException,
             FaultTree,
-            '- time: 3, 4, -5',
+            '- times: 3, 4, -5',
         )
 
         # Sub-unit sample size
@@ -67,7 +67,7 @@ class TestCore(unittest.TestCase):
             SubUnitValueException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
                 - sample_size: 0
             '''),
         )
@@ -75,7 +75,7 @@ class TestCore(unittest.TestCase):
             SubUnitValueException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
                 - sample_size: -100
             '''),
         )
@@ -85,7 +85,7 @@ class TestCore(unittest.TestCase):
             InvalidToleranceException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
                 - tolerance: -1
             '''),
         )
@@ -93,7 +93,7 @@ class TestCore(unittest.TestCase):
             InvalidToleranceException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
                 - tolerance: -1e-16
             '''),
         )
@@ -101,7 +101,7 @@ class TestCore(unittest.TestCase):
             InvalidToleranceException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
                 - tolerance: 1
             '''),
         )
@@ -109,7 +109,7 @@ class TestCore(unittest.TestCase):
             InvalidToleranceException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
                 - tolerance: 1.0000000000000001
             '''),
         )
@@ -117,7 +117,7 @@ class TestCore(unittest.TestCase):
             InvalidToleranceException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
                 - tolerance: 2
             '''),
         )
@@ -125,7 +125,7 @@ class TestCore(unittest.TestCase):
             InvalidToleranceException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
                 - tolerance: nan
             '''),
         )
@@ -133,7 +133,7 @@ class TestCore(unittest.TestCase):
             InvalidToleranceException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
                 - tolerance: inf
             '''),
         )
@@ -143,7 +143,7 @@ class TestCore(unittest.TestCase):
             UnknownModelException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
 
                 Event: EV-001
                 - model: MD-NO
@@ -158,7 +158,7 @@ class TestCore(unittest.TestCase):
             UnknownInputException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
 
                 Gate: GT-001
                 - type: AND
@@ -174,7 +174,7 @@ class TestCore(unittest.TestCase):
             CircularInputsException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
 
                 Gate: A
                 - type: AND
@@ -185,7 +185,7 @@ class TestCore(unittest.TestCase):
             CircularInputsException,
             FaultTree,
             textwrap.dedent('''
-                - time: 1
+                - times: 1
 
                 Gate: Paper
                 - type: OR

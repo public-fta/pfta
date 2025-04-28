@@ -228,7 +228,7 @@ class TestParsing(unittest.TestCase):
                 ParsedParagraph(
                     object_line=None,
                     property_lines=[
-                        ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                        ParsedLine(2, LineType.PROPERTY, info={'key': 'times', 'value': '1'}),
                         ParsedLine(3, LineType.PROPERTY, info={'key': 'time_unit', 'value': 'h'}),
                     ],
                 ),
@@ -239,7 +239,7 @@ class TestParsing(unittest.TestCase):
                 id_=None,
                 object_line=None,
                 property_lines=[
-                    ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'times', 'value': '1'}),
                     ParsedLine(3, LineType.PROPERTY, info={'key': 'time_unit', 'value': 'h'}),
                 ],
             ),
@@ -298,7 +298,7 @@ class TestParsing(unittest.TestCase):
             ParsedParagraph(
                 object_line=None,
                 property_lines=[
-                    ParsedLine(20, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                    ParsedLine(20, LineType.PROPERTY, info={'key': 'times', 'value': '1'}),
                     ParsedLine(21, LineType.PROPERTY, info={'key': 'time_unit', 'value': 'h'}),
                 ],
             ),
@@ -341,8 +341,8 @@ class TestParsing(unittest.TestCase):
             ParsedParagraph(
                 object_line=None,
                 property_lines=[
-                    ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
-                    ParsedLine(2, LineType.PROPERTY, info={'key': 'time', 'value': '1'}),
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'times', 'value': '1'}),
+                    ParsedLine(2, LineType.PROPERTY, info={'key': 'times', 'value': '1'}),
                 ],
             ),
             is_first_paragraph=True,
@@ -377,7 +377,7 @@ class TestParsing(unittest.TestCase):
                     id_=None,
                     object_line=None,
                     property_lines=[
-                        ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3.1,'})
+                        ParsedLine(1, LineType.PROPERTY, info={'key': 'times', 'value': '3.1,'})
                     ],
                 ),
             )
@@ -393,7 +393,7 @@ class TestParsing(unittest.TestCase):
                 id_=None,
                 object_line=None,
                 property_lines=[
-                    ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3.1,,'})
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'times', 'value': '3.1,,'})
                 ],
             ),
         )
@@ -407,7 +407,7 @@ class TestParsing(unittest.TestCase):
                 id_=None,
                 object_line=None,
                 property_lines=[
-                    ParsedLine(1, LineType.PROPERTY, info={'key': 'time', 'value': '3.1, foo'})
+                    ParsedLine(1, LineType.PROPERTY, info={'key': 'times', 'value': '3.1, foo'})
                 ],
             ),
         )
