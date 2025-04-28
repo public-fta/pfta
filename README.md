@@ -2,7 +2,8 @@
 
 Free and open-source fault tree analysis.
 
-For an overview of the mathematics, see [`MATHS.md`].
+- For rudimentary documentation, see [`DOCS.md`].
+- For an overview of the mathematics, see [`MATHS.md`].
 
 
 ## Textual input
@@ -136,5 +137,6 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only). <br>
 This is free software with NO WARRANTY etc. etc., see [`LICENSE`].
 
 
+[`DOCS.md`]: DOCS.md
 [`LICENSE`]: LICENSE
 [`MATHS.md`]: MATHS.md
