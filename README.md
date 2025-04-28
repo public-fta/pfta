@@ -12,6 +12,7 @@ PFTA reads a textual representation of a fault tree. For example:
 ```
 - time: 1, 2, 3, 5, 10, 100, 1000
 - time_unit: h
+- seed: candle
 - sample_size: 1000
 
 Gate: CAN
