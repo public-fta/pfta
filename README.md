@@ -117,8 +117,14 @@ Gate: AB_OR_C
 fault_tree.gates[0]
 # Gate(id_='AB', label=None, is_paged=False, type_=<GateType.AND: 1>, input_ids=['A', 'B'], input_ids_line_number=21, comment=None, is_top_gate=False, computed_expression=Expression(Term(0b11)), computed_probabilities=[0.0], computed_intensities=[0.63], computed_rates=[0.63])
 
+fault_tree.gates[0].computed_rates
+# [0.63]
+
 fault_tree.gates[1]
 # Gate(id_='AB_OR_C', label=None, is_paged=False, type_=<GateType.OR: 0>, input_ids=['AB', 'C'], input_ids_line_number=25, comment=None, is_top_gate=True, computed_expression=Expression(Term(0b11), Term(0b100)), computed_probabilities=[0.0], computed_intensities=[0.6301], computed_rates=[0.6301])
+
+fault_tree.gates[1].computed_rates
+# [0.6301]
 ```
 
 
