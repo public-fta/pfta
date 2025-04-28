@@ -1,7 +1,5 @@
 # Public Fault Tree Analyser (PFTA)
 
-**(Work in progress)**
-
 Free and open-source fault tree analysis.
 
 For an overview of the mathematics, see [`MATHS.md`].
@@ -46,6 +44,16 @@ Event: EXT
 ```
 
 This allows for text-based version control of a fault tree.
+
+
+## Output
+
+Output files consist of:
+
+- a table (TSV) of events,
+- a table (TSV) of gates,
+- a table (TSV) of cut sets under each gate, and
+- vector graphics (SVG) for each top gate and paged gate (**TODO**).
 
 
 [`MATHS.md`]: MATHS.md
