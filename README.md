@@ -128,4 +128,12 @@ fault_tree.gates[1].computed_rates
 ```
 
 
+## Licence
+
+**Copyright 2025 Conway.** <br>
+Licensed under the GNU General Public License v3.0 (GPL-3.0-only). <br>
+This is free software with NO WARRANTY etc. etc., see [`LICENSE`].
+
+
+[`LICENSE`]: LICENSE
 [`MATHS.md`]: MATHS.md
