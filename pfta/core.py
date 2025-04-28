@@ -144,8 +144,8 @@ class FaultTree:
             raise ImplementationError(f'bad class {class_}')
 
         # Fault tree property extraction
-        time_unit = fault_tree_properties.get('time_unit')
         times = fault_tree_properties.get('times')
+        time_unit = fault_tree_properties.get('time_unit')
         times_raw = fault_tree_properties.get('times_raw')
         times_line_number = fault_tree_properties.get('times_line_number')
         seed = fault_tree_properties.get('seed')
@@ -206,8 +206,8 @@ class FaultTree:
         FaultTree.compute_gate_rates(gates)
 
         # Finalisation
-        self.time_unit = time_unit
         self.times = times
+        self.time_unit = time_unit
         self.seed = seed
         self.sample_size = sample_size
         self.tolerance = tolerance
