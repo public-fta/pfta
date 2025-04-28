@@ -12,6 +12,11 @@ import math
 import random
 
 from pfta.common import natural_repr
+from pfta.woe import FaultTreeTextException
+
+
+class InvalidDistributionParameterException(FaultTreeTextException):
+    pass
 
 
 class Distribution:
@@ -49,6 +54,18 @@ class LogNormalDistribution(Distribution):
 
 class LogUniformDistribution(Distribution):
     def __init__(self, lower: float, upper: float, line_number: int):
+        if lower <= 0:
+            raise InvalidDistributionParameterException(
+                line_number,
+                f'loguniform distribution parameter `lower={lower}` not positive',
+            )
+
+        if upper <= 0:
+            raise InvalidDistributionParameterException(
+                line_number,
+                f'loguniform distribution parameter `upper={upper}` not positive',
+            )
+
         self.lower = lower
         self.upper = upper
         super().__init__(line_number)

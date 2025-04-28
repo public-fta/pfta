@@ -22,6 +22,7 @@ from pfta.parsing import (
     parse_fault_tree_properties, parse_event_properties, parse_gate_properties,
 )
 from pfta.constants import LineType
+from pfta.sampling import InvalidDistributionParameterException
 
 
 class TestParsing(unittest.TestCase):
@@ -517,6 +518,32 @@ class TestParsing(unittest.TestCase):
             )
         except InvalidDistributionException:
             self.fail('InvalidDistributionException should not have been raised')
+
+        # Invalid distribution parameter
+        self.assertRaises(
+            InvalidDistributionParameterException,
+            parse_event_properties,
+            ParsedAssembly(
+                class_='Event',
+                id_='EV-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'intensity', 'value': 'loguniform(lower=1,upper=-2)'})
+                ],
+            ),
+        )
+        self.assertRaises(
+            InvalidDistributionParameterException,
+            parse_event_properties,
+            ParsedAssembly(
+                class_='Event',
+                id_='EV-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'intensity', 'value': 'loguniform(lower=0,upper=2)'})
+                ],
+            ),
+        )
 
         # Invalid distribution
         self.assertRaises(
