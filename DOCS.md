@@ -103,3 +103,83 @@ Gate: <identifier>
 
 
 ## Core objects
+
+Objects from `pfta.core` that are (directly or indirectly) exposed  after instantiating a `FaultTree(fault_tree_text)`:
+
+
+### `FaultTree`
+
+| Attribute | Description |
+| - | - |
+| `times` | Time values. |
+| `time_unit` | Time unit. |
+| `seed` | Seed used for sampling distributions. |
+| `sample_size` | Sample size for sampling distributions. |
+| `tolerance` | Tolerance for truncating probability/intensity computations. |
+| `models` | List of failure models. |
+| `events` | List of events. |
+| `gates` | List of gates. |
+
+
+### `Model`
+
+| Attribute | Description |
+| - | - |
+| `id_` | Model identifier. |
+| `label` | Model label. |
+| `comment` | Model comment. |
+| `model_type` | Model type. |
+| `is_used` | Whether the model is actually utilised by an event in the fault tree. |
+
+
+### `Event`
+
+| Attribute | Description |
+| - | - |
+| `id_` | Event identifier. |
+| `index` | Event index (0-based). |
+| `label` | Event label. |
+| `comment` | Event comment. |
+| `model_id` | Identifier of utilised failure model (or `None`). |
+| `model_type` | Model type, if not utilising a failure model. |
+| `is_used` | Whether the event is actually utilised by a gate in the fault tree. |
+| `actual_model_type` | The actual `model_type`, either from the utilised failure model or the event itself. |
+| `parameter_samples` | Dictionary from string parameter to [flattened list] of of sampled values. |
+| `computed_expression` | Boolean algebraic representation of the event. |
+| `computed_probabilities` | [Flattened list] of computed failure probabilities. |
+| `computed_intensities` | [Flattened list] of computed failure intensities. |
+| `computed_rates` | [Flattened list] of computed failure rates. |
+
+
+### `Gates`
+
+| Attribute | Description |
+| - | - |
+| `id_` | Gate identifier. |
+| `label` | Gate label. |
+| `comment` | Gate comment. |
+| `is_paged` | Whether the gate has its own page in graphical output. |
+| `type_` | Gate type. |
+| `input_ids` | Gate input identifiers. |
+| `is_top_gate` | Whether the gate is a top gate (i.e. not an input to another gate). |
+| `computed_expression` | Boolean algebraic representation of the gate. |
+| `computed_probabilities` | [Flattened list] of computed failure probabilities. |
+| `computed_intensities` | [Flattened list] of computed failure intensities. |
+| `computed_rates` | [Flattened list] of computed failure rates. |
+
+
+## Flattened lists
+
+Flattened lists of results are of length `len(times) * sample_size` (from the fault tree properties),
+and effectively indexed by the following comprehension:
+
+```python
+[
+    (flattened_index := time_index * sample_size + sample_index)
+    for time_index, _ in enumerate(times)
+    for sample_index in range(sample_size)
+]
+```
+
+
+[flattened list]: #flattened-lists
