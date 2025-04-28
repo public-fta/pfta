@@ -17,26 +17,39 @@ Fault tree properties are to be set before any objects are declared.
 
 ### Failure models
 
-Three types of failure model may be declared (`Undeveloped`, `Fixed`, `ConstantRate`).
+Three types of failure model may be declared.
+The choice of `model_type` determines the other properties that may be set:
 
-```
-Mode: <identifier>
-- model_type: Undeveloped
-```
+1. `Undeveloped`:
 
-```
-Mode: <identifier>
-- model_type: Fixed
-- probability: <float> | <distribution>
-- intensity: <float> | <distribution>
-```
+   ```
+   Mode: <identifier>
+   - label: <string>          (optional)
+   - comment: <string>        (optional)
+   - model_type: Undeveloped
+   ```
 
-```
-Mode: <identifier>
-- model_type: ConstantRate
-- failure_rate | mean_failure_time: <float> | <distribution>
-- repair_rate | mean_repair_time: <float> | <distribution>
-```
+2. `Fixed`:
+
+   ```
+   Mode: <identifier>
+   - label: <string>                        (optional)
+   - comment: <string>                      (optional)
+   - model_type: Fixed
+   - probability: <float> | <distribution>  (mandatory)
+   - intensity: <float> | <distribution>    (mandatory)
+   ```
+
+3. `ConstantRate`:
+
+   ```
+   Mode: <identifier>
+   - label: <string>                                             (optional)
+   - comment: <string>                                           (optional)
+   - model_type: ConstantRate
+   - failure_rate | mean_failure_time: <float> | <distribution>  (mandatory)
+   - repair_rate | mean_repair_time: <float> | <distribution>    (mandatory)
+   ```
 
 A declared failure model may be utilised by an event.
 
