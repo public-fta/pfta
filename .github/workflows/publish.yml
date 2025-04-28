@@ -39,4 +39,4 @@ jobs:
       - uses: actions/download-artifact@v4
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages_dir: artifact/
+          packages-dir: artifact/
