@@ -78,4 +78,18 @@ An event declaration may either:
    ```
 
 
+### Gates
+
+Gate declarations are straightforward:
+
+```
+Gate: <identifier>
+- label: <string>                        (optional)
+- comment: <string>                      (optional)
+- is_paged: True | False                 (optional; default `False`; whether the gate should have its own page in graphical output)
+- type: AND | OR                         (mandatory)
+- inputs: <comma separated identifiers>  (mandatory)
+```
+
+
 ## Core objects
