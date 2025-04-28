@@ -6,6 +6,14 @@ Free and open-source fault tree analysis.
 - For an overview of the mathematics, see [`MATHS.md`].
 
 
+## Features
+
+- Enforcement of declaration of at least one value of time `t`.
+- General fault tree analysis framework where all objects have both a failure probability `q(t)`
+  and a failure intensity `ω(t)` (with failure rate `λ(t) = ω(t) / (1 − q(t))`).
+- Built-in support for sampling of distributions (Monte Carlo).
+
+
 ## Textual input
 
 PFTA reads a textual representation of a fault tree. For example:
