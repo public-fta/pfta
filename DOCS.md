@@ -116,9 +116,9 @@ Objects from `pfta.core` that are (directly or indirectly) exposed  after instan
 | `seed` | Seed used for sampling distributions. |
 | `sample_size` | Sample size for sampling distributions. |
 | `tolerance` | Tolerance for truncating probability/intensity computations. |
-| `models` | List of failure models. |
-| `events` | List of events. |
-| `gates` | List of gates. |
+| `models` | List of [failure models](#model). |
+| `events` | List of [events](#event). |
+| `gates` | List of [gates](#gate). |
 
 
 ### `Model`
@@ -151,7 +151,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed  after instan
 | `computed_rates` | [Flattened list] of computed failure rates. |
 
 
-### `Gates`
+### `Gate`
 
 | Attribute | Description |
 | - | - |
