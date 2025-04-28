@@ -23,7 +23,7 @@ The choice of `model_type` determines the parameter properties that may be set:
 1. `Undeveloped`:
 
    ```
-   Mode: <identifier>
+   Model: <identifier>
    - label: <string>          (optional)
    - comment: <string>        (optional)
    - model_type: Undeveloped
@@ -32,7 +32,7 @@ The choice of `model_type` determines the parameter properties that may be set:
 2. `Fixed`:
 
    ```
-   Mode: <identifier>
+   Model: <identifier>
    - label: <string>                        (optional)
    - comment: <string>                      (optional)
    - model_type: Fixed
@@ -43,7 +43,7 @@ The choice of `model_type` determines the parameter properties that may be set:
 3. `ConstantRate`:
 
    ```
-   Mode: <identifier>
+   Model: <identifier>
    - label: <string>                                             (optional)
    - comment: <string>                                           (optional)
    - model_type: ConstantRate
