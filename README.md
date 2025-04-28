@@ -56,4 +56,30 @@ Output files consist of:
 - vector graphics (SVG) for each top gate and paged gate (**TODO**).
 
 
+## Installation
+
+```
+$ pip3 install pfta
+```
+
+- If simply using as a command line tool, do `pipx` instead of `pip3` to avoid having to set up a virtual environment.
+- If using Windows, do `pip` instead of `pip3`.
+
+
+## Usage (command line)
+
+```
+$ pfta [-h] [-v] ft.txt
+
+Perform a fault tree analysis.
+
+positional arguments:
+  ft.txt         fault tree text file; output is written to `{ft.txt}.out/`
+
+options:
+  -h, --help     show this help message and exit
+  -v, --version  show program's version number and exit
+```
+
+
 [`MATHS.md`]: MATHS.md
