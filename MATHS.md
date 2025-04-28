@@ -157,7 +157,7 @@ The Boolean expression for a gate is obtained by applying the relevant operation
 (logical AND or logical OR) to the expressions for the gate's inputs.
 
 In this document we use electrical engineering notation,
-where logical AND is denoted by by multiplication, and logical OR by addition.
+where logical AND is denoted by multiplication, and logical OR by addition.
 
 For the top gate (or, more generally, any gate),
 we reduce its Boolean expression to a sum of products
