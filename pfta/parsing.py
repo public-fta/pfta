@@ -288,10 +288,6 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
         key = parsed_line.info['key']
         value = parsed_line.info['value']
 
-        if key in ('time_unit', 'seed'):
-            properties[key] = value
-            continue
-
         if key == 'time':
             times = []
             times_raw = []
@@ -307,6 +303,10 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
             properties['times'] = times
             properties['times_raw'] = times_raw
             properties['times_line_number'] = parsed_line.number
+            continue
+
+        if key in ('time_unit', 'seed'):
+            properties[key] = value
             continue
 
         if key == 'sample_size':
