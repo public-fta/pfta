@@ -91,7 +91,7 @@ class ComputationalCache:
         q = self.probability(term, index)
         omega = self.intensity(term, index)
 
-        return omega / (1 - q)
+        return robust_divide(omega, 1 - q)
 
 
 def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> float:

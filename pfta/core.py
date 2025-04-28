@@ -25,7 +25,7 @@ from pfta.parsing import (
 )
 from pfta.presentation import Table
 from pfta.sampling import Distribution
-from pfta.utilities import robust_invert, find_cycles
+from pfta.utilities import robust_divide, robust_invert, find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
 
 
@@ -645,7 +645,7 @@ class Event:
     @memoise('computed_rates')
     def compute_rates(self) -> list[float]:
         return [
-            omega / (1 - q)
+            robust_divide(omega, 1 - q)
             for q, omega in zip(self.computed_probabilities, self.computed_intensities)
         ]
 
@@ -770,7 +770,7 @@ class Gate:
     @memoise('computed_rates')
     def compute_rates(self) -> list[float]:
         return [
-            omega / (1 - q)
+            robust_divide(omega, 1 - q)
             for q, omega in zip(self.computed_probabilities, self.computed_intensities)
         ]
 
