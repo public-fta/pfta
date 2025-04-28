@@ -229,7 +229,7 @@ class FaultTree:
 
     def compile_event_table(self) -> Table:
         headings = [
-            'id', 'label', 'is_used', 'model',
+            'id', 'label', 'is_used',
             'time', 'sample',
             'computed_probability',
             'computed_intensity',
@@ -237,7 +237,7 @@ class FaultTree:
         ]
         data = [
             [
-                event.id_, event.label, event.is_used, event.model_id,
+                event.id_, event.label, event.is_used,
                 time, sample_index,
                 event.computed_probabilities[time_index * self.sample_size + sample_index],
                 event.computed_intensities[time_index * self.sample_size + sample_index],
