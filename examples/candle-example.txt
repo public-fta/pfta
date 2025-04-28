@@ -2,7 +2,6 @@
 - time_unit: h
 - sample_size: 1000
 
-
 Gate: CAN
 - label: Candlelight fails
 - type: OR
