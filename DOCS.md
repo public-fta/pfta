@@ -18,7 +18,7 @@ Fault tree properties are to be set before any objects are declared.
 ### Failure models
 
 Three types of failure model may be declared.
-The choice of `model_type` determines the other properties that may be set:
+The choice of `model_type` determines the parameter properties that may be set:
 
 1. `Undeveloped`:
 
@@ -51,6 +51,16 @@ The choice of `model_type` determines the other properties that may be set:
    - repair_rate | mean_repair_time: <float> | <distribution>    (mandatory)
    ```
 
+For the parameter properties, the value may be supplied as either:
+
+- A `<float>`, denoting a point estimate (or degenerate distribution); or
+- A `<distribution>`, being one of the following:
+  - `lognormal(mu=<value>, sigma=<value>)`
+  - `loguniform(lower=<value>, upper=<value>)`
+  - `normal(mu=<value>, sigma=<value>)`
+  - `triangular(lower=<value>, upper=<value>, mode=<value>)`
+  - `uniform(lower=<value>, upper=<value>)`
+
 A declared failure model may be utilised by an event.
 
 
@@ -74,7 +84,7 @@ An event declaration may either:
    - label: <string>                                 (optional)
    - comment: <string>                               (optional)
    - model_type: Undeveloped | Fixed | ConstantRate
-   # <followed by the properties relevant to the chosen `model_type`>
+   # <followed by the parameter properties relevant to the chosen `model_type`>
    ```
 
 
