@@ -211,6 +211,12 @@ q[C] = q[x] q[y] q[z] ...,
 a straight product of the failure probabilities
 of its constituent primary events.
 
+Using the [notation defined above](#notation), this may be written as
+
+```
+q[C] = ∏{e|C} q[C].
+```
+
 Note that for an empty minimal cut set, we have `q[True] = 1`.
 
 
