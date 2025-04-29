@@ -119,10 +119,10 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after instant
 | `models` | List of [failure models]. |
 | `events` | List of [events]. |
 | `gates` | List of [gates]. |
-| `compile_model_table()` | Produce a table of [failure models]. |
-| `compile_event_table()` | Produce a table of [events]. |
-| `compile_gate_table()` | Produce a table of [gates]. |
-| `compile_cut_set_tables()` | Produce a dictionary from gate identifier to table of cut sets. |
+| `compile_model_table()` | Produce a [table] of [failure models]. |
+| `compile_event_table()` | Produce a [table] of [events]. |
+| `compile_gate_table()` | Produce a [table] of [gates]. |
+| `compile_cut_set_tables()` | Produce a dictionary from gate identifier to [table] of cut sets. |
 
 
 ### `Model`
@@ -172,6 +172,20 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after instant
 | `computed_rates` | [Flattened list] of computed failure rates. |
 
 
+## Presentational objects
+
+Objects from `pfta.presentation` that are produced by the methods of [`FaultTree`]:
+
+
+### `Table`
+
+| Attribute | Description |
+| - | - |
+| `headings` | Table headings (i.e. column names). |
+| `data` | Table data rows. |
+| `write_tsv(file_name)` | Write table to a TSV file. |
+
+
 ## Flattened lists
 
 Flattened lists of results are of length `len(times) * sample_size` (from the fault tree properties),
@@ -185,8 +199,9 @@ and effectively indexed by the following comprehension:
 ]
 ```
 
-
+[`FaultTree`]: #faulttree
 [events]: #event
 [failure models]: #model
 [flattened list]: #flattened-lists
 [gates]: #gate
+[table]: #table
