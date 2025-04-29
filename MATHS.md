@@ -304,7 +304,7 @@ q[T] =   ∑{1≤i≤N} q[C_i]
 ```
 
 For performance, successive upper, lower, etc. bounds
-may be obtained by truncating at the 1st-order, 2nd-order, etc. terms.
+may be obtained by truncating at the 1st-order, 2nd-order, etc. contributions.
 
 Separately, there is the upper bound
 

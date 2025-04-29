@@ -222,7 +222,8 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
                − ∑{1≤i<j≤N} q[C_i C_j]
                + ∑{1≤i<j<k≤N} q[C_i C_j C_k]
                − ... .
-    In the implementation, we truncate after the latest term divided by the partial sum falls below the tolerance.
+    In the implementation, we truncate after the latest contribution divided by the partial sum
+    falls below the tolerance.
     """
     term_count = len(terms)
     partial_sum = 0
@@ -232,7 +233,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
 
     and_ = Term.conjunction
 
-    def q_term(order: int) -> float:
+    def q_contribution(order: int) -> float:
         return (
             (-1) ** (order - 1)
             * sum(
@@ -242,11 +243,11 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
         )
 
     for r in range(1, term_count + 1):
-        latest_term = q_term(order=r)
+        latest = q_contribution(order=r)
 
-        partial_sum += latest_term
+        partial_sum += latest
 
-        if latest_term == 0 or abs(robust_divide(latest_term, partial_sum)) < computational_cache.tolerance:
+        if latest == 0 or abs(robust_divide(latest, partial_sum)) < computational_cache.tolerance:
             break
 
     return partial_sum
