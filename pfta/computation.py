@@ -337,4 +337,4 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         if latest == 0 or abs(robust_divide(latest, partial_sum)) < computational_cache.tolerance:
             break
 
-    return partial_sum
+    return partial_sum  # TODO: something is broken here (ω^2 seems to completely cancel ω^1)
