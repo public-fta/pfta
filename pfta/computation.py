@@ -233,9 +233,10 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
     and_ = Term.conjunction
 
     for order in range(1, term_count + 1):
-        combos = concrete_combinations(terms, order)
-
-        latest_term = (-1)**(order - 1) * sum(q(and_(*combo)) for combo in combos)
+        latest_term = (
+            (-1)**(order - 1)
+            * sum(q(and_(*combo)) for combo in concrete_combinations(terms, order))
+        )
 
         partial_sum += latest_term
 
