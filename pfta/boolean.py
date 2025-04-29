@@ -48,6 +48,9 @@ class Term:
     def order(self) -> int:
         return self.encoding.bit_count()
 
+    def is_vacuous(self) -> bool:
+        return self.encoding == 0
+
     def event_indices(self) -> frozenset[int]:
         """
         Extract the event indices, which are the set bits of the encoding.

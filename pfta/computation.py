@@ -294,8 +294,9 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         return (
             (-1) ** (order - 1)
             * sum(
-                omega(gcd(*combo)) * q(and_(*combo) / gcd(*combo))
+                omega(combo_gcd) * q(and_(*combo) / combo_gcd)
                 for combo in concrete_combinations(terms, order)
+                if not (combo_gcd := gcd(*combo)).is_vacuous()  # only compute q if omega is non-zero
             )
         )
 
@@ -312,8 +313,13 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         return (
             (-1) ** (order - 1)
             * sum(
-                omega(gcd(*terms_subset) / and_(*combo)) * q(and_(*combo, *terms_subset) / gcd(*terms_subset))
+                omega(subset_gcd_divided_by_combo) * q(and_(*combo, *terms_subset) / subset_gcd)
                 for combo in concrete_combinations(terms, order)
+                if not (
+                    subset_gcd_divided_by_combo :=
+                        (subset_gcd := gcd(*terms_subset))
+                        / and_(*combo)
+                ).is_vacuous()  # only compute q if omega is non-zero
             )
         )
 
