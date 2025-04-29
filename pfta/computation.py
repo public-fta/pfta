@@ -201,6 +201,16 @@ def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
     return lambda_ * (1 - q)
 
 
+def concrete_combinations(terms: list[Term], order: int) -> list[tuple[Term, ...]]:
+    """
+    Compute concrete term combinations (subset-tuples) of given order (size).
+
+    Concrete, because `itertools.combinations` returns an iterator (which gets consumed on first iteration),
+    and we convert it to a list so that it persists multiple iterations.
+    """
+    return list(itertools.combinations(terms, order))
+
+
 def disjunction_probability(terms: list[Term], flattened_index: int, computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure probability of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
@@ -223,7 +233,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
     and_ = Term.conjunction
 
     for order in range(1, term_count + 1):
-        combos = itertools.combinations(terms, order)
+        combos = concrete_combinations(terms, order)
 
         latest_term = (-1)**(order - 1) * sum(q(and_(*combo)) for combo in combos)
 
@@ -272,7 +282,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
     and_ = Term.conjunction
 
     for order in range(1, term_count + 1):
-        combos = itertools.combinations(terms, order)
+        combos = concrete_combinations(terms, order)
 
         latest_omega_1_term = (
             (-1)**(order - 1) * sum(omega(gcd(*combo)) * q(and_(*combo) / gcd(*combo)) for combo in combos)
@@ -317,7 +327,7 @@ def redundant_intensity_mini_term(terms_subset: tuple[Term, ...], terms: list[Te
     and_ = Term.conjunction
 
     for order in range(1, term_count + 1):
-        combos = itertools.combinations(terms, order)
+        combos = concrete_combinations(terms, order)
 
         latest_term = (
             (-1)**(order - 1)
