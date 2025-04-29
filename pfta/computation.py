@@ -222,7 +222,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
                − ∑{1≤i<j≤N} q[C_i C_j]
                + ∑{1≤i<j<k≤N} q[C_i C_j C_k]
                − ... .
-    For performance, we truncate after the latest term divided by the partial sum falls below the tolerance.
+    In the implementation, we truncate after the latest term divided by the partial sum falls below the tolerance.
     """
     term_count = len(terms)
     partial_sum = 0
@@ -264,7 +264,13 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
                =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
                  − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
                  + ... .
-    For performance, we truncate after the latest `ω^1 + ω^2` term divided by the partial sum falls below the tolerance.
+    Successive upper, lower, ... bounds may be obtained by computing
+        (ω^1[T] truncated at 1st-order),
+        (ω^1[T] truncated at 2nd-order) − (ω^2[T] truncated at 1st-order),
+        ... .
+    Thus, in the implementation, we truncate after the latest term
+        (ω^1[T] rth-order term) − (ω^2[T] (r−1)th-order term)
+    divided by the partial sum falls below the tolerance.
     """
     term_count = len(terms)
     partial_sum = 0
@@ -283,14 +289,15 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
 
     for order in range(1, term_count + 1):
         combos = concrete_combinations(terms, order)
+        combos_lesser = concrete_combinations(terms, order - 1)
 
         latest_omega_1_term = (
             (-1)**(order - 1) * sum(omega(gcd(*combo)) * q(and_(*combo) / gcd(*combo)) for combo in combos)
         )
         latest_omega_2_term = (
-            (-1)**(order - 1) * sum(omega_r(combo) for combo in combos)
+            (-1)**(order - 2) * sum(omega_r(combo) for combo in combos_lesser)
         )
-        latest_term = latest_omega_1_term + latest_omega_2_term
+        latest_term = latest_omega_1_term - latest_omega_2_term
 
         partial_sum += latest_term
 
@@ -314,6 +321,9 @@ def redundant_intensity_mini_term(terms_subset: tuple[Term, ...], terms: list[Te
                  − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
                  + ... .
     """
+    if not terms_subset:
+        return 0
+
     term_count = len(terms)
     partial_sum = 0
 
