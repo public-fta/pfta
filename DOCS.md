@@ -24,7 +24,9 @@ The choice of `model_type` for a failure model determines the parameters that ma
 Parameter values may be supplied as either:
 
 - A `<float>`, denoting a point estimate (or degenerate distribution); or
+
 - A `<distribution>`, being one of the following:
+
   - `lognormal(mu=<value>, sigma=<value>)`
   - `loguniform(lower=<value>, upper=<value>)`
   - `normal(mu=<value>, sigma=<value>)`
