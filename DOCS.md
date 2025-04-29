@@ -2,9 +2,12 @@
 
 ## Fault tree text format
 
-### Fault tree properties
+Fault tree text is to consist of paragraphs declaring [fault tree properties](#fault-tree-properties-paragraph),
+[failure models](#failure-model-paragraph), [events](#event-paragraph), or [gates](#gate-paragraph).
 
-Fault tree properties are to be set before any objects are declared.
+### Fault tree properties paragraph
+
+The fault tree properties paragraph must be the first paragraph.
 
 ```
 - times: <comma separated floats>  (mandatory; use `nan` for arbitrary time)
@@ -15,43 +18,10 @@ Fault tree properties are to be set before any objects are declared.
 ```
 
 
-### Failure models
+### Failure model paragraph
 
-Three types of failure model may be declared.
-The choice of `model_type` determines the parameter properties that may be set:
-
-1. `Undeveloped`:
-
-   ```
-   Model: <identifier>
-   - label: <string>          (optional)
-   - comment: <string>        (optional)
-   - model_type: Undeveloped
-   ```
-
-2. `Fixed`:
-
-   ```
-   Model: <identifier>
-   - label: <string>                        (optional)
-   - comment: <string>                      (optional)
-   - model_type: Fixed
-   - probability: <float> | <distribution>  (mandatory)
-   - intensity: <float> | <distribution>    (mandatory)
-   ```
-
-3. `ConstantRate`:
-
-   ```
-   Model: <identifier>
-   - label: <string>                                             (optional)
-   - comment: <string>                                           (optional)
-   - model_type: ConstantRate
-   - failure_rate | mean_failure_time: <float> | <distribution>  (mandatory)
-   - repair_rate | mean_repair_time: <float> | <distribution>    (mandatory)
-   ```
-
-For the parameter properties, the value may be supplied as either:
+The choice of `model_type` for a failure model determines the parameters that may be set.
+Parameter values may be supplied as either:
 
 - A `<float>`, denoting a point estimate (or degenerate distribution); or
 - A `<distribution>`, being one of the following:
@@ -61,12 +31,42 @@ For the parameter properties, the value may be supplied as either:
   - `triangular(lower=<value>, upper=<value>, mode=<value>)`
   - `uniform(lower=<value>, upper=<value>)`
 
-A declared failure model may be utilised by an event.
+
+#### Undeveloped
+
+```
+Model: <identifier>
+- label: <string>          (optional)
+- comment: <string>        (optional)
+- model_type: Undeveloped
+```
+
+#### Fixed
+
+```
+Model: <identifier>
+- label: <string>                        (optional)
+- comment: <string>                      (optional)
+- model_type: Fixed
+- probability: <float> | <distribution>  (mandatory)
+- intensity: <float> | <distribution>    (mandatory)
+```
+
+#### ConstantRate
+
+```
+Model: <identifier>
+- label: <string>                                             (optional)
+- comment: <string>                                           (optional)
+- model_type: ConstantRate
+- failure_rate | mean_failure_time: <float> | <distribution>  (mandatory)
+- repair_rate | mean_repair_time: <float> | <distribution>    (mandatory)
+```
 
 
-### Events
+### Event paragraph
 
-An event declaration may either:
+An event declaration may do one of the following:
 
 1. Utilise a declared failure model:
 
@@ -88,9 +88,7 @@ An event declaration may either:
    ```
 
 
-### Gates
-
-Gate declarations are straightforward:
+### Gate paragraph
 
 ```
 Gate: <identifier>
@@ -107,7 +105,7 @@ Gate: <identifier>
 Objects from `pfta.core` that are (directly or indirectly) exposed after invoking `FaultTree(fault_tree_text)`:
 
 
-### `FaultTree`
+### FaultTree
 
 | Attribute | Description |
 | - | - |
@@ -125,7 +123,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `compile_cut_set_tables()` | Produce a dictionary from gate identifier to [table] of cut sets. |
 
 
-### `Model`
+### Model
 
 | Attribute | Description |
 | - | - |
@@ -136,7 +134,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `is_used` | Whether the model is actually utilised by an event in the fault tree. |
 
 
-### `Event`
+### Event
 
 | Attribute | Description |
 | - | - |
@@ -155,7 +153,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `computed_rates` | [Flattened list] of computed failure rates. |
 
 
-### `Gate`
+### Gate
 
 | Attribute | Description |
 | - | - |
@@ -177,7 +175,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 Objects from `pfta.presentation` that are produced by the methods of [`FaultTree`]:
 
 
-### `Table`
+### Table
 
 | Attribute | Description |
 | - | - |
