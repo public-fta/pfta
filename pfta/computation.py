@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import collections
 import itertools
 import math
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable
 
 from pfta.boolean import Term
 from pfta.common import natural_repr
@@ -271,69 +271,16 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
                =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
                  − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
                  + ... .
-    Successive upper, lower, ... bounds may be obtained by computing
-        (ω^1[T] truncated at 1st-order),
-        (ω^1[T] truncated at 2nd-order) − (ω^2[T] truncated at 1st-order),
+    Successive upper, lower, upper, ... bounds may be obtained by computing
+        (ω^1 truncated at 1st-order),
+        (ω^1 truncated at 2nd-order) − (ω^2 truncated at 1st-order with ω_r truncated at 1st-order),
+        (ω^1 truncated at 3rd-order) − (ω^2 truncated at 2nd-order with ω_r truncated at 2nd-order),
         ... .
-    Thus, in the implementation, we truncate after the latest term
-        (ω^1[T] rth-order term) − (ω^2[T] (r−1)th-order term)
+    Thus, in the implementation, we truncate after the latest contribution
+        (ω^1 rth-order contribution) − (ω^2 (1,...,r−2)th-order contributions' ω_r (r−1)th-order contribution)
+                                     − (ω^2 (r−1)th-order contribution with ω_r truncated at (r−1)th-order)
     divided by the partial sum falls below the tolerance.
     """
-    term_count = len(terms)
-    partial_sum = 0
-
-    def q(term: Term) -> float:
-        return computational_cache.probability(term, flattened_index)
-
-    def omega(term: Term) -> float:
-        return computational_cache.intensity(term, flattened_index)
-
-    def omega_r(combo: tuple[Term, ...]) -> float:
-        return redundant_intensity_mini_term(combo, terms, flattened_index, computational_cache)
-
-    gcd = Term.gcd
-    and_ = Term.conjunction
-
-    for order in range(1, term_count + 1):
-        combos = concrete_combinations(terms, order)
-        combos_lesser = concrete_combinations(terms, order - 1)
-
-        latest_omega_1_term = (
-            (-1)**(order - 1) * sum(omega(gcd(*combo)) * q(and_(*combo) / gcd(*combo)) for combo in combos)
-        )
-        latest_omega_2_term = (
-            (-1)**(order - 2) * sum(omega_r(combo) for combo in combos_lesser)
-        )
-        latest_term = latest_omega_1_term - latest_omega_2_term
-
-        partial_sum += latest_term
-
-        if latest_term == 0 or abs(robust_divide(latest_term, partial_sum)) < computational_cache.tolerance:
-            break
-
-    return partial_sum
-
-
-def redundant_intensity_mini_term(terms_subset: tuple[Term, ...], terms: list[Term], flattened_index: int,
-                                  computational_cache: ComputationalCache) -> float:
-    """
-    Contributing mini-term `ω_r[{C_i,C_j,...}]` in the redundant contribution `ω^2[T]` to failure intensity.
-
-    This is the redundant contribution to the failure intensity of `T = C_1 + C_2 + ... + C_N`
-    from the combinational subset `{C_i,C_j,...}` of terms already being failed.
-
-    From `MATHS.md`,
-        ω_r[{C_i,C_j,...}]
-               =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
-                 − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
-                 + ... .
-    """
-    if not terms_subset:
-        return 0
-
-    term_count = len(terms)
-    partial_sum = 0
-
     def q(term: Term) -> float:
         return computational_cache.probability(term, flattened_index)
 
@@ -343,17 +290,45 @@ def redundant_intensity_mini_term(terms_subset: tuple[Term, ...], terms: list[Te
     gcd = Term.gcd
     and_ = Term.conjunction
 
-    for order in range(1, term_count + 1):
-        combos = concrete_combinations(terms, order)
-
-        latest_term = (
-            (-1)**(order - 1)
+    def omega_1_contribution(order: int) -> float:
+        return (
+            (-1) ** (order - 1)
             * sum(
-                omega(gcd(*terms_subset) / and_(*combo)) * q(and_(*combo, *terms_subset) / gcd(*terms_subset))
-                for combo in combos
+                omega(gcd(*combo)) * q(and_(*combo) / gcd(*combo))
+                for combo in concrete_combinations(terms, order)
             )
         )
 
-        partial_sum += latest_term
+    def omega_2_contribution(order: int, omega_r_orders: Iterable[int]) -> float:
+        return (
+            (-1) ** (order - 1)
+            * sum(
+                sum(omega_r_contribution(terms_subset=combo, order=omega_r_order) for omega_r_order in omega_r_orders)
+                for combo in concrete_combinations(terms, order)
+            )
+        )
+
+    def omega_r_contribution(terms_subset: tuple[Term, ...], order: int) -> float:
+        return (
+            (-1) ** (order - 1)
+            * sum(
+                omega(gcd(*terms_subset) / and_(*combo)) * q(and_(*combo, *terms_subset) / gcd(*terms_subset))
+                for combo in concrete_combinations(terms, order)
+            )
+        )
+
+    partial_sum = 0
+
+    for r in range(1, len(terms) + 1):
+        latest = (
+            omega_1_contribution(order=r)
+            - sum(omega_2_contribution(order=s, omega_r_orders=[r-1]) for s in range(1, r-1))
+            - omega_2_contribution(order=r-1, omega_r_orders=range(1, r))
+        )
+
+        partial_sum += latest
+
+        if latest == 0 or abs(robust_divide(latest, partial_sum)) < computational_cache.tolerance:
+            break
 
     return partial_sum

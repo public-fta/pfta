@@ -362,10 +362,11 @@ where
   + ... .
 ```
 
-For performance, successive upper, lower, etc. bounds may be obtained by computing:
+For performance, successive upper, lower, upper, etc. bounds may be obtained by computing:
 
-- `(ω^1[T] truncated at 1st-order)`
-- `(ω^1[T] truncated at 2nd-order) − (ω^2[T] truncated at 1st-order)`
+- `(ω^1 truncated at 1st-order)`
+- `(ω^1 truncated at 2nd-order) − (ω^2 truncated at 1st-order with ω_r truncated at 1st-order)`
+- `(ω^1 truncated at 3rd-order) − (ω^2 truncated at 2nd-order with ω_r truncated at 2nd-order)`
 - etc.
 
 
