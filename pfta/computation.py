@@ -225,9 +225,6 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
     In the implementation, we truncate after the latest contribution divided by the partial sum
     falls below the tolerance.
     """
-    term_count = len(terms)
-    partial_sum = 0
-
     def q(term: Term) -> float:
         return computational_cache.probability(term, flattened_index)
 
@@ -242,7 +239,9 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
             )
         )
 
-    for r in range(1, term_count + 1):
+    partial_sum = 0
+
+    for r in range(1, len(terms) + 1):
         latest = q_contribution(order=r)
 
         partial_sum += latest
