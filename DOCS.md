@@ -116,9 +116,13 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after instant
 | `seed` | Seed used for sampling distributions. |
 | `sample_size` | Sample size for sampling distributions. |
 | `tolerance` | Tolerance for truncating probability/intensity computations. |
-| `models` | List of [failure models](#model). |
-| `events` | List of [events](#event). |
-| `gates` | List of [gates](#gate). |
+| `models` | List of [failure models]. |
+| `events` | List of [events]. |
+| `gates` | List of [gates]. |
+| `compile_model_table()` | Produce a table of [failure models]. |
+| `compile_event_table()` | Produce a table of [events]. |
+| `compile_gate_table()` | Produce a table of [gates]. |
+| `compile_cut_set_tables()` | Produce a dictionary from gate identifier to table of cut sets. |
 
 
 ### `Model`
@@ -182,4 +186,7 @@ and effectively indexed by the following comprehension:
 ```
 
 
+[events]: #event
+[failure models]: #model
 [flattened list]: #flattened-lists
+[gates]: #gate
