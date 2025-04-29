@@ -11,13 +11,13 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import collections
 import itertools
 import math
-import typing
+from typing import TYPE_CHECKING
 
 from pfta.boolean import Term
 from pfta.common import natural_repr
 from pfta.utilities import robust_divide, descending_product, descending_sum
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from pfta.core import Event
 
 
