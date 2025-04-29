@@ -39,7 +39,7 @@ class ComputationalCache:
     def __repr__(self):
         return natural_repr(self)
 
-    def probability(self, term, index) -> float:
+    def probability(self, term: Term, index: int) -> float:
         """
         Instantaneous failure probability of a Boolean term (minimal cut set).
 
@@ -58,7 +58,7 @@ class ComputationalCache:
 
         return self._probability_from_index_from_term[term][index]
 
-    def intensity(self, term, index) -> float:
+    def intensity(self, term: Term, index: int) -> float:
         """
         Instantaneous failure intensity of a Boolean term (minimal cut set).
 
@@ -84,7 +84,7 @@ class ComputationalCache:
 
         return self._intensity_from_index_from_term[term][index]
 
-    def rate(self, term, index) -> float:
+    def rate(self, term: Term, index: int) -> float:
         """
         Instantaneous failure rate of a Boolean term (minimal cut set).
         """
