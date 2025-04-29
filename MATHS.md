@@ -303,8 +303,8 @@ q[T] =   ∑{1≤i≤N} q[C_i]
        − ... .
 ```
 
-For performance when `N` is large, successive upper, lower, etc. bounds
-may be obtained by truncating at the first-order, second-order, etc. terms.
+For performance, successive upper, lower, etc. bounds
+may be obtained by truncating at the 1st-order, 2nd-order, etc. terms.
 
 Separately, there is the upper bound
 
@@ -362,8 +362,11 @@ where
   + ... .
 ```
 
-Again, truncation to obtain successive upper, lower, etc. bounds
-may be done for performance.
+For performance, successive upper, lower, etc. bounds may be obtained by computing:
+
+- `(ω^1[T] truncated at 1st-order)`
+- `(ω^1[T] truncated at 2nd-order) − (ω^2[T] truncated at 1st-order)`
+- etc.
 
 
 ### Failure rate
