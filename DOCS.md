@@ -104,7 +104,7 @@ Gate: <identifier>
 
 ## Core objects
 
-Objects from `pfta.core` that are (directly or indirectly) exposed after instantiating a `FaultTree(fault_tree_text)`:
+Objects from `pfta.core` that are (directly or indirectly) exposed after invoking `FaultTree(fault_tree_text)`:
 
 
 ### `FaultTree`
