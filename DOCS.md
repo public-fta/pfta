@@ -41,6 +41,13 @@ Model: <identifier>
 - model_type: Undeveloped
 ```
 
+Events using an undeveloped model have their failure quantities computed as
+
+```
+q(t) = 0,
+ω(t) = 0.
+```
+
 #### Fixed
 
 ```
@@ -52,6 +59,15 @@ Model: <identifier>
 - intensity: <float> | <distribution>    (mandatory)
 ```
 
+Events using a fixed model have their failure quantities computed as
+
+```
+q(t) = q₀,
+ω(t) = ω₀,
+```
+
+where `q₀ = probability` and `ω₀ = intensity`.
+
 #### ConstantRate
 
 ```
@@ -62,6 +78,15 @@ Model: <identifier>
 - failure_rate | mean_failure_time: <float> | <distribution>  (mandatory)
 - repair_rate | mean_repair_time: <float> | <distribution>    (mandatory)
 ```
+
+Events using a constant-rate model have their failure quantities computed as
+
+```
+q(t) = [λ₀/(λ₀+μ₀)] [1−exp(−(λ₀+μ₀)t)],
+ω(t) = λ₀(1−q(t)),
+```
+
+where `λ₀ = failure_rate = 1/mean_failure_time` and `μ₀ = repair_rate = 1/mean_repair_time`.
 
 
 ### Event paragraph
