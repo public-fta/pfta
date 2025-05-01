@@ -305,7 +305,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
             * sum(
                 omega(combo_gcd) * q(and_(*combo) / combo_gcd)
                 for combo in concrete_combinations(terms, order)
-                if not (combo_gcd := gcd(*combo)).is_vacuous()  # only compute q if omega is non-zero
+                if not (combo_gcd := gcd(*combo)).is_vacuous()  # skip q computation if omega is zero
             )
         )
 
@@ -313,9 +313,15 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         return (
             (-1) ** (order - 1)
             * sum(
-                sum(omega_r_contribution(terms_subset=combo, order=omega_r_order) for omega_r_order in omega_r_orders)
+                omega_r_contributions(combo, omega_r_orders)
                 for combo in concrete_combinations(terms, order)
             )
+        )
+
+    def omega_r_contributions(terms_subset: tuple[Term, ...], orders: Iterable[int]) -> float:
+        return sum(
+            omega_r_contribution(terms_subset, order)
+            for order in orders
         )
 
     def omega_r_contribution(terms_subset: tuple[Term, ...], order: int) -> float:
@@ -328,7 +334,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
                     subset_gcd_divided_by_combo :=
                         (subset_gcd := gcd(*terms_subset))
                         / and_(*combo)
-                ).is_vacuous()  # only compute q if omega is non-zero
+                ).is_vacuous()  # skip q computation if omega is zero
             )
         )
 
@@ -337,7 +343,10 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
     for r in range(1, len(terms) + 1):
         latest = (
             omega_1_contribution(order=r)
-            - sum(omega_2_contribution(order=s, omega_r_orders=[r-1]) for s in range(1, r-1))
+            - sum(
+                omega_2_contribution(order=s, omega_r_orders=[r-1])
+                for s in range(1, r-1)
+            )
             - omega_2_contribution(order=r-1, omega_r_orders=range(1, r))
         )
 
