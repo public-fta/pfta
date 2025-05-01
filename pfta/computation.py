@@ -215,7 +215,7 @@ def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) ->
     """
     Predicate for early termination (truncation) of disjunction probability and intensity computations.
     """
-    return latest == 0 or abs(robust_divide(latest, partial_sum)) < tolerance
+    return math.isnan(latest) or latest == 0 or abs(robust_divide(latest, partial_sum)) < tolerance
 
 
 def disjunction_probability(terms: list[Term], flattened_index: int, computational_cache: ComputationalCache) -> float:
