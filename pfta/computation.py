@@ -225,10 +225,10 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
     In the implementation, we truncate after the latest contribution divided by the partial sum
     falls below the tolerance.
     """
+    and_ = Term.conjunction
+
     def q(term: Term) -> float:
         return computational_cache.probability(term, flattened_index)
-
-    and_ = Term.conjunction
 
     def q_contribution(order: int) -> float:
         return (
@@ -281,14 +281,14 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
                                      − (ω^2 (r−1)th-order contribution with ω_r truncated at (r−1)th-order)
     divided by the partial sum falls below the tolerance.
     """
+    gcd = Term.gcd
+    and_ = Term.conjunction
+
     def q(term: Term) -> float:
         return computational_cache.probability(term, flattened_index)
 
     def omega(term: Term) -> float:
         return computational_cache.intensity(term, flattened_index)
-
-    gcd = Term.gcd
-    and_ = Term.conjunction
 
     def omega_1_contribution(order: int) -> float:
         return (
