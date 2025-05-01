@@ -2,12 +2,13 @@ import inspect
 import os
 
 
-DEPTH = 10
+DEPTH = 20
 
 
 def fault_tree_properties_text():
     return '\n'.join([
         '- times: nan',
+        '- tolerance: 5e-3',
     ])
 
 

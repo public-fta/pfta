@@ -2,6 +2,7 @@
 
 
 - times: nan
+- tolerance: 5e-3
 
 
 Model: MODEL
@@ -44,6 +45,36 @@ Event: AND_CHILD_8
 Event: AND_CHILD_9
 - model: MODEL
 
+Event: AND_CHILD_10
+- model: MODEL
+
+Event: AND_CHILD_11
+- model: MODEL
+
+Event: AND_CHILD_12
+- model: MODEL
+
+Event: AND_CHILD_13
+- model: MODEL
+
+Event: AND_CHILD_14
+- model: MODEL
+
+Event: AND_CHILD_15
+- model: MODEL
+
+Event: AND_CHILD_16
+- model: MODEL
+
+Event: AND_CHILD_17
+- model: MODEL
+
+Event: AND_CHILD_18
+- model: MODEL
+
+Event: AND_CHILD_19
+- model: MODEL
+
 
 Event: OR_CHILD_0
 - model: MODEL
@@ -73,6 +104,36 @@ Event: OR_CHILD_8
 - model: MODEL
 
 Event: OR_CHILD_9
+- model: MODEL
+
+Event: OR_CHILD_10
+- model: MODEL
+
+Event: OR_CHILD_11
+- model: MODEL
+
+Event: OR_CHILD_12
+- model: MODEL
+
+Event: OR_CHILD_13
+- model: MODEL
+
+Event: OR_CHILD_14
+- model: MODEL
+
+Event: OR_CHILD_15
+- model: MODEL
+
+Event: OR_CHILD_16
+- model: MODEL
+
+Event: OR_CHILD_17
+- model: MODEL
+
+Event: OR_CHILD_18
+- model: MODEL
+
+Event: OR_CHILD_19
 - model: MODEL
 
 
@@ -116,6 +177,46 @@ Gate: AND_GATE_9
 - type: AND
 - inputs: AND_CHILD_9, OR_GATE_9
 
+Gate: AND_GATE_10
+- type: AND
+- inputs: AND_CHILD_10, OR_GATE_10
+
+Gate: AND_GATE_11
+- type: AND
+- inputs: AND_CHILD_11, OR_GATE_11
+
+Gate: AND_GATE_12
+- type: AND
+- inputs: AND_CHILD_12, OR_GATE_12
+
+Gate: AND_GATE_13
+- type: AND
+- inputs: AND_CHILD_13, OR_GATE_13
+
+Gate: AND_GATE_14
+- type: AND
+- inputs: AND_CHILD_14, OR_GATE_14
+
+Gate: AND_GATE_15
+- type: AND
+- inputs: AND_CHILD_15, OR_GATE_15
+
+Gate: AND_GATE_16
+- type: AND
+- inputs: AND_CHILD_16, OR_GATE_16
+
+Gate: AND_GATE_17
+- type: AND
+- inputs: AND_CHILD_17, OR_GATE_17
+
+Gate: AND_GATE_18
+- type: AND
+- inputs: AND_CHILD_18, OR_GATE_18
+
+Gate: AND_GATE_19
+- type: AND
+- inputs: AND_CHILD_19, OR_GATE_19
+
 
 Gate: OR_GATE_0
 - type: OR
@@ -155,4 +256,44 @@ Gate: OR_GATE_8
 
 Gate: OR_GATE_9
 - type: OR
-- inputs: OR_CHILD_9, BASE
+- inputs: OR_CHILD_9, AND_GATE_10
+
+Gate: OR_GATE_10
+- type: OR
+- inputs: OR_CHILD_10, AND_GATE_11
+
+Gate: OR_GATE_11
+- type: OR
+- inputs: OR_CHILD_11, AND_GATE_12
+
+Gate: OR_GATE_12
+- type: OR
+- inputs: OR_CHILD_12, AND_GATE_13
+
+Gate: OR_GATE_13
+- type: OR
+- inputs: OR_CHILD_13, AND_GATE_14
+
+Gate: OR_GATE_14
+- type: OR
+- inputs: OR_CHILD_14, AND_GATE_15
+
+Gate: OR_GATE_15
+- type: OR
+- inputs: OR_CHILD_15, AND_GATE_16
+
+Gate: OR_GATE_16
+- type: OR
+- inputs: OR_CHILD_16, AND_GATE_17
+
+Gate: OR_GATE_17
+- type: OR
+- inputs: OR_CHILD_17, AND_GATE_18
+
+Gate: OR_GATE_18
+- type: OR
+- inputs: OR_CHILD_18, AND_GATE_19
+
+Gate: OR_GATE_19
+- type: OR
+- inputs: OR_CHILD_19, BASE
