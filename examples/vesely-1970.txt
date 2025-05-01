@@ -1,11 +1,14 @@
-# From Fig. 1 of Vesely, W. E. (1970).
+# From Vesely, W. E. (1970).
 # A time-dependent methodology for fault tree evaluation.
 # Nuclear engineering and design, 13(2), 337–360.
 # <https://doi.org/10.1016/0029-5493(70)90167-6>
 
+# Specifically, from Figure 1 and Table 2, with non-repairable events.
+# Reproduces the results of Table 3 exactly.
+
 
 - time_unit: hr
-- times: 0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000
+- times: 0, 1000, 2000, 3000, 4000, 5000, 10000
 
 
 Model: M123
