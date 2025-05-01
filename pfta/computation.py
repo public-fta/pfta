@@ -235,7 +235,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
             (-1) ** (order - 1)
             * sum(
                 q(and_(*combo))
-                for combo in concrete_combinations(terms, r)
+                for combo in concrete_combinations(terms, order)
             )
         )
 
