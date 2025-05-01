@@ -211,6 +211,13 @@ def concrete_combinations(terms: list[Term], order: int) -> list[tuple[Term, ...
     return list(itertools.combinations(terms, order))
 
 
+def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) -> bool:
+    """
+    Predicate for early termination (truncation) of disjunction probability and intensity computations.
+    """
+    return latest == 0 or abs(robust_divide(latest, partial_sum)) < tolerance
+
+
 def disjunction_probability(terms: list[Term], flattened_index: int, computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure probability of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
@@ -246,7 +253,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
 
         partial_sum += latest
 
-        if latest == 0 or abs(robust_divide(latest, partial_sum)) < computational_cache.tolerance:
+        if should_terminate_sum(latest, partial_sum, computational_cache.tolerance):
             break
 
     return partial_sum
@@ -352,7 +359,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
 
         partial_sum += latest
 
-        if latest == 0 or abs(robust_divide(latest, partial_sum)) < computational_cache.tolerance:
+        if should_terminate_sum(latest, partial_sum, computational_cache.tolerance):
             break
 
     return partial_sum
