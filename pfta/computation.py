@@ -268,8 +268,8 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
                  − ∑{1≤i<j≤N} ω^†[C_i,C_j]
                  + ... ,
         ω^†[C_i,C_j,...]
-               =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
-                 − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
+               =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ... ÷ gcd(C_i,C_j,...))]
+                 − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ... ÷ gcd(C_i,C_j,...))]
                  + ... .
     Successive upper, lower, upper, ... bounds may be obtained by computing
         (ω^1 truncated at 1st-order),
@@ -328,7 +328,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         return (
             (-1) ** (order - 1)
             * sum(
-                omega(combo_gcd_divided_by_failed) * q(and_(*failed, *combo) / combo_gcd)
+                omega(combo_gcd_divided_by_failed) * q(and_(*failed, and_(*combo) / combo_gcd))
                 for failed in concrete_combinations(terms, order)
                 if not (
                     combo_gcd_divided_by_failed :=
@@ -355,4 +355,4 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         if latest == 0 or abs(robust_divide(latest, partial_sum)) < computational_cache.tolerance:
             break
 
-    return partial_sum  # TODO: something is broken here (ω^2 seems to completely cancel ω^1)
+    return partial_sum
