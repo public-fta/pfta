@@ -239,7 +239,7 @@ and the remaining primary events' failure probabilities:
 Using the [notation defined above](#notation), this may instead be written as
 
 ```
-ω[C] = ∑{e|C} ω[e] q[C÷e].
+ω[C] = ∑{e|C} ω[e] q[C ÷ e].
 ```
 
 Note that for an empty minimal cut set, we have `ω[True] = 0`.
