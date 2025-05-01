@@ -348,15 +348,15 @@ The generic contribution is given by
 The redundant contribution is given by
 
 ```
-ω^2[T] =   ∑{1≤i≤N} ω_r[{C_i}]
-         − ∑{1≤i<j≤N} ω_r[{C_i,C_j}]
+ω^2[T] =   ∑{1≤i≤N} ω^†[{C_i}]
+         − ∑{1≤i<j≤N} ω^†[{C_i,C_j}]
          + ... ,
 ```
 
 where
 
 ```
-ω_r[{C_i,C_j,...}]
+ω^†[{C_i,C_j,...}]
 =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
   − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
   + ... ,
@@ -367,8 +367,8 @@ being the sum of contributions to the intensity where (C_a), (C_a C_b), ... are 
 For performance, successive upper, lower, upper, etc. bounds may be obtained by computing:
 
 - `(ω^1 truncated at 1st-order)`
-- `(ω^1 truncated at 2nd-order) − (ω^2 truncated at 1st-order with ω_r truncated at 1st-order)`
-- `(ω^1 truncated at 3rd-order) − (ω^2 truncated at 2nd-order with ω_r truncated at 2nd-order)`
+- `(ω^1 truncated at 2nd-order) − (ω^2 truncated at 1st-order with ω^† truncated at 1st-order)`
+- `(ω^1 truncated at 3rd-order) − (ω^2 truncated at 2nd-order with ω^† truncated at 2nd-order)`
 - etc.
 
 

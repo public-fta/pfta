@@ -264,30 +264,30 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         ω^1[T] =   ∑{1≤i≤N} ω[C_i]
                  − ∑{1≤i<j≤N} ω[gcd(C_i,C_j)] q[C_i C_j ÷ gcd(C_i,C_j)]
                  + ... ,
-        ω^2[T] =   ∑{1≤i≤N} ω_r[{C_i}]
-                 − ∑{1≤i<j≤N} ω_r[{C_i,C_j}]
+        ω^2[T] =   ∑{1≤i≤N} ω^†[{C_i}]
+                 − ∑{1≤i<j≤N} ω^†[{C_i,C_j}]
                  + ... ,
-        ω_r[{C_i,C_j,...}]
+        ω^†[{C_i,C_j,...}]
                =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
                  − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
                  + ... .
     Successive upper, lower, upper, ... bounds may be obtained by computing
         (ω^1 truncated at 1st-order),
-        (ω^1 truncated at 2nd-order) − (ω^2 truncated at 1st-order with ω_r truncated at 1st-order),
-        (ω^1 truncated at 3rd-order) − (ω^2 truncated at 2nd-order with ω_r truncated at 2nd-order),
-        (ω^1 truncated at 4th-order) − (ω^2 truncated at 3rd-order with ω_r truncated at 3rd-order),
+        (ω^1 truncated at 2nd-order) − (ω^2 truncated at 1st-order with ω^† truncated at 1st-order),
+        (ω^1 truncated at 3rd-order) − (ω^2 truncated at 2nd-order with ω^† truncated at 2nd-order),
+        (ω^1 truncated at 4th-order) − (ω^2 truncated at 3rd-order with ω^† truncated at 3rd-order),
         etc.
     To avoid unnecessary recomputation, we implement this by computing the successive contributions
         (ω^1 1st-order contribution),
-        (ω^1 2nd-order contribution) − (ω^2 1st-order contribution with ω_r truncated at 1st-order),
-        (ω^1 3rd-order contribution) − (ω^2 (1st)-order contribution's ω_r 2nd-order contribution
-                                     − (ω^2 2nd-order contribution with ω_r truncated at 2nd-order),
-        (ω^1 4th-order contribution) − (ω^2 (1st,2nd)-order contributions' ω_r 3rd-order contribution
-                                     − (ω^2 3rd-order contribution with ω_r truncated at 3rd-order),
+        (ω^1 2nd-order contribution) − (ω^2 1st-order contribution with ω^† truncated at 1st-order),
+        (ω^1 3rd-order contribution) − (ω^2 (1st)-order contribution's ω^† 2nd-order contribution
+                                     − (ω^2 2nd-order contribution with ω^† truncated at 2nd-order),
+        (ω^1 4th-order contribution) − (ω^2 (1st,2nd)-order contributions' ω^† 3rd-order contribution
+                                     − (ω^2 3rd-order contribution with ω^† truncated at 3rd-order),
         etc.
     Thus, we truncate after the latest contribution
-        (ω^1 rth-order contribution) − (ω^2 (1,...,r−2)th-order contributions' ω_r (r−1)th-order contribution)
-                                     − (ω^2 (r−1)th-order contribution with ω_r truncated at (r−1)th-order)
+        (ω^1 rth-order contribution) − (ω^2 (1,...,r−2)th-order contributions' ω^† (r−1)th-order contribution)
+                                     − (ω^2 (r−1)th-order contribution with ω^† truncated at (r−1)th-order)
     divided by the partial sum falls below the tolerance.
     """
     gcd = Term.gcd
@@ -309,22 +309,22 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
             )
         )
 
-    def omega_2_contribution(order: int, omega_r_orders: Iterable[int]) -> float:
+    def omega_2_contribution(order: int, omega_dagger_orders: Iterable[int]) -> float:
         return (
             (-1) ** (order - 1)
             * sum(
-                omega_r_contributions(combo, omega_r_orders)
+                omega_dagger_contributions(combo, omega_dagger_orders)
                 for combo in concrete_combinations(terms, order)
             )
         )
 
-    def omega_r_contributions(terms_subset: tuple[Term, ...], orders: Iterable[int]) -> float:
+    def omega_dagger_contributions(terms_subset: tuple[Term, ...], orders: Iterable[int]) -> float:
         return sum(
-            omega_r_contribution(terms_subset, order)
+            omega_dagger_contribution(terms_subset, order)
             for order in orders
         )
 
-    def omega_r_contribution(terms_subset: tuple[Term, ...], order: int) -> float:
+    def omega_dagger_contribution(terms_subset: tuple[Term, ...], order: int) -> float:
         return (
             (-1) ** (order - 1)
             * sum(
@@ -344,10 +344,10 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         latest = (
             omega_1_contribution(order=r)
             - sum(
-                omega_2_contribution(order=s, omega_r_orders=[r-1])
+                omega_2_contribution(order=s, omega_dagger_orders=[r-1])
                 for s in range(1, r-1)
             )
-            - omega_2_contribution(order=r-1, omega_r_orders=range(1, r))
+            - omega_2_contribution(order=r-1, omega_dagger_orders=range(1, r))
         )
 
         partial_sum += latest
