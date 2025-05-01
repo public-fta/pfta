@@ -8,10 +8,16 @@ Free and open-source fault tree analysis.
 
 ## Features
 
-- Enforcement of declaration of at least one value of time `t`.
-- General fault tree analysis framework where all objects have both a failure probability `q(t)`
+- Enforces declaration of at least one value of time `t`.
+- Supports general fault tree analysis framework where objects can have *both* a failure probability `q(t)`
   and a failure intensity `ω(t)` (with failure rate `λ(t) = ω(t) / (1 − q(t))`).
-- Built-in support for sampling of distributions (Monte Carlo).
+- Supports Monte Carlo for failure parameters (sampling of distributions) out of the box.
+
+
+## Limitations
+
+- Does not support negative logic (NOT gates). Only supports coherent fault trees (AND gates, OR gates).
+- Does not support beta factor groups.
 
 
 ## Textual input
