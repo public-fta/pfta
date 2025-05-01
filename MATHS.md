@@ -326,7 +326,7 @@ T = C_1 + C_2 + ... + C_N.
 The failure intensity `ω[T]` of the top gate is given by
 
 ```
-ω[T] = ω^1[T] − ω^2[T],
+ω[T] = ω^1[T] − ω^2[T].
 ```
 
 Here:
