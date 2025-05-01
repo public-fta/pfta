@@ -275,8 +275,17 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
         (ω^1 truncated at 1st-order),
         (ω^1 truncated at 2nd-order) − (ω^2 truncated at 1st-order with ω_r truncated at 1st-order),
         (ω^1 truncated at 3rd-order) − (ω^2 truncated at 2nd-order with ω_r truncated at 2nd-order),
-        ... .
-    Thus, in the implementation, we truncate after the latest contribution
+        (ω^1 truncated at 4th-order) − (ω^2 truncated at 3rd-order with ω_r truncated at 3rd-order),
+        etc.
+    To avoid unnecessary recomputation, we implement this by computing the successive contributions
+        (ω^1 1st-order contribution),
+        (ω^1 2nd-order contribution) − (ω^2 1st-order contribution with ω_r truncated at 1st-order),
+        (ω^1 3rd-order contribution) − (ω^2 (1st)-order contribution's ω_r 2nd-order contribution
+                                     − (ω^2 2nd-order contribution with ω_r truncated at 2nd-order),
+        (ω^1 4th-order contribution) − (ω^2 (1st,2nd)-order contributions' ω_r 3rd-order contribution
+                                     − (ω^2 3rd-order contribution with ω_r truncated at 3rd-order),
+        etc.
+    Thus, we truncate after the latest contribution
         (ω^1 rth-order contribution) − (ω^2 (1,...,r−2)th-order contributions' ω_r (r−1)th-order contribution)
                                      − (ω^2 (r−1)th-order contribution with ω_r truncated at (r−1)th-order)
     divided by the partial sum falls below the tolerance.

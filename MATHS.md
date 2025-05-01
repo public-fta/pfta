@@ -359,8 +359,10 @@ where
 ω_r[{C_i,C_j,...}]
 =   ∑{1≤a≤N} ω[gcd(C_i,C_j,...) ÷ (C_a)] q[(C_a) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
   − ∑{1≤a<b≤N} ω[gcd(C_i,C_j,...) ÷ (C_a C_b)] q[(C_a C_b) (C_i C_j ...) ÷ gcd(C_i,C_j,...)]
-  + ... .
+  + ... ,
 ```
+
+being the sum of contributions to the intensity where (C_a), (C_a C_b), ... are already failed.
 
 For performance, successive upper, lower, upper, etc. bounds may be obtained by computing:
 
