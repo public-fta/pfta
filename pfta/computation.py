@@ -318,22 +318,22 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
             )
         )
 
-    def omega_dagger_contributions(terms_subset: tuple[Term, ...], orders: Iterable[int]) -> float:
+    def omega_dagger_contributions(combo: tuple[Term, ...], orders: Iterable[int]) -> float:
         return sum(
-            omega_dagger_contribution(terms_subset, order)
+            omega_dagger_contribution(combo, order)
             for order in orders
         )
 
-    def omega_dagger_contribution(terms_subset: tuple[Term, ...], order: int) -> float:
+    def omega_dagger_contribution(combo: tuple[Term, ...], order: int) -> float:
         return (
             (-1) ** (order - 1)
             * sum(
-                omega(subset_gcd_divided_by_combo) * q(and_(*combo, *terms_subset) / subset_gcd)
-                for combo in concrete_combinations(terms, order)
+                omega(combo_gcd_divided_by_failed) * q(and_(*failed, *combo) / combo_gcd)
+                for failed in concrete_combinations(terms, order)
                 if not (
-                    subset_gcd_divided_by_combo :=
-                        (subset_gcd := gcd(*terms_subset))
-                        / and_(*combo)
+                    combo_gcd_divided_by_failed :=
+                        (combo_gcd := gcd(*combo))
+                        / and_(*failed)
                 ).is_vacuous()  # skip q computation if omega is zero
             )
         )
