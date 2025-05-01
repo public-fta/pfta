@@ -1,0 +1,158 @@
+# Procedurally generated from `generate_staircase.py`.
+
+
+- times: nan
+
+
+Model: MODEL
+- model_type: Fixed
+- probability: 0.1
+- intensity: 0
+
+
+Event: BASE
+- model: MODEL
+
+
+Event: AND_CHILD_0
+- model: MODEL
+
+Event: AND_CHILD_1
+- model: MODEL
+
+Event: AND_CHILD_2
+- model: MODEL
+
+Event: AND_CHILD_3
+- model: MODEL
+
+Event: AND_CHILD_4
+- model: MODEL
+
+Event: AND_CHILD_5
+- model: MODEL
+
+Event: AND_CHILD_6
+- model: MODEL
+
+Event: AND_CHILD_7
+- model: MODEL
+
+Event: AND_CHILD_8
+- model: MODEL
+
+Event: AND_CHILD_9
+- model: MODEL
+
+
+Event: OR_CHILD_0
+- model: MODEL
+
+Event: OR_CHILD_1
+- model: MODEL
+
+Event: OR_CHILD_2
+- model: MODEL
+
+Event: OR_CHILD_3
+- model: MODEL
+
+Event: OR_CHILD_4
+- model: MODEL
+
+Event: OR_CHILD_5
+- model: MODEL
+
+Event: OR_CHILD_6
+- model: MODEL
+
+Event: OR_CHILD_7
+- model: MODEL
+
+Event: OR_CHILD_8
+- model: MODEL
+
+Event: OR_CHILD_9
+- model: MODEL
+
+
+Gate: AND_GATE_0
+- type: AND
+- inputs: AND_CHILD_0, OR_GATE_0
+
+Gate: AND_GATE_1
+- type: AND
+- inputs: AND_CHILD_1, OR_GATE_1
+
+Gate: AND_GATE_2
+- type: AND
+- inputs: AND_CHILD_2, OR_GATE_2
+
+Gate: AND_GATE_3
+- type: AND
+- inputs: AND_CHILD_3, OR_GATE_3
+
+Gate: AND_GATE_4
+- type: AND
+- inputs: AND_CHILD_4, OR_GATE_4
+
+Gate: AND_GATE_5
+- type: AND
+- inputs: AND_CHILD_5, OR_GATE_5
+
+Gate: AND_GATE_6
+- type: AND
+- inputs: AND_CHILD_6, OR_GATE_6
+
+Gate: AND_GATE_7
+- type: AND
+- inputs: AND_CHILD_7, OR_GATE_7
+
+Gate: AND_GATE_8
+- type: AND
+- inputs: AND_CHILD_8, OR_GATE_8
+
+Gate: AND_GATE_9
+- type: AND
+- inputs: AND_CHILD_9, OR_GATE_9
+
+
+Gate: OR_GATE_0
+- type: OR
+- inputs: OR_CHILD_0, AND_GATE_1
+
+Gate: OR_GATE_1
+- type: OR
+- inputs: OR_CHILD_1, AND_GATE_2
+
+Gate: OR_GATE_2
+- type: OR
+- inputs: OR_CHILD_2, AND_GATE_3
+
+Gate: OR_GATE_3
+- type: OR
+- inputs: OR_CHILD_3, AND_GATE_4
+
+Gate: OR_GATE_4
+- type: OR
+- inputs: OR_CHILD_4, AND_GATE_5
+
+Gate: OR_GATE_5
+- type: OR
+- inputs: OR_CHILD_5, AND_GATE_6
+
+Gate: OR_GATE_6
+- type: OR
+- inputs: OR_CHILD_6, AND_GATE_7
+
+Gate: OR_GATE_7
+- type: OR
+- inputs: OR_CHILD_7, AND_GATE_8
+
+Gate: OR_GATE_8
+- type: OR
+- inputs: OR_CHILD_8, AND_GATE_9
+
+Gate: OR_GATE_9
+- type: OR
+- inputs: OR_CHILD_9, BASE
