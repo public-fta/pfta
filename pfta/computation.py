@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import collections
 import itertools
 import math
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING, Collection, Iterable
 
 from pfta.boolean import Term
 from pfta.common import natural_repr
@@ -94,7 +94,7 @@ class ComputationalCache:
 
         return robust_divide(omega, 1 - q)
 
-    def combinations(self, terms: list[Term], order: int) -> list[tuple[Term, ...]]:
+    def combinations(self, terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
         """
         Term combinations (subset-tuples) of given order (size).
         """
@@ -213,7 +213,7 @@ def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
     return lambda_ * (1 - q)
 
 
-def concrete_combinations(terms: list[Term], order: int) -> list[tuple[Term, ...]]:
+def concrete_combinations(terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
     """
     Compute concrete term combinations (subset-tuples) of given order (size).
 
@@ -230,7 +230,8 @@ def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) ->
     return math.isnan(latest) or latest == 0 or abs(robust_divide(latest, partial_sum)) < tolerance
 
 
-def disjunction_probability(terms: list[Term], flattened_index: int, computational_cache: ComputationalCache) -> float:
+def disjunction_probability(terms: Collection[Term], flattened_index: int,
+                            computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure probability of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
 
