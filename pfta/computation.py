@@ -35,6 +35,7 @@ class ComputationalCache:
         self.tolerance = tolerance
         self._probability_from_index_from_term = collections.defaultdict(dict, probability_from_index_from_term)
         self._intensity_from_index_from_term = collections.defaultdict(dict, intensity_from_index_from_term)
+        self._combinations_from_order_from_terms = collections.defaultdict(dict)
 
     def __repr__(self):
         return natural_repr(self)
@@ -92,6 +93,17 @@ class ComputationalCache:
         omega = self.intensity(term, index)
 
         return robust_divide(omega, 1 - q)
+
+    def combinations(self, terms: list[Term], order: int) -> list[tuple[Term, ...]]:
+        """
+        Term combinations (subset-tuples) of given order (size).
+        """
+        if order not in self._combinations_from_order_from_terms[terms]:
+            combos = concrete_combinations(terms, order)
+
+            self._combinations_from_order_from_terms[terms][order] = combos
+
+        return self._combinations_from_order_from_terms[terms][order]
 
 
 def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> float:
@@ -233,6 +245,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
     falls below the tolerance.
     """
     and_ = Term.conjunction
+    combinations = computational_cache.combinations
 
     def q(term: Term) -> float:
         return computational_cache.probability(term, flattened_index)
@@ -242,7 +255,7 @@ def disjunction_probability(terms: list[Term], flattened_index: int, computation
             (-1) ** (order - 1)
             * sum(
                 q(and_(*combo))
-                for combo in concrete_combinations(terms, order)
+                for combo in combinations(terms, order)
             )
         )
 
@@ -299,6 +312,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
     """
     gcd = Term.gcd
     and_ = Term.conjunction
+    combinations = computational_cache.combinations
 
     def q(term: Term) -> float:
         return computational_cache.probability(term, flattened_index)
@@ -311,7 +325,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
             (-1) ** (order - 1)
             * sum(
                 omega(combo_gcd) * q(and_(*combo) / combo_gcd)
-                for combo in concrete_combinations(terms, order)
+                for combo in combinations(terms, order)
                 if not (combo_gcd := gcd(*combo)).is_vacuous()  # skip q computation if omega is zero
             )
         )
@@ -321,7 +335,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
             (-1) ** (order - 1)
             * sum(
                 omega_dagger_contributions(combo, omega_dagger_orders)
-                for combo in concrete_combinations(terms, order)
+                for combo in combinations(terms, order)
             )
         )
 
@@ -336,7 +350,7 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
             (-1) ** (order - 1)
             * sum(
                 omega(combo_gcd_divided_by_failed) * q(and_(*failed, and_(*combo) / combo_gcd))
-                for failed in concrete_combinations(terms, order)
+                for failed in combinations(terms, order)
                 if not (combo_gcd := gcd(*combo)).is_vacuous()  # skip q computation if omega is zero
                 if not (combo_gcd_divided_by_failed := combo_gcd / and_(*failed)).is_vacuous()  # ditto
             )
