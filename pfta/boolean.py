@@ -40,7 +40,7 @@ class Term:
         return Term(self.encoding & ~other.encoding)
 
     def __hash__(self):
-        return hash(self.encoding)
+        return self.encoding
 
     def __repr__(self):
         return f'Term({bin(self.encoding)})'
