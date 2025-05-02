@@ -337,11 +337,8 @@ def disjunction_intensity(terms: list[Term], flattened_index: int, computational
             * sum(
                 omega(combo_gcd_divided_by_failed) * q(and_(*failed, and_(*combo) / combo_gcd))
                 for failed in concrete_combinations(terms, order)
-                if not (
-                    combo_gcd_divided_by_failed :=
-                        (combo_gcd := gcd(*combo))
-                        / and_(*failed)
-                ).is_vacuous()  # skip q computation if omega is zero
+                if not (combo_gcd := gcd(*combo)).is_vacuous()  # skip q computation if omega is zero
+                if not (combo_gcd_divided_by_failed := combo_gcd / and_(*failed)).is_vacuous()  # ditto
             )
         )
 
