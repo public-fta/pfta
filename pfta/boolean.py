@@ -51,18 +51,18 @@ class Term:
     def is_vacuous(self) -> bool:
         return self.encoding == 0
 
-    def event_indices(self) -> frozenset[int]:
+    def event_indices(self) -> tuple[int, ...]:
         """
         Extract the event indices, which are the set bits of the encoding.
         """
-        return frozenset(
+        return tuple(
             index
             for index, digit in enumerate(bin(self.encoding)[-1:1:-1])  # stop at 1 to avoid `0b` prefix
             if digit == '1'
         )
 
-    def factors(self) -> frozenset['Term']:
-        return frozenset(
+    def factors(self) -> tuple['Term', ...]:
+        return tuple(
             Term.create_from_event_index(event_index)
             for event_index in self.event_indices()
         )

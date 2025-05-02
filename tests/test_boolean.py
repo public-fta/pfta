@@ -34,19 +34,19 @@ class TestBoolean(unittest.TestCase):
         self.assertEqual(Term(0b10111) / Term(0b01110), Term(0b10001))
 
     def test_term_event_indices(self):
-        self.assertEqual(Term(0).event_indices(), set())
-        self.assertEqual(Term(1).event_indices(), {0})
-        self.assertEqual(Term(0b1010010).event_indices(), {1, 4, 6})
-        self.assertEqual(Term(2 ** 69420).event_indices(), {69420})
+        self.assertEqual(Term(0).event_indices(), ())
+        self.assertEqual(Term(1).event_indices(), (0,))
+        self.assertEqual(Term(0b1010010).event_indices(), (1, 4, 6,))
+        self.assertEqual(Term(2 ** 69420).event_indices(), (69420,))
 
     def test_factors(self):
         self.assertEqual(
             Term(0b10110).factors(),
-            {Term(0b10000), Term(0b00100), Term(0b00010)},
+            (Term(0b00010), Term(0b00100), Term(0b10000)),
         )
         self.assertEqual(
             Term(2 ** 69420 + 2 ** 100 + 2).factors(),
-            {Term(2 ** 69420), Term(2 ** 100), Term(2)},
+            (Term(2), Term(2 ** 100), Term(2 ** 69420)),
         )
 
     def test_term_implies(self):
