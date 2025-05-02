@@ -13,7 +13,10 @@ from typing import Iterable
 
 
 def robust_divide(x: float, y: float) -> float:
-    return x * robust_invert(y)
+    try:
+        return x / y
+    except ZeroDivisionError:
+        return x * float('inf')
 
 
 def robust_invert(x: float) -> float:
