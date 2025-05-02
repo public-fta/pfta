@@ -23,18 +23,18 @@ if TYPE_CHECKING:
 
 class ComputationalCache:
     def __init__(self, tolerance: float, events: list['Event']):
-        probability_from_index_from_term = {
-            event.computed_expression.sole_term(): dict(enumerate(event.computed_probabilities))
+        probability_from_index_from_encoding = {
+            event.computed_expression.sole_term().encoding: dict(enumerate(event.computed_probabilities))
             for event in events
         }
-        intensity_from_index_from_term = {
-            event.computed_expression.sole_term(): dict(enumerate(event.computed_intensities))
+        intensity_from_index_from_encoding = {
+            event.computed_expression.sole_term().encoding: dict(enumerate(event.computed_intensities))
             for event in events
         }
 
         self.tolerance = tolerance
-        self._probability_from_index_from_term = collections.defaultdict(dict, probability_from_index_from_term)
-        self._intensity_from_index_from_term = collections.defaultdict(dict, intensity_from_index_from_term)
+        self._probability_from_index_from_encoding = collections.defaultdict(dict, probability_from_index_from_encoding)
+        self._intensity_from_index_from_encoding = collections.defaultdict(dict, intensity_from_index_from_encoding)
         self._combinations_from_order_from_terms = collections.defaultdict(dict)
 
     def __repr__(self):
@@ -49,15 +49,15 @@ class ComputationalCache:
                  = ∏{e|C} q[C],
         a straight product of the failure probabilities of its constituent primary events (i.e. factors).
         """
-        if index not in self._probability_from_index_from_term[term]:
+        if index not in self._probability_from_index_from_encoding[term.encoding]:
             def q(e: Term) -> float:
                 return self.probability(e, index)
 
             probability = descending_product(q(factor) for factor in term.factors())
 
-            self._probability_from_index_from_term[term][index] = probability
+            self._probability_from_index_from_encoding[term.encoding][index] = probability
 
-        return self._probability_from_index_from_term[term][index]
+        return self._probability_from_index_from_encoding[term.encoding][index]
 
     def intensity(self, term: Term, index: int) -> float:
         """
@@ -72,7 +72,7 @@ class ComputationalCache:
                    + ...
                  = ∑{e|C} ω[e] q[C÷e].
         """
-        if index not in self._intensity_from_index_from_term[term]:
+        if index not in self._intensity_from_index_from_encoding[term.encoding]:
             def q(e: Term) -> float:
                 return self.probability(e, index)
 
@@ -81,9 +81,9 @@ class ComputationalCache:
 
             intensity = descending_sum(omega(factor) * q(term / factor) for factor in term.factors())
 
-            self._intensity_from_index_from_term[term][index] = intensity
+            self._intensity_from_index_from_encoding[term.encoding][index] = intensity
 
-        return self._intensity_from_index_from_term[term][index]
+        return self._intensity_from_index_from_encoding[term.encoding][index]
 
     def rate(self, term: Term, index: int) -> float:
         """
