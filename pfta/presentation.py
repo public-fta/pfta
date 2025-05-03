@@ -10,7 +10,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import csv
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from pfta.common import natural_repr
 from pfta.woe import ImplementationError
@@ -32,7 +32,7 @@ class Figure:
         gate_from_id = {gate.id_: gate for gate in fault_tree.gates}
 
         # Recursive instantiation
-        top_node = Node(gate.id_, event_from_id, gate_from_id, is_top_node=True)
+        top_node = Node(gate.id_, event_from_id, gate_from_id, parent_node=None)
 
         # Recursive sizing and positioning
         top_node.determine_size_recursive()
@@ -50,7 +50,8 @@ class Node:
 
     Nodes are instantiated recursively, starting from the top node of the figure.
     """
-    def __init__(self, id_: str, event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate'], is_top_node: bool):
+    def __init__(self, id_: str, event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate'],
+                 parent_node: Optional['Node']):
         if id_ in event_from_id:
             source_object = event_from_id[id_]
             input_nodes = []
@@ -58,11 +59,11 @@ class Node:
         elif id_ in gate_from_id:
             source_object = gate = gate_from_id[id_]
 
-            if gate.is_paged and not is_top_node:
+            if gate.is_paged and parent_node is not None:
                 input_nodes = []
             else:
                 input_nodes = [
-                    Node(input_id, event_from_id, gate_from_id, is_top_node=False)
+                    Node(input_id, event_from_id, gate_from_id, parent_node=self)
                     for input_id in gate.input_ids
                 ]
 
