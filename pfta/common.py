@@ -8,7 +8,7 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
-from typing import Iterable, Optional
+from typing import Iterable, Optional, Union
 
 
 def none_aware_dict_eq(self, other):
@@ -24,7 +24,7 @@ def natural_repr(self):
     return f'{class_name}({argument_sequence})'
 
 
-def natural_join(items: tuple | list, penultimate_separator: Optional[str] = 'and') -> str:
+def natural_join(items: Union[tuple, list], penultimate_separator: Optional[str] = 'and') -> str:
     if not items:
         return ''
 
@@ -44,7 +44,7 @@ def natural_join(items: tuple | list, penultimate_separator: Optional[str] = 'an
     return f'{leading_items_joined}, {penultimate_separator} {last_item}'
 
 
-def natural_join_backticks(items: tuple | list, penultimate_separator: Optional[str] = 'and') -> str:
+def natural_join_backticks(items: Union[tuple, list], penultimate_separator: Optional[str] = 'and') -> str:
     return natural_join([f'`{item}`' for item in items], penultimate_separator)
 
 
