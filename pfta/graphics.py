@@ -46,6 +46,7 @@ PAGED_GATE_BODY_HEIGHT = 32  # toes, below centre
 PAGED_GATE_HALF_WIDTH = 40
 
 DEVELOPED_EVENT_CIRCLE_RADIUS = 30
+UNDEVELOPED_EVENT_CIRCUMRADIUS = 30
 
 FIGURE_SVG_TEMPLATE = string.Template('''\
 <?xml version="1.0" encoding="UTF-8"?>
@@ -98,8 +99,11 @@ class SymbolGraphic(Graphic):
         if self.type_ == SymbolType.PAGED_GATE:
             return SymbolGraphic.paged_gate_svg_content(self.x, self.y)
 
-        if self.type_ in (SymbolType.DEVELOPED_EVENT, SymbolType.UNDEVELOPED_EVENT):  # TODO: separate undeveloped
+        if self.type_ == SymbolType.DEVELOPED_EVENT:
             return SymbolGraphic.developed_event_svg_content(self.x, self.y)
+
+        if self.type_ == SymbolType.UNDEVELOPED_EVENT:
+            return SymbolGraphic.undeveloped_event_svg_content(self.x, self.y)
 
         raise ImplementationError(f'bad symbol type {self.type_}')
 
@@ -202,6 +206,24 @@ class SymbolGraphic(Graphic):
         radius = DEVELOPED_EVENT_CIRCLE_RADIUS
 
         return f'<circle cx="{centre}" cy="{middle}" r="{radius}"/>'
+
+    @staticmethod
+    def undeveloped_event_svg_content(x: int, y: int) -> str:
+        centre = x
+        middle = y + SYMBOL_Y_OFFSET
+        circumradius = UNDEVELOPED_EVENT_CIRCUMRADIUS
+
+        top_x = bottom_x = centre
+        left_y = right_y = middle
+
+        left_x = centre - circumradius
+        right_x = centre + circumradius
+        top_y = middle - circumradius
+        bottom_y = middle + circumradius
+
+        points = f'{top_x},{top_y} {left_x},{left_y} {bottom_x},{bottom_y} {right_x},{right_y}'
+
+        return f'<polygon points="{points}"/>'
 
 
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
