@@ -777,6 +777,21 @@ class Gate:
     """
     Class representing a gate.
     """
+    id_: str
+    label: str
+    is_paged: bool
+    type_: GateType
+    input_ids: list[str]
+    input_ids_line_number: int
+    comment: str
+
+    is_top_gate: Optional[bool]
+    flattened_indexer: Optional['FlattenedIndexer']
+    computed_expression: Optional[Expression]
+    computed_probabilities: Optional[list[float]]
+    computed_intensities: Optional[list[float]]
+    computed_rates: Optional[list[float]]
+
     def __init__(self, id_: str, properties: dict):
         label = properties.get('label')
         is_paged = properties.get('is_paged', False)

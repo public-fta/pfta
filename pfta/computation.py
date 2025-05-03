@@ -277,7 +277,8 @@ def disjunction_probability(terms: Collection[Term], flattened_index: int,
     return partial_sum
 
 
-def disjunction_intensity(terms: list[Term], flattened_index: int, computational_cache: ComputationalCache) -> float:
+def disjunction_intensity(terms: Collection[Term], flattened_index: int,
+                          computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure intensity of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
 
