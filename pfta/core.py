@@ -207,9 +207,8 @@ class FaultTree:
         FaultTree.validate_cycle_free(gate_from_id)
 
         # Flattened indexing (flattened loop over times and samples)
-        time_count = len(times)
-        flattened_indexer = FlattenedIndexer(time_count, sample_size)
-        flattened_size = flattened_indexer.flattened_size  # TODO: eliminate if practicable
+        flattened_indexer = FlattenedIndexer(len(times), sample_size)
+        flattened_size = flattened_indexer.flattened_size
 
         # Marking of objects
         FaultTree.mark_used_models(models, all_used_model_ids)
@@ -237,8 +236,8 @@ class FaultTree:
         computational_cache = ComputationalCache(tolerance, events)
 
         # Computation of gate quantities
-        FaultTree.compute_gate_probabilities(gates, flattened_size, computational_cache)
-        FaultTree.compute_gate_intensities(gates, flattened_size, computational_cache)
+        FaultTree.compute_gate_probabilities(gates, computational_cache)
+        FaultTree.compute_gate_intensities(gates, computational_cache)
         FaultTree.compute_gate_rates(gates)
 
         # Finalisation
@@ -441,14 +440,14 @@ class FaultTree:
             event.compute_rates()
 
     @staticmethod
-    def compute_gate_probabilities(gates: list['Gate'], flattened_size: int, computational_cache: ComputationalCache):
+    def compute_gate_probabilities(gates: list['Gate'], computational_cache: ComputationalCache):
         for gate in gates:
-            gate.compute_probabilities(flattened_size, computational_cache)
+            gate.compute_probabilities(computational_cache)
 
     @staticmethod
-    def compute_gate_intensities(gates: list['Gate'], flattened_size: int, computational_cache: ComputationalCache):
+    def compute_gate_intensities(gates: list['Gate'], computational_cache: ComputationalCache):
         for gate in gates:
-            gate.compute_intensities(flattened_size, computational_cache)
+            gate.compute_intensities(computational_cache)
 
     @staticmethod
     def compute_gate_rates(gates: list['Gate']):
@@ -814,17 +813,17 @@ class Gate:
         return boolean_operator(*input_expressions)
 
     @memoise('computed_probabilities')
-    def compute_probabilities(self, flattened_size: int, computational_cache: ComputationalCache) -> list[float]:
+    def compute_probabilities(self, computational_cache: ComputationalCache) -> list[float]:
         return [
             disjunction_probability(self.computed_expression.terms, flattened_index, computational_cache)
-            for flattened_index in range(flattened_size)
+            for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
 
     @memoise('computed_intensities')
-    def compute_intensities(self, flattened_size: int, computational_cache: ComputationalCache) -> list[float]:
+    def compute_intensities(self, computational_cache: ComputationalCache) -> list[float]:
         return [
             disjunction_intensity(self.computed_expression.terms, flattened_index, computational_cache)
-            for flattened_index in range(flattened_size)
+            for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
 
     @memoise('computed_rates')
