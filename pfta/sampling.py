@@ -20,6 +20,8 @@ class InvalidDistributionParameterException(FaultTreeTextException):
 
 
 class Distribution:
+    line_number: int
+
     def __init__(self, line_number: int):
         self.line_number = line_number
 
@@ -31,6 +33,8 @@ class Distribution:
 
 
 class DegenerateDistribution(Distribution):
+    value: float
+
     def __init__(self, value: float, line_number: int):
         self.value = value
         super().__init__(line_number)
@@ -40,6 +44,9 @@ class DegenerateDistribution(Distribution):
 
 
 class LogNormalDistribution(Distribution):
+    mu: float
+    sigma: float
+
     def __init__(self, mu: float, sigma: float, line_number: int):
         self.mu = mu
         self.sigma = sigma
@@ -53,6 +60,9 @@ class LogNormalDistribution(Distribution):
 
 
 class LogUniformDistribution(Distribution):
+    lower: float
+    upper: float
+
     def __init__(self, lower: float, upper: float, line_number: int):
         if lower <= 0:
             raise InvalidDistributionParameterException(
@@ -78,6 +88,9 @@ class LogUniformDistribution(Distribution):
 
 
 class NormalDistribution(Distribution):
+    mu: float
+    sigma: float
+
     def __init__(self, mu: float, sigma: float, line_number: int):
         self.mu = mu
         self.sigma = sigma
@@ -91,6 +104,10 @@ class NormalDistribution(Distribution):
 
 
 class TriangularDistribution(Distribution):
+    lower: float
+    upper: float
+    mode: float
+
     def __init__(self, lower: float, upper: float, mode: float, line_number: int):
         self.lower = lower
         self.upper = upper
@@ -106,6 +123,9 @@ class TriangularDistribution(Distribution):
 
 
 class UniformDistribution(Distribution):
+    lower: float
+    upper: float
+
     def __init__(self, lower: float, upper: float, line_number: int):
         self.lower = lower
         self.upper = upper
