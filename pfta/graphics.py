@@ -27,6 +27,11 @@ EVENT_BOUNDING_HEIGHT = 210
 SYMBOL_Y_OFFSET = 45
 SYMBOL_SLOTS_HALF_WIDTH = 30
 
+LABEL_BOX_Y_OFFSET = -65
+
+INPUT_CONNECTOR_BUS_Y_OFFSET = 95
+INPUT_CONNECTOR_BUS_HALF_HEIGHT = 10
+
 OR_GATE_APEX_HEIGHT = 38  # tip, above centre
 OR_GATE_NECK_HEIGHT = -10  # ears, above centre
 OR_GATE_BODY_HEIGHT = 36  # toes, below centre
@@ -226,6 +231,83 @@ class SymbolGraphic(Graphic):
         return f'<polygon points="{points}"/>'
 
 
+class InputConnectorsGraphic(Graphic):
+    x: int
+    y: int
+    input_nodes: list['Node']
+
+    def __init__(self, node: 'Node'):
+        self.x = node.x
+        self.y = node.y
+        self.input_nodes = node.input_nodes
+
+    def svg_content(self) -> str:
+        if not (input_nodes := self.input_nodes):
+            return ''
+
+        symbol_centre = self.x
+        symbol_middle = self.y + SYMBOL_Y_OFFSET
+        bus_middle = self.y + INPUT_CONNECTOR_BUS_Y_OFFSET
+
+        input_count = len(input_nodes)
+        slot_biases = [2 * n / (1 + input_count) - 1 for n in range(1, input_count + 1)]
+
+        left_count, right_count, centre_count = InputConnectorsGraphic.input_partition_sizes(input_nodes, symbol_centre)
+        bus_biases = [
+            *[2 * n / (1 + left_count) - 1 for n in range(1, left_count + 1)],
+            *[0 for _ in range(centre_count)],
+            *[1 - 2 * n / (1 + right_count) for n in range(1, right_count + 1)],
+        ]
+
+        connector_coordinates_by_input = [
+            InputConnectorsGraphic.connector_coordinates(
+                input_node, slot_bias, bus_bias,
+                symbol_centre, symbol_middle, bus_middle,
+            )
+            for input_node, slot_bias, bus_bias in zip(input_nodes, slot_biases, bus_biases)
+        ]
+
+        return '\n'.join(
+            f'<polyline points="{InputConnectorsGraphic.points_svg_content(coordinates)}"/>'
+            for coordinates in connector_coordinates_by_input
+        )
+
+    @staticmethod
+    def input_partition_sizes(input_nodes: list['Node'], symbol_centre: int) -> tuple[int, int, int]:
+        left_count = 0
+        right_count = 0
+        centre_count = 0
+
+        for input_node in input_nodes:
+            if input_node.x < symbol_centre:
+                left_count += 1
+            elif input_node.x > symbol_centre:
+                right_count += 1
+            else:
+                centre_count += 1
+
+        return left_count, right_count, centre_count
+
+    @staticmethod
+    def connector_coordinates(input_node: 'Node', slot_bias: float, bus_bias: float,
+                              symbol_centre: int, symbol_middle: int, bus_middle: int) -> list[tuple[int, int]]:
+        slot_x = round(symbol_centre + slot_bias * SYMBOL_SLOTS_HALF_WIDTH)
+        bus_y = round(bus_middle + bus_bias * INPUT_CONNECTOR_BUS_HALF_HEIGHT)
+        input_label_centre = input_node.x
+        input_label_middle = input_node.y + LABEL_BOX_Y_OFFSET
+
+        return [
+            (slot_x, symbol_middle),
+            (slot_x, bus_y),
+            (input_label_centre, bus_y),
+            (input_label_centre, input_label_middle),
+        ]
+
+    @staticmethod
+    def points_svg_content(coordinates: list[tuple[int, int]]) -> str:
+        return ' '.join(f'{x},{y}' for x, y in coordinates)
+
+
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
     left = -PAGE_MARGIN
     top = -PAGE_MARGIN
@@ -233,7 +315,11 @@ def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list
     height = bounding_height + 2 * PAGE_MARGIN
 
     font_size = DEFAULT_FONT_SIZE
-    body_content = '\n'.join(graphic.svg_content() for graphic in graphics)
+    body_content = '\n'.join(
+        svg_content
+        for graphic in graphics
+        if (svg_content := graphic.svg_content())
+    )
 
     return FIGURE_SVG_TEMPLATE.substitute({
         'left': left, 'top': top, 'width': width, 'height': height,
