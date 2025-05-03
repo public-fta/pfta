@@ -93,36 +93,6 @@ class InvalidProbabilityValueException(FaultTreeTextException):
     pass
 
 
-class FlattenedIndexer:
-    """
-    Flattened indexer, to be used by objects whose results are stored in flattened lists.
-
-    Flattened lists of results are of length `time_count * sample_size`,
-    and effectively indexed by the following comprehension:
-    [
-        (flattened_index := time_index * sample_size + sample_index)
-        for time_index in range(time_count)
-        for sample_index in range(sample_size)
-    ]
-    """
-    def __init__(self, time_count: int, sample_size: int):
-        self.time_count = time_count
-        self.sample_size = sample_size
-        self.flattened_size = time_count * sample_size
-
-    def __repr__(self):
-        return natural_repr(self)
-
-    def get_index(self, time_index: int, sample_index: int) -> int:
-        if not 0 <= time_index < self.time_count:
-            raise IndexError(f'time_index {time_index} is out of bounds')
-
-        if not 0 <= sample_index < self.sample_size:
-            raise IndexError(f'sample_index {sample_index} is out of bounds')
-
-        return time_index * self.sample_size + sample_index
-
-
 class FaultTree:
     """
     Class representing a fault tree.
@@ -392,12 +362,12 @@ class FaultTree:
             gate.is_top_gate = gate.id_ not in all_input_ids
 
     @staticmethod
-    def enable_event_flattened_indexing(events: list['Event'], flattened_indexer: FlattenedIndexer):
+    def enable_event_flattened_indexing(events: list['Event'], flattened_indexer: 'FlattenedIndexer'):
         for event in events:
             event.flattened_indexer = flattened_indexer
 
     @staticmethod
-    def enable_gate_flattened_indexing(gates: list['Gate'], flattened_indexer: FlattenedIndexer):
+    def enable_gate_flattened_indexing(gates: list['Gate'], flattened_indexer: 'FlattenedIndexer'):
         for gate in gates:
             gate.flattened_indexer = flattened_indexer
 
@@ -885,3 +855,33 @@ class Gate:
                 unset_property_line_number,
                 f'mandatory property `inputs` has not been set for gate `{id_}`',
             )
+
+
+class FlattenedIndexer:
+    """
+    Flattened indexer, to be used by objects whose results are stored in flattened lists.
+
+    Flattened lists of results are of length `time_count * sample_size`,
+    and effectively indexed by the following comprehension:
+    [
+        (flattened_index := time_index * sample_size + sample_index)
+        for time_index in range(time_count)
+        for sample_index in range(sample_size)
+    ]
+    """
+    def __init__(self, time_count: int, sample_size: int):
+        self.time_count = time_count
+        self.sample_size = sample_size
+        self.flattened_size = time_count * sample_size
+
+    def __repr__(self):
+        return natural_repr(self)
+
+    def get_index(self, time_index: int, sample_index: int) -> int:
+        if not 0 <= time_index < self.time_count:
+            raise IndexError(f'time_index {time_index} is out of bounds')
+
+        if not 0 <= sample_index < self.sample_size:
+            raise IndexError(f'sample_index {sample_index} is out of bounds')
+
+        return time_index * self.sample_size + sample_index
