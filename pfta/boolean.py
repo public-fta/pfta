@@ -24,6 +24,8 @@ class Term:
     """
     __slots__ = ('encoding',)
 
+    encoding: int
+
     def __init__(self, encoding: int):
         self.encoding = encoding
 
@@ -150,6 +152,8 @@ class Expression:
     Note that an empty disjunction is False.
     """
     __slots__ = ('terms',)
+
+    terms: frozenset[Term]
 
     def __init__(self, *terms: Term):
         self.terms = frozenset({*terms})
