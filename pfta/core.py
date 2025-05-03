@@ -10,6 +10,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import random
 import traceback
+from typing import Optional
 
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr, format_cut_set, natural_join_backticks
@@ -446,6 +447,13 @@ class Model:
     """
     Class representing a failure model (to be shared between multiple events).
     """
+    id_: str
+    label: str
+    comment: str
+    model_type: str
+    model_dict: dict[str, Distribution]
+    is_used: Optional[bool]
+
     def __init__(self, id_: str, properties: dict):
         label = properties.get('label')
         comment = properties.get('comment')
