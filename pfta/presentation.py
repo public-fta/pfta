@@ -10,7 +10,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import csv
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 from pfta.common import natural_repr
 from pfta.graphics import EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT
@@ -24,6 +24,8 @@ class Figure:
     """
     Class representing a figure (a page of a fault tree).
     """
+    top_node: 'Node'
+
     def __init__(self, gate: 'Gate', fault_tree: 'FaultTree'):
         event_from_id = {event.id_: event for event in fault_tree.events}
         gate_from_id = {gate.id_: gate for gate in fault_tree.gates}
@@ -49,6 +51,16 @@ class Node:
 
     Nodes are instantiated recursively, starting from the top node of the figure.
     """
+    source_object: Union[Event, Gate]
+    input_nodes: list['Node']
+    parent_node: 'Node'
+
+    reachable_nodes: Optional[list['Node']]
+    bounding_width: Optional[int]
+    bounding_height: Optional[int]
+    x: Optional[int]
+    y: Optional[int]
+
     def __init__(self, id_: str, event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate'],
                  parent_node: Optional['Node']):
         if id_ in event_from_id:
@@ -145,6 +157,9 @@ class Table:
     """
     Class representing tabular output.
     """
+    headings: list[str]
+    data: list[list]
+
     def __init__(self, headings: list[str], data: list[list]):
         self.headings = headings
         self.data = data
