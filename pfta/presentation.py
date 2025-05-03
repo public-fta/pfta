@@ -36,6 +36,7 @@ class Figure:
 
         # Recursive sizing and positioning
         top_node.determine_size_recursive()
+        top_node.determine_position_recursive()
 
         # Finalisation
         self.top_node = top_node
@@ -73,10 +74,13 @@ class Node:
         # Indirect fields (from parameters)
         self.source_object = source_object
         self.input_nodes = input_nodes
+        self.parent_node = parent_node
 
         # Fields to be set by figure
         self.bounding_width = None
         self.bounding_height = None
+        self.x = None
+        self.y = None
 
 
     def __str__(self):
@@ -101,6 +105,27 @@ class Node:
             self.bounding_height = EVENT_BOUNDING_HEIGHT + max(input_heights)
 
         return self.bounding_width, self.bounding_height
+
+    def determine_position_recursive(self):
+        """
+        Determine node position recursively (propagated top-down).
+        """
+        parent_node = self.parent_node
+
+        if parent_node is None:
+            self.x = self.bounding_width // 2
+            self.y = self.bounding_height // 2
+        else:
+            parent_inputs = parent_node.input_nodes
+            sibling_index = parent_inputs.index(self)
+            siblings_before = parent_inputs[0:sibling_index]
+            width_before = sum(node.bounding_width for node in siblings_before)
+
+            self.x = parent_node.x - parent_node.bounding_width // 2 + width_before + self.bounding_width // 2
+            self.y = parent_node.y + EVENT_BOUNDING_HEIGHT
+
+        for input_node in self.input_nodes:
+            input_node.determine_position_recursive()
 
 
 class Table:
