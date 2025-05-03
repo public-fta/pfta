@@ -216,6 +216,9 @@ class FaultTree:
         FaultTree.mark_used_events(events, all_input_ids)
         FaultTree.mark_top_gates(gates, all_input_ids)
 
+        # Enabling of flattened indexing
+        FaultTree.enable_event_flattened_indexing(events, flattened_indexer)
+
         # Finalisation of modelling
         FaultTree.determine_actual_model_types(events, model_from_id)
         FaultTree.generate_parameter_samples(events, model_from_id, seed, flattened_size)
@@ -271,9 +274,9 @@ class FaultTree:
             [
                 event.id_, event.label, event.is_used,
                 time, sample_index,
-                event.computed_probabilities[time_index * self.sample_size + sample_index],
-                event.computed_intensities[time_index * self.sample_size + sample_index],
-                event.computed_rates[time_index * self.sample_size + sample_index],
+                event.computed_probability(time_index, sample_index),
+                event.computed_intensity(time_index, sample_index),
+                event.computed_rate(time_index, sample_index),
             ]
             for event in self.events
             for time_index, time in enumerate(self.times)
@@ -387,6 +390,11 @@ class FaultTree:
     def mark_top_gates(gates: list['Gate'], all_input_ids: set[str]):
         for gate in gates:
             gate.is_top_gate = gate.id_ not in all_input_ids
+
+    @staticmethod
+    def enable_event_flattened_indexing(events: list['Event'], flattened_indexer: FlattenedIndexer):
+        for event in events:
+            event.flattened_index = flattened_indexer.flattened_index
 
     @staticmethod
     def determine_actual_model_types(events: list['Event'], model_from_id: dict[str, 'Model']):
@@ -591,6 +599,7 @@ class Event:
 
         # Fields to be set by fault tree
         self.is_used = None
+        self.flattened_index = None
         self.actual_model_type = None
         self.parameter_samples = None
         self.computed_expression = None
@@ -680,6 +689,18 @@ class Event:
             robust_divide(omega, 1 - q)
             for q, omega in zip(self.computed_probabilities, self.computed_intensities)
         ]
+
+    def computed_probability(self, time_index: int, sample_index: int) -> float:
+        flattened_index = self.flattened_index(time_index, sample_index)
+        return self.computed_probabilities[flattened_index]
+
+    def computed_intensity(self, time_index: int, sample_index: int) -> float:
+        flattened_index = self.flattened_index(time_index, sample_index)
+        return self.computed_intensities[flattened_index]
+
+    def computed_rate(self, time_index: int, sample_index: int) -> float:
+        flattened_index = self.flattened_index(time_index, sample_index)
+        return self.computed_rates[flattened_index]
 
     @staticmethod
     def validate_model_xor_type_set(id_: str, model_type: str, model_id: str, unset_property_line_number: int):
