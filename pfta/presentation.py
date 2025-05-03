@@ -13,14 +13,11 @@ import os
 from typing import TYPE_CHECKING, Optional
 
 from pfta.common import natural_repr
+from pfta.graphics import EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT
 from pfta.woe import ImplementationError
 
 if TYPE_CHECKING:
     from pfta.core import FaultTree, Event, Gate
-
-
-EVENT_BOUNDING_WIDTH = 120
-EVENT_BOUNDING_HEIGHT = 210
 
 
 class Figure:
