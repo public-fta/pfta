@@ -9,6 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import re
+from typing import Optional
 
 from pfta.common import none_aware_dict_eq, natural_repr
 from pfta.constants import (
@@ -91,7 +92,7 @@ class ParsedLine:
 
 
 class ParsedParagraph:
-    def __init__(self, object_line: ParsedLine | None, property_lines: list[ParsedLine]):
+    def __init__(self, object_line: Optional[ParsedLine], property_lines: list[ParsedLine]):
         self.object_line = object_line
         self.property_lines = property_lines
 
@@ -103,7 +104,8 @@ class ParsedParagraph:
 
 
 class ParsedAssembly:
-    def __init__(self, class_: str, id_: str | None, object_line: ParsedLine | None, property_lines: list[ParsedLine]):
+    def __init__(self, class_: str, id_: Optional[str],
+                 object_line: Optional[ParsedLine], property_lines: list[ParsedLine]):
         self.class_ = class_
         self.id_ = id_
         self.object_line = object_line
