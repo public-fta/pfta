@@ -27,8 +27,13 @@ class Figure:
         event_from_id = {event.id_: event for event in fault_tree.events}
         gate_from_id = {gate.id_: gate for gate in fault_tree.gates}
 
+        # Recursive instantiation
         top_node = Node(gate.id_, event_from_id, gate_from_id, is_top_node=True)
 
+        # Recursive sizing and positioning
+        # TODO
+
+        # Finalisation
         self.top_node = top_node
 
     def __repr__(self):
@@ -60,8 +65,12 @@ class Node:
         else:
             raise ImplementationError(f'bad id_ {id_}')
 
+        # Indirect fields (from parameters)
         self.source_object = source_object
         self.input_nodes = input_nodes
+
+        # Fields to be set by figure
+        # TODO
 
     def __str__(self):
         head = f'Node({self.source_object.id_})'
