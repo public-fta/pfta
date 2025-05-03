@@ -162,7 +162,7 @@ class Node:
 
         if parent_node is None:
             self.x = self.bounding_width // 2
-            self.y = self.bounding_height // 2
+            self.y = EVENT_BOUNDING_HEIGHT // 2
         else:
             parent_inputs = parent_node.input_nodes
             input_index = parent_inputs.index(self)
