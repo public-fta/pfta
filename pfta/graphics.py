@@ -36,6 +36,11 @@ OR_GATE_SLING_RISE = 35  # control points, above toes
 OR_GATE_GROIN_RISE = 30  # control point, between toes
 OR_GATE_HALF_WIDTH = 33
 
+AND_GATE_NECK_HEIGHT = 6  # ears, above centre
+AND_GATE_BODY_HEIGHT = 34  # toes, below centre
+AND_GATE_SLING_RISE = 42  # control points, above toes
+AND_GATE_HALF_WIDTH = 32
+
 FIGURE_SVG_TEMPLATE = string.Template('''\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="${left} ${top} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +87,7 @@ class SymbolGraphic(Graphic):
             return SymbolGraphic.or_gate_svg_content(self.x, self.y)
 
         if self.type_ == SymbolType.AND_GATE:
-            return 'AND'  # TODO: implement properly
+            return SymbolGraphic.and_gate_svg_content(self.x, self.y)
 
         if self.type_ == SymbolType.PAGED_GATE:
             return 'PAGED'  # TODO: implement properly
@@ -147,6 +152,26 @@ class SymbolGraphic(Graphic):
             f'Q{groin_x},{groin_y} {right_x},{toe_y}',
             f'L{right_x},{ear_y}',
             f'C{right_x},{sling_y} {right_slant_x},{slant_y} {apex_x},{apex_y}',
+        ])
+
+        return f'<path d="{commands}"/>'
+
+    @staticmethod
+    def and_gate_svg_content(x: int, y: int) -> str:
+        left_x = x - AND_GATE_HALF_WIDTH
+        right_x = x + AND_GATE_HALF_WIDTH
+
+        ear_y = y - AND_GATE_NECK_HEIGHT + SYMBOL_Y_OFFSET
+        toe_y = y + AND_GATE_BODY_HEIGHT + SYMBOL_Y_OFFSET
+
+        sling_y = ear_y - AND_GATE_SLING_RISE
+
+        commands = ' '.join([
+            f'M{left_x},{toe_y}',
+            f'L{right_x},{toe_y}',
+            f'L{right_x},{ear_y}',
+            f'C{right_x},{sling_y} {left_x},{sling_y} {left_x},{ear_y}',
+            f'L{left_x},{toe_y}',
         ])
 
         return f'<path d="{commands}"/>'
