@@ -78,6 +78,7 @@ Gate: G2
 Gate: G3
 - type: OR
 - inputs: G7, G8, G9
+- is_paged: True
 
 Gate: G4
 - type: OR
