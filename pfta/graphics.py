@@ -53,38 +53,38 @@ class SymbolGraphic(Graphic):
     def __init__(self, node: 'Node'):
         self.x = node.x
         self.y = node.y
-        self.type_ = determine_symbol_type(node.source_object)
+        self.type_ = SymbolGraphic.determine_type(node.source_object)
 
     def svg_content(self) -> str:
         return f'<text x="{self.x}" y="{self.y}">{self.type_}</text>'  # TODO: implement properly
 
+    @staticmethod
+    def determine_type(source_object: Union['Event', 'Gate']) -> SymbolType:
+        class_name = type(source_object).__name__
 
-def determine_symbol_type(source_object: Union['Event', 'Gate']) -> SymbolType:
-    class_name = type(source_object).__name__
+        if class_name == 'Event':
+            event = source_object
 
-    if class_name == 'Event':
-        event = source_object
+            if event.actual_model_type == 'Undeveloped':
+                return SymbolType.UNDEVELOPED_EVENT
+            else:
+                return SymbolType.DEVELOPED_EVENT
 
-        if event.actual_model_type == 'Undeveloped':
-            return SymbolType.UNDEVELOPED_EVENT
-        else:
-            return SymbolType.DEVELOPED_EVENT
+        if class_name == 'Gate':
+            gate = source_object
 
-    if class_name == 'Gate':
-        gate = source_object
+            if gate.is_paged:
+                return SymbolType.PAGED_GATE
 
-        if gate.is_paged:
-            return SymbolType.PAGED_GATE
+            if gate.type_ == GateType.OR:
+                return SymbolType.OR_GATE
 
-        if gate.type_ == GateType.OR:
-            return SymbolType.OR_GATE
+            if gate.type_ == GateType.AND:
+                return SymbolType.AND_GATE
 
-        if gate.type_ == GateType.AND:
-            return SymbolType.AND_GATE
+            raise ImplementationError(f'bad gate type {gate.type_}')
 
-        raise ImplementationError(f'bad gate type {gate.type_}')
-
-    raise ImplementationError(f'bad class_name {class_name}')
+        raise ImplementationError(f'bad class_name {class_name}')
 
 
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
