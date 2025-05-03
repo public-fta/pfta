@@ -13,7 +13,11 @@ import os
 from typing import TYPE_CHECKING, Optional, Union
 
 from pfta.common import natural_repr
-from pfta.graphics import EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT, Graphic, SymbolGraphic
+from pfta.graphics import (
+    EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT,
+    Graphic, SymbolGraphic,
+    figure_svg_content,
+)
 from pfta.woe import ImplementationError
 
 if TYPE_CHECKING:
@@ -51,6 +55,17 @@ class Figure:
 
     def __repr__(self):
         return natural_repr(self)
+
+    def svg_content(self) -> str:
+        bounding_width = self.top_node.bounding_width
+        bounding_height = self.top_node.bounding_height
+        graphics = self.graphics
+
+        return figure_svg_content(bounding_width, bounding_height, graphics)
+
+    def write_svg(self, file_name: str):
+        with open(file_name, 'w', encoding='utf-8', newline='') as file:
+            file.write(self.svg_content())
 
 
 class Node:

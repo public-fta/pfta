@@ -225,6 +225,16 @@ Flattened lists of results are effectively indexed by the following comprehensio
 Objects from `pfta.presentation` that are produced by the methods of [`FaultTree`]:
 
 
+### Figure
+
+| Attribute | Description |
+| - | - |
+| `top_node` | Top node of the figure. |
+| `graphics` | List of graphics of the figure. |
+| `svg_content()` | Produce the SVG content of the figure. |
+| `write_svg()` | Write figure to an SVG file. |
+
+
 ### Table
 
 | Attribute | Description |

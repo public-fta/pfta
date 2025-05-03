@@ -72,10 +72,11 @@ def main():
 
     output_directory_name = f'{fault_tree_text_file_name}.out'
     cut_sets_directory_name = f'{output_directory_name}/cut-sets'
-    # TODO: figures_directory_name
+    figures_directory_name = f'{output_directory_name}/figures'
 
     mkdir_robust(output_directory_name)
     mkdir_robust(cut_sets_directory_name)
+    mkdir_robust(figures_directory_name)
 
     model_table.write_tsv(f'{output_directory_name}/models.tsv')
     event_table.write_tsv(f'{output_directory_name}/events.tsv')
@@ -84,7 +85,10 @@ def main():
     for gate_id, cut_set_table in cut_set_table_from_gate_id.items():
         cut_set_table.write_tsv(f'{cut_sets_directory_name}/{gate_id}.tsv')
 
-    # TODO: other writes
+    for figure_id, figure in figure_from_id.items():
+        figure.write_svg(f'{figures_directory_name}/{figure_id}.svg')
+
+    # TODO: `index.html` for figures
 
 
 if __name__ == '__main__':
