@@ -51,7 +51,7 @@ class Node:
 
     Nodes are instantiated recursively, starting from the top node of the figure.
     """
-    source_object: Union[Event, Gate]
+    source_object: Union['Event', 'Gate']
     input_nodes: list['Node']
     parent_node: 'Node'
 
