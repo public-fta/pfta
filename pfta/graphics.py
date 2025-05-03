@@ -8,7 +8,7 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 import string
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from pfta.constants import GateType, SymbolType
 from pfta.woe import ImplementationError
@@ -86,7 +86,7 @@ class SymbolGraphic(Graphic):
     def __init__(self, node: 'Node'):
         self.x = node.x
         self.y = node.y
-        self.type_ = SymbolGraphic.determine_type(node.source_object)
+        self.type_ = SymbolGraphic.determine_type(node.parent_node, node.source_object)
 
     def svg_content(self) -> str:
         if self.type_ == SymbolType.OR_GATE:
@@ -104,7 +104,7 @@ class SymbolGraphic(Graphic):
         raise ImplementationError(f'bad symbol type {self.type_}')
 
     @staticmethod
-    def determine_type(source_object: Union['Event', 'Gate']) -> SymbolType:
+    def determine_type(parent_node: Optional['Node'], source_object: Union['Event', 'Gate']) -> SymbolType:
         class_name = type(source_object).__name__
 
         if class_name == 'Event':
@@ -118,7 +118,7 @@ class SymbolGraphic(Graphic):
         if class_name == 'Gate':
             gate = source_object
 
-            if gate.is_paged:
+            if gate.is_paged and parent_node is not None:
                 return SymbolType.PAGED_GATE
 
             if gate.type_ == GateType.OR:
