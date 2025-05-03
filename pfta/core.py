@@ -218,6 +218,7 @@ class FaultTree:
 
         # Enabling of flattened indexing
         FaultTree.enable_event_flattened_indexing(events, flattened_indexer)
+        FaultTree.enable_gate_flattened_indexing(gates, flattened_indexer)
 
         # Finalisation of modelling
         FaultTree.determine_actual_model_types(events, model_from_id)
@@ -298,9 +299,9 @@ class FaultTree:
                 gate.id_, gate.label, gate.is_top_gate, gate.is_paged,
                 gate.type_.name, ','.join(gate.input_ids),
                 time, sample_index,
-                gate.computed_probabilities[time_index * self.sample_size + sample_index],
-                gate.computed_intensities[time_index * self.sample_size + sample_index],
-                gate.computed_rates[time_index * self.sample_size + sample_index],
+                gate.computed_probability(time_index, sample_index),
+                gate.computed_intensity(time_index, sample_index),
+                gate.computed_rate(time_index, sample_index),
             ]
             for gate in self.gates
             for time_index, time in enumerate(self.times)
@@ -395,6 +396,11 @@ class FaultTree:
     def enable_event_flattened_indexing(events: list['Event'], flattened_indexer: FlattenedIndexer):
         for event in events:
             event.flattened_index = flattened_indexer.flattened_index
+
+    @staticmethod
+    def enable_gate_flattened_indexing(gates: list['Gate'], flattened_indexer: FlattenedIndexer):
+        for gate in gates:
+            gate.flattened_index = flattened_indexer.flattened_index
 
     @staticmethod
     def determine_actual_model_types(events: list['Event'], model_from_id: dict[str, 'Model']):
@@ -781,6 +787,7 @@ class Gate:
 
         # Fields to be set by fault tree
         self.is_top_gate = None
+        self.flattened_index = None
         self.computed_expression = None
         self.computed_probabilities = None
         self.computed_intensities = None
@@ -826,6 +833,18 @@ class Gate:
             robust_divide(omega, 1 - q)
             for q, omega in zip(self.computed_probabilities, self.computed_intensities)
         ]
+
+    def computed_probability(self, time_index: int, sample_index: int) -> float:
+        flattened_index = self.flattened_index(time_index, sample_index)
+        return self.computed_probabilities[flattened_index]
+
+    def computed_intensity(self, time_index: int, sample_index: int) -> float:
+        flattened_index = self.flattened_index(time_index, sample_index)
+        return self.computed_intensities[flattened_index]
+
+    def computed_rate(self, time_index: int, sample_index: int) -> float:
+        flattened_index = self.flattened_index(time_index, sample_index)
+        return self.computed_rates[flattened_index]
 
     def compile_cut_set_table(self, events: list[Event], times: list[float], sample_size: int,
                               computational_cache: ComputationalCache) -> Table:
