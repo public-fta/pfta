@@ -53,13 +53,13 @@ class SymbolGraphic(Graphic):
     def __init__(self, node: 'Node'):
         self.x = node.x
         self.y = node.y
-        self.type_ = event_symbol_type(node.source_object)
+        self.type_ = determine_symbol_type(node.source_object)
 
     def svg_content(self) -> str:
         return f'<text x="{self.x}" y="{self.y}">{self.type_}</text>'  # TODO: implement properly
 
 
-def event_symbol_type(source_object: Union['Event', 'Gate']) -> SymbolType:
+def determine_symbol_type(source_object: Union['Event', 'Gate']) -> SymbolType:
     class_name = type(source_object).__name__
 
     if class_name == 'Event':
