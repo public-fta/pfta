@@ -172,6 +172,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `model_id` | Identifier of utilised failure model (or `None`). |
 | `model_type` | Model type, if not utilising a failure model. |
 | `is_used` | Whether the event is actually utilised by a gate in the fault tree. |
+| `flattened_indexer` | [Flattened list] indexer. |
 | `actual_model_type` | The actual `model_type`, either from the utilised failure model or the event itself. |
 | `parameter_samples` | Dictionary from string parameter to [flattened list] of of sampled values. |
 | `computed_expression` | Boolean algebraic representation of the event. |
@@ -191,10 +192,31 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `type_` | Gate type. |
 | `input_ids` | Gate input identifiers. |
 | `is_top_gate` | Whether the gate is a top gate (i.e. not an input to another gate). |
+| `flattened_indexer` | [Flattened list] indexer. |
 | `computed_expression` | Boolean algebraic representation of the gate. |
 | `computed_probabilities` | [Flattened list] of computed failure probabilities. |
 | `computed_intensities` | [Flattened list] of computed failure intensities. |
 | `computed_rates` | [Flattened list] of computed failure rates. |
+
+
+### FlattenedIndexer
+
+| Attribute | Description |
+| - | - |
+| `time_count` | Count of time values (from fault tree properties, i.e. `len(times)`). |
+| `sample_size` | Sample size (from fault tree properties). |
+| `flattened_size` | Product of `time_count` and `sample_size`. |
+| `get_index(time_index, sample_index)` | Produce the flattened index corresponding to `time_index` and `sample_index`. |
+
+Flattened lists of results are effectively indexed by the following comprehension:
+
+```python
+[
+    (flattened_index := time_index * sample_size + sample_index)
+    for time_index, _ in enumerate(times)
+    for sample_index in range(sample_size)
+]
+```
 
 
 ## Presentational objects
@@ -211,22 +233,9 @@ Objects from `pfta.presentation` that are produced by the methods of [`FaultTree
 | `write_tsv(file_name)` | Write table to a TSV file. |
 
 
-## Flattened lists
-
-Flattened lists of results are of length `len(times) * sample_size` (from the fault tree properties),
-and effectively indexed by the following comprehension:
-
-```python
-[
-    (flattened_index := time_index * sample_size + sample_index)
-    for time_index, _ in enumerate(times)
-    for sample_index in range(sample_size)
-]
-```
-
 [`FaultTree`]: #faulttree
 [events]: #event
 [failure models]: #model
-[flattened list]: #flattened-lists
 [gates]: #gate
+[flattened list]: #flattenedindexer
 [table]: #table
