@@ -12,6 +12,10 @@ from typing import Optional
 
 
 class FaultTreeTextException(Exception):
+    line_number: Optional[int]
+    message: str
+    explainer: Optional[str]
+
     def __init__(self, line_number: Optional[int], message: str, explainer: Optional[str] = None):
         self.line_number = line_number
         self.message = message
