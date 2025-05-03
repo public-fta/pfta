@@ -19,6 +19,10 @@ if TYPE_CHECKING:
     from pfta.core import FaultTree, Event, Gate
 
 
+EVENT_BOUNDING_WIDTH = 120
+EVENT_BOUNDING_HEIGHT = 210
+
+
 class Figure:
     """
     Class representing a figure (a page of a fault tree).
@@ -31,7 +35,7 @@ class Figure:
         top_node = Node(gate.id_, event_from_id, gate_from_id, is_top_node=True)
 
         # Recursive sizing and positioning
-        # TODO
+        top_node.determine_size_recursive()
 
         # Finalisation
         self.top_node = top_node
@@ -70,7 +74,9 @@ class Node:
         self.input_nodes = input_nodes
 
         # Fields to be set by figure
-        # TODO
+        self.bounding_width = None
+        self.bounding_height = None
+
 
     def __str__(self):
         head = f'Node({self.source_object.id_})'
@@ -78,6 +84,22 @@ class Node:
         delimited_sequence = f'<{sequence}>' if sequence else ''
 
         return head + delimited_sequence
+
+    def determine_size_recursive(self) -> tuple[int, int]:
+        """
+        Determine node size recursively (contributions propagated bottom-up).
+        """
+        if not self.input_nodes:
+            self.bounding_width = EVENT_BOUNDING_WIDTH
+            self.bounding_height = EVENT_BOUNDING_HEIGHT
+        else:
+            input_node_sizes = [node.determine_size_recursive() for node in self.input_nodes]
+            input_widths, input_heights = zip(*input_node_sizes)
+
+            self.bounding_width = sum(input_widths)
+            self.bounding_height = EVENT_BOUNDING_HEIGHT + max(input_heights)
+
+        return self.bounding_width, self.bounding_height
 
 
 class Table:
