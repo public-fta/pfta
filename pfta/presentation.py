@@ -13,17 +13,61 @@ import os
 from typing import TYPE_CHECKING
 
 from pfta.common import natural_repr
+from pfta.woe import ImplementationError
 
 if TYPE_CHECKING:
-    from pfta.core import FaultTree, Gate
+    from pfta.core import FaultTree, Event, Gate
 
 
 class Figure:
+    """
+    Class representing a figure (a page of a fault tree).
+    """
     def __init__(self, gate: 'Gate', fault_tree: 'FaultTree'):
-        pass  # TODO
+        event_from_id = {event.id_: event for event in fault_tree.events}
+        gate_from_id = {gate.id_: gate for gate in fault_tree.gates}
+
+        top_node = Node(gate.id_, event_from_id, gate_from_id, is_top_node=True)
+
+        self.top_node = top_node
+
+    def __repr__(self):
+        return natural_repr(self)
+
+
+class Node:
+    """
+    Class representing a node (event or gate) within a figure.
+
+    Nodes are instantiated recursively, starting from the top node of the figure.
+    """
+    def __init__(self, id_: str, event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate'], is_top_node: bool):
+        if id_ in event_from_id:
+            source_object = event_from_id[id_]
+            input_nodes = []
+
+        elif id_ in gate_from_id:
+            source_object = gate = gate_from_id[id_]
+
+            if gate.is_paged and not is_top_node:
+                input_nodes = []
+            else:
+                input_nodes = [
+                    Node(input_id, event_from_id, gate_from_id, is_top_node=False)
+                    for input_id in gate.input_ids
+                ]
+
+        else:
+            raise ImplementationError(f'bad id_ {id_}')
+
+        self.source_object = source_object
+        self.input_nodes = input_nodes
 
 
 class Table:
+    """
+    Class representing tabular output.
+    """
     def __init__(self, headings: list[str], data: list[list]):
         self.headings = headings
         self.data = data
