@@ -24,10 +24,32 @@ DEFAULT_FONT_SIZE = 10
 EVENT_BOUNDING_WIDTH = 120
 EVENT_BOUNDING_HEIGHT = 210
 
+SYMBOL_Y_OFFSET = 45
+SYMBOL_SLOTS_HALF_WIDTH = 30
+
+OR_GATE_APEX_HEIGHT = 38  # tip, above centre
+OR_GATE_NECK_HEIGHT = -10  # ears, above centre
+OR_GATE_BODY_HEIGHT = 36  # toes, below centre
+OR_GATE_SLANT_DROP = 2  # control points, below apex
+OR_GATE_SLANT_RUN = 6  # control points, beside apex
+OR_GATE_SLING_RISE = 35  # control points, above toes
+OR_GATE_GROIN_RISE = 30  # control point, between toes
+OR_GATE_HALF_WIDTH = 33
+
 FIGURE_SVG_TEMPLATE = string.Template('''\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="${left} ${top} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
 <style>
+circle, path, polygon, rect {
+  fill: lightyellow;
+}
+circle, path, polygon, polyline, rect {
+  stroke: black;
+  stroke-width: 1.3;
+}
+polyline {
+  fill: none;
+}
 text {
   dominant-baseline: middle;
   font-family: Consolas, Cousine, "Courier New", monospace;
@@ -56,7 +78,19 @@ class SymbolGraphic(Graphic):
         self.type_ = SymbolGraphic.determine_type(node.source_object)
 
     def svg_content(self) -> str:
-        return f'<text x="{self.x}" y="{self.y}">{self.type_}</text>'  # TODO: implement properly
+        if self.type_ == SymbolType.OR_GATE:
+            return SymbolGraphic.or_gate_svg_content(self.x, self.y)
+
+        if self.type_ == SymbolType.AND_GATE:
+            return 'AND'  # TODO: implement properly
+
+        if self.type_ == SymbolType.PAGED_GATE:
+            return 'PAGED'  # TODO: implement properly
+
+        if self.type_ in (SymbolType.DEVELOPED_EVENT, SymbolType.UNDEVELOPED_EVENT):  # TODO: separate undeveloped
+            return 'EVENT'  # TODO: implement properly
+
+        raise ImplementationError(f'bad symbol type {self.type_}')
 
     @staticmethod
     def determine_type(source_object: Union['Event', 'Gate']) -> SymbolType:
@@ -85,6 +119,37 @@ class SymbolGraphic(Graphic):
             raise ImplementationError(f'bad gate type {gate.type_}')
 
         raise ImplementationError(f'bad class_name {class_name}')
+
+    @staticmethod
+    def or_gate_svg_content(x: int, y: int) -> str:
+        apex_x = x
+        apex_y = y - OR_GATE_APEX_HEIGHT + SYMBOL_Y_OFFSET
+
+        left_x = x - OR_GATE_HALF_WIDTH
+        right_x = x + OR_GATE_HALF_WIDTH
+
+        ear_y = y - OR_GATE_NECK_HEIGHT + SYMBOL_Y_OFFSET
+        toe_y = y + OR_GATE_BODY_HEIGHT + SYMBOL_Y_OFFSET
+
+        left_slant_x = apex_x - OR_GATE_SLANT_RUN
+        right_slant_x = apex_x + OR_GATE_SLANT_RUN
+        slant_y = apex_y + OR_GATE_SLANT_DROP
+
+        sling_y = ear_y - OR_GATE_SLING_RISE
+
+        groin_x = x
+        groin_y = toe_y - OR_GATE_GROIN_RISE
+
+        commands = ' '.join([
+            f'M{apex_x},{apex_y}',
+            f'C{left_slant_x},{slant_y} {left_x},{sling_y} {left_x},{ear_y}',
+            f'L{left_x},{toe_y}',
+            f'Q{groin_x},{groin_y} {right_x},{toe_y}',
+            f'L{right_x},{ear_y}',
+            f'C{right_x},{sling_y} {right_slant_x},{slant_y} {apex_x},{apex_y}',
+        ])
+
+        return f'<path d="{commands}"/>'
 
 
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
