@@ -79,6 +79,10 @@ class InvalidDistributionException(FaultTreeTextException):
 
 
 class ParsedLine:
+    number: int
+    type_: LineType
+    info: dict[str, str]
+
     def __init__(self, number: int, type_: LineType, info: dict):
         self.number = number
         self.type_ = type_
@@ -92,6 +96,9 @@ class ParsedLine:
 
 
 class ParsedParagraph:
+    object_line: Optional[ParsedLine]
+    property_lines: list[ParsedLine]
+
     def __init__(self, object_line: Optional[ParsedLine], property_lines: list[ParsedLine]):
         self.object_line = object_line
         self.property_lines = property_lines
@@ -104,6 +111,11 @@ class ParsedParagraph:
 
 
 class ParsedAssembly:
+    class_: str
+    id_: Optional[str]
+    object_line: Optional[ParsedLine]
+    property_lines: list[ParsedLine]
+
     def __init__(self, class_: str, id_: Optional[str],
                  object_line: Optional[ParsedLine], property_lines: list[ParsedLine]):
         self.class_ = class_
