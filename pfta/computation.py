@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import collections
 import itertools
 import math
-from typing import TYPE_CHECKING, Collection, Iterable
+from typing import TYPE_CHECKING, Collection, DefaultDict, Iterable
 
 from pfta.boolean import Term
 from pfta.common import natural_repr
@@ -22,6 +22,10 @@ if TYPE_CHECKING:
 
 
 class ComputationalCache:
+    _probability_from_index_from_encoding: DefaultDict[int, dict[int, float]]
+    _intensity_from_index_from_encoding: DefaultDict[int, dict[int, float]]
+    _combinations_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
+
     def __init__(self, tolerance: float, events: list['Event']):
         probability_from_index_from_encoding = {
             event.computed_expression.sole_term().encoding: dict(enumerate(event.computed_probabilities))
