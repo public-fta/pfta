@@ -29,6 +29,15 @@ class GateType(enum.Enum):
     AND = 1
 
 
+class SymbolType(enum.Enum):
+    OR_GATE = 0
+    AND_GATE = 1
+    # TODO: VOTE_GATE = 2
+    PAGED_GATE = 3
+    DEVELOPED_EVENT = 4
+    UNDEVELOPED_EVENT = 5
+
+
 LINE_EXPLAINER = '\n'.join([
     'A line must have one of the following forms:',
     '    <class>: <identifier>  (an object declaration)',

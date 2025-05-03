@@ -13,7 +13,7 @@ import os
 from typing import TYPE_CHECKING, Optional, Union
 
 from pfta.common import natural_repr
-from pfta.graphics import EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT
+from pfta.graphics import EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT, Graphic, SymbolGraphic
 from pfta.woe import ImplementationError
 
 if TYPE_CHECKING:
@@ -25,6 +25,7 @@ class Figure:
     Class representing a figure (a page of a fault tree).
     """
     top_node: 'Node'
+    graphics: list[Graphic]
 
     def __init__(self, gate: 'Gate', fault_tree: 'FaultTree'):
         event_from_id = {event.id_: event for event in fault_tree.events}
@@ -38,8 +39,15 @@ class Figure:
         top_node.determine_size_recursive()
         top_node.determine_position_recursive()
 
+        # Graphics assembly
+        graphics = [
+            graphic for node in top_node.reachable_nodes
+            for graphic in node.assemble_graphics()
+        ]
+
         # Finalisation
         self.top_node = top_node
+        self.graphics = graphics
 
     def __repr__(self):
         return natural_repr(self)
@@ -151,6 +159,11 @@ class Node:
 
         for input_node in self.input_nodes:
             input_node.determine_position_recursive()
+
+    def assemble_graphics(self) -> list[Graphic]:
+        return [
+            SymbolGraphic(self),
+        ]
 
 
 class Table:
