@@ -116,8 +116,8 @@ class Node:
             self.y = self.bounding_height // 2
         else:
             parent_inputs = parent_node.input_nodes
-            sibling_index = parent_inputs.index(self)
-            siblings_before = parent_inputs[0:sibling_index]
+            input_index = parent_inputs.index(self)
+            siblings_before = parent_inputs[0:input_index]
             width_before = sum(node.bounding_width for node in siblings_before)
 
             self.x = parent_node.x - parent_node.bounding_width // 2 + width_before + self.bounding_width // 2
