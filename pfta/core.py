@@ -571,6 +571,25 @@ class Event:
     """
     Class representing a primary event.
     """
+    id_: str
+    index: int
+    label: str
+    comment: str
+    model_id: str
+    model_id_line_number: int
+
+    model_type: str
+    model_dict: dict[str, Distribution]
+
+    is_used: Optional[bool]
+    flattened_indexer: Optional['FlattenedIndexer']
+    actual_model_type: Optional[str]
+    parameter_samples: Optional[dict[str, list[float]]]
+    computed_expression: Optional[Expression]
+    computed_probabilities: Optional[list[float]]
+    computed_intensities: Optional[list[float]]
+    computed_rates: Optional[list[float]]
+
     def __init__(self, id_: str, index: int, properties: dict):
         label = properties.get('label')
         comment = properties.get('comment')
