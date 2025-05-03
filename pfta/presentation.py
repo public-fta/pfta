@@ -63,6 +63,13 @@ class Node:
         self.source_object = source_object
         self.input_nodes = input_nodes
 
+    def __str__(self):
+        head = f'Node({self.source_object.id_})'
+        sequence = ', '.join(str(node) for node in self.input_nodes)
+        delimited_sequence = f'<{sequence}>' if sequence else ''
+
+        return head + delimited_sequence
+
 
 class Table:
     """
