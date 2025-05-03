@@ -82,7 +82,6 @@ class Node:
         self.x = None
         self.y = None
 
-
     def __str__(self):
         head = f'Node({self.source_object.id_})'
         sequence = ', '.join(str(node) for node in self.input_nodes)
