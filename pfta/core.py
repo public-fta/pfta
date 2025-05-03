@@ -206,13 +206,15 @@ class FaultTree:
         FaultTree.validate_gate_inputs(event_from_id, gate_from_id)
         FaultTree.validate_cycle_free(gate_from_id)
 
+        # Flattened indexing (flattened loop over times and samples)
+        time_count = len(times)
+        flattened_indexer = FlattenedIndexer(time_count, sample_size)
+        flattened_size = flattened_indexer.flattened_size  # TODO: eliminate if practicable
+
         # Marking of objects
         FaultTree.mark_used_models(models, all_used_model_ids)
         FaultTree.mark_used_events(events, all_input_ids)
         FaultTree.mark_top_gates(gates, all_input_ids)
-
-        # Prepare flattened size (loop over times and samples)
-        flattened_size = len(times) * sample_size
 
         # Finalisation of modelling
         FaultTree.determine_actual_model_types(events, model_from_id)
