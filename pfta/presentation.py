@@ -177,8 +177,8 @@ class Node:
 
     def assemble_graphics(self) -> list[Graphic]:
         return [
-            SymbolGraphic(self),
             InputConnectorsGraphic(self),
+            SymbolGraphic(self),
         ]
 
 
