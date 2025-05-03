@@ -35,6 +35,7 @@ class Figure:
         top_node = Node(gate.id_, event_from_id, gate_from_id, parent_node=None)
 
         # Recursive sizing and positioning
+        top_node.determine_reachables_recursive()
         top_node.determine_size_recursive()
         top_node.determine_position_recursive()
 
@@ -77,6 +78,7 @@ class Node:
         self.parent_node = parent_node
 
         # Fields to be set by figure
+        self.reachable_nodes = None
         self.bounding_width = None
         self.bounding_height = None
         self.x = None
@@ -88,6 +90,21 @@ class Node:
         delimited_sequence = f'<{sequence}>' if sequence else ''
 
         return head + delimited_sequence
+
+    def determine_reachables_recursive(self) -> list['Node']:
+        """
+        Determine reachable nodes (self plus descendants) recursively (propagated bottom-up).
+        """
+        self.reachable_nodes = [
+            self,
+            *[
+                reachable
+                for input_node in self.input_nodes
+                for reachable in input_node.determine_reachables_recursive()
+            ],
+        ]
+
+        return self.reachable_nodes
 
     def determine_size_recursive(self) -> tuple[int, int]:
         """
