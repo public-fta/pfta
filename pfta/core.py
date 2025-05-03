@@ -928,6 +928,10 @@ class FlattenedIndexer:
         for sample_index in range(sample_size)
     ]
     """
+    time_count: int
+    sample_size: int
+    flattened_size: int
+
     def __init__(self, time_count: int, sample_size: int):
         self.time_count = time_count
         self.sample_size = sample_size
