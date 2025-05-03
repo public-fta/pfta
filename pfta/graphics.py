@@ -45,6 +45,8 @@ PAGED_GATE_APEX_HEIGHT = 36  # tip, above centre
 PAGED_GATE_BODY_HEIGHT = 32  # toes, below centre
 PAGED_GATE_HALF_WIDTH = 40
 
+DEVELOPED_EVENT_CIRCLE_RADIUS = 30
+
 FIGURE_SVG_TEMPLATE = string.Template('''\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="${left} ${top} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
@@ -97,7 +99,7 @@ class SymbolGraphic(Graphic):
             return SymbolGraphic.paged_gate_svg_content(self.x, self.y)
 
         if self.type_ in (SymbolType.DEVELOPED_EVENT, SymbolType.UNDEVELOPED_EVENT):  # TODO: separate undeveloped
-            return 'EVENT'  # TODO: implement properly
+            return SymbolGraphic.developed_event_svg_content(self.x, self.y)
 
         raise ImplementationError(f'bad symbol type {self.type_}')
 
@@ -192,6 +194,14 @@ class SymbolGraphic(Graphic):
         points = f'{apex_x},{apex_y} {left_x},{toe_y} {right_x},{toe_y}'
 
         return f'<polygon points="{points}"/>'
+
+    @staticmethod
+    def developed_event_svg_content(x: int, y: int) -> str:
+        centre = x
+        middle = y + SYMBOL_Y_OFFSET
+        radius = DEVELOPED_EVENT_CIRCLE_RADIUS
+
+        return f'<circle cx="{centre}" cy="{middle}" r="{radius}"/>'
 
 
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
