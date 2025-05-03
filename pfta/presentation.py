@@ -10,8 +10,17 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 
 import csv
 import os
+from typing import TYPE_CHECKING
 
 from pfta.common import natural_repr
+
+if TYPE_CHECKING:
+    from pfta.core import FaultTree, Gate
+
+
+class Figure:
+    def __init__(self, gate: 'Gate', fault_tree: 'FaultTree'):
+        pass  # TODO
 
 
 class Table:

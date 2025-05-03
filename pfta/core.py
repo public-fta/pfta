@@ -23,7 +23,7 @@ from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_model_properties, parse_event_properties, parse_gate_properties,
 )
-from pfta.presentation import Table
+from pfta.presentation import Figure, Table
 from pfta.sampling import Distribution
 from pfta.utilities import robust_divide, robust_invert, find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
@@ -282,6 +282,13 @@ class FaultTree:
         return {
             gate.id_: gate.compile_cut_set_table(self.events, self.times, self.sample_size, self.computational_cache)
             for gate in self.gates
+        }
+
+    def compile_figures(self) -> dict[str, Figure]:
+        return {
+            gate.id_: Figure(gate, fault_tree=self)
+            for gate in self.gates
+            if gate.is_top_gate or gate.is_paged
         }
 
     @staticmethod

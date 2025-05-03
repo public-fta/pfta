@@ -68,7 +68,7 @@ def main():
     event_table = fault_tree.compile_event_table()
     gate_table = fault_tree.compile_gate_table()
     cut_set_table_from_gate_id = fault_tree.compile_cut_set_tables()
-    # TODO: figure_from_id
+    figure_from_id = fault_tree.compile_figures()
 
     output_directory_name = f'{fault_tree_text_file_name}.out'
     cut_sets_directory_name = f'{output_directory_name}/cut-sets'
