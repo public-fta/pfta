@@ -41,6 +41,10 @@ AND_GATE_BODY_HEIGHT = 34  # toes, below centre
 AND_GATE_SLING_RISE = 42  # control points, above toes
 AND_GATE_HALF_WIDTH = 32
 
+PAGED_GATE_APEX_HEIGHT = 36  # tip, above centre
+PAGED_GATE_BODY_HEIGHT = 32  # toes, below centre
+PAGED_GATE_HALF_WIDTH = 40
+
 FIGURE_SVG_TEMPLATE = string.Template('''\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="${left} ${top} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
@@ -90,7 +94,7 @@ class SymbolGraphic(Graphic):
             return SymbolGraphic.and_gate_svg_content(self.x, self.y)
 
         if self.type_ == SymbolType.PAGED_GATE:
-            return 'PAGED'  # TODO: implement properly
+            return SymbolGraphic.paged_gate_svg_content(self.x, self.y)
 
         if self.type_ in (SymbolType.DEVELOPED_EVENT, SymbolType.UNDEVELOPED_EVENT):  # TODO: separate undeveloped
             return 'EVENT'  # TODO: implement properly
@@ -175,6 +179,19 @@ class SymbolGraphic(Graphic):
         ])
 
         return f'<path d="{commands}"/>'
+
+    @staticmethod
+    def paged_gate_svg_content(x: int, y: int) -> str:
+        apex_x = x
+        apex_y = y - PAGED_GATE_APEX_HEIGHT + SYMBOL_Y_OFFSET
+
+        left_x = x - PAGED_GATE_HALF_WIDTH
+        right_x = x + PAGED_GATE_HALF_WIDTH
+        toe_y = y + PAGED_GATE_BODY_HEIGHT + SYMBOL_Y_OFFSET
+
+        points = f'{apex_x},{apex_y} {left_x},{toe_y} {right_x},{toe_y}'
+
+        return f'<polygon points="{points}"/>'
 
 
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
