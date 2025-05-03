@@ -97,6 +97,16 @@ class FaultTree:
     """
     Class representing a fault tree.
     """
+    times: list[float]
+    time_unit: str
+    seed: str
+    sample_size: int
+    tolerance: float
+    models: list['Model']
+    events: list['Event']
+    gates: list['Gate']
+    computational_cache: ComputationalCache
+
     def __init__(self, fault_tree_text: str):
         # Parsing
         parsed_lines = parse_lines(fault_tree_text)
