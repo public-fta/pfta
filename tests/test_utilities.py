@@ -120,6 +120,16 @@ class TestUtilities(unittest.TestCase):
         self.assertEqual(format_number(0.01, significant_figures=2, force_scientific_exponent=3), '0.010')
         self.assertEqual(format_number(0.001, significant_figures=2, force_scientific_exponent=3), '1.0E-3')
 
+        self.assertEqual(format_number(0.1, significant_figures=3), '0.100')
+        self.assertEqual(format_number(0.1, significant_figures=4), '0.1000')
+
+        self.assertEqual(format_number(0.00999, significant_figures=1, force_scientific_exponent=5), '0.01')
+        self.assertEqual(format_number(0.00999, significant_figures=2, force_scientific_exponent=5), '0.010')
+        self.assertEqual(format_number(0.00999, significant_figures=3, force_scientific_exponent=5), '0.0999')
+        self.assertEqual(format_number(0.00999, significant_figures=1, force_scientific_exponent=2), '1E-2')
+        self.assertEqual(format_number(0.00999, significant_figures=2, force_scientific_exponent=2), '1.0E-2')
+        self.assertEqual(format_number(0.00999, significant_figures=3, force_scientific_exponent=2), '9.99E-3')
+
     def test_descending_product(self):
         factors_1 = [0.1, 0.3, 0.5, 0.823]
         factors_2 = [0.823, 0.5, 0.3, 0.1]
