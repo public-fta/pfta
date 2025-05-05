@@ -28,6 +28,8 @@ SYMBOL_Y_OFFSET = 45
 SYMBOL_SLOTS_HALF_WIDTH = 30
 
 LABEL_BOX_Y_OFFSET = -65
+LABEL_BOX_WIDTH = 108
+LABEL_BOX_HEIGHT = 70
 
 INPUT_CONNECTOR_BUS_Y_OFFSET = 95
 INPUT_CONNECTOR_BUS_HALF_HEIGHT = 10
@@ -159,6 +161,23 @@ class InputConnectorsGraphic(Graphic):
     @staticmethod
     def points_svg_content(coordinates: list[tuple[int, int]]) -> str:
         return ' '.join(f'{x},{y}' for x, y in coordinates)
+
+
+class LabelBoxGraphic(Graphic):
+    x: int
+    y: int
+
+    def __init__(self, node: 'Node'):
+        self.x = node.x
+        self.y = node.y
+
+    def svg_content(self) -> str:
+        left = self.x - LABEL_BOX_WIDTH // 2
+        top = self.y - LABEL_BOX_HEIGHT // 2 + LABEL_BOX_Y_OFFSET
+        width = LABEL_BOX_WIDTH
+        height = LABEL_BOX_HEIGHT
+
+        return f'<rect x="{left}" y="{top}" width="{width}" height="{height}"/>'
 
 
 class SymbolGraphic(Graphic):
