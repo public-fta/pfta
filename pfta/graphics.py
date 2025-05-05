@@ -9,6 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import math
+import re
 import string
 import textwrap
 from typing import TYPE_CHECKING, Optional, Union
@@ -223,7 +224,7 @@ class LabelTextGraphic(Graphic):
                          font_size: float, style: str) -> str:
         bias = line_number - (1 + line_count) / 2
         line_middle = middle + bias * font_size * LINE_SPACING  # TODO: max_decimal_places=1
-        content = line  # TODO: escape_xml
+        content = escape_xml(line)
 
         return f'<text x="{centre}" y="{line_middle}" style="{style}">{content}</text>'
 
@@ -373,6 +374,32 @@ class SymbolGraphic(Graphic):
         points = f'{top_x},{top_y} {left_x},{left_y} {bottom_x},{bottom_y} {right_x},{right_y}'
 
         return f'<polygon points="{points}"/>'
+
+
+def escape_xml(text: str) -> str:
+    """
+    Escape `&` (when not used in an entity), `<`, and `>`.
+    """
+    ampersand_pattern = re.compile(
+        '''
+            &
+            (?!
+                (?:
+                    [a-z]{1,31}          # up to 31 letters in a name <https://html.spec.whatwg.org/entities.json>
+                    | \# [0-9]{1,7}      # up to 7 decimal digits in a code point
+                    | \# x[0-9a-f]{1,6}  # up to 6 hexadecimal digits in a code point
+                )
+                ;
+            )
+        ''',
+        flags=re.IGNORECASE | re.VERBOSE,
+    )
+
+    text = re.sub(ampersand_pattern, '&amp;', text)
+    text = re.sub('<', '&lt;', text)
+    text = re.sub('>', '&gt;', text)
+
+    return text
 
 
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
