@@ -65,7 +65,7 @@ def format_number(number: Optional[float],
         else:
             sign_power, mantissa_digits, _ = decimal_rounded.as_tuple()
 
-            sign_symbol = '-' if sign_power == -1 else ''
+            sign_symbol = '-' if sign_power == 1 else ''
             leading_digit = mantissa_digits[0]
             trailing_digits = ''.join(str(digit) for digit in mantissa_digits[1:])
             decimal_point = '.' if trailing_digits else ''
