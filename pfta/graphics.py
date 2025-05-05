@@ -15,6 +15,7 @@ import textwrap
 from typing import TYPE_CHECKING, Optional, Union
 
 from pfta.constants import GateType, SymbolType
+from pfta.utilities import format_number
 from pfta.woe import ImplementationError
 
 if TYPE_CHECKING:
@@ -223,7 +224,7 @@ class LabelTextGraphic(Graphic):
     def line_svg_content(line_number: int, line: str, centre: int, middle: int, line_count: int,
                          font_size: float, style: str) -> str:
         bias = line_number - (1 + line_count) / 2
-        line_middle = middle + bias * font_size * LINE_SPACING  # TODO: max_decimal_places=1
+        line_middle = format_number(middle + bias * font_size * LINE_SPACING, decimal_places=1)
         content = escape_xml(line)
 
         return f'<text x="{centre}" y="{line_middle}" style="{style}">{content}</text>'

@@ -11,10 +11,115 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import math
 import unittest
 
-from pfta.utilities import find_cycles, descending_product, descending_sum
+from pfta.utilities import format_number, descending_product, descending_sum, find_cycles
 
 
 class TestUtilities(unittest.TestCase):
+    def test_format_number(self):
+        self.assertEqual(format_number(None), None)
+        self.assertEqual(format_number(float('inf')), 'inf')
+        self.assertEqual(format_number(float('-inf')), '-inf')
+        self.assertEqual(format_number(float('nan')), 'nan')
+
+        self.assertRaises(ValueError, format_number, 1)
+        self.assertRaises(ValueError, format_number, 1, decimal_places=4, significant_figures=3)
+
+        self.assertEqual(format_number(0), '0')
+        self.assertEqual(format_number(0.), '0')
+        self.assertEqual(format_number(-0.), '0')
+        self.assertEqual(format_number(0, decimal_places=1, return_plain_zero=False), '0.0')
+        self.assertEqual(format_number(0, decimal_places=2, return_plain_zero=False), '0.00')
+        self.assertEqual(format_number(0, decimal_places=3, return_plain_zero=False), '0.000')
+        self.assertEqual(format_number(0, significant_figures=1, return_plain_zero=False), '0')
+        self.assertEqual(format_number(0, significant_figures=2, return_plain_zero=False), '0.0')
+        self.assertEqual(format_number(0, significant_figures=3, return_plain_zero=False), '0.00')
+
+        self.assertNotEqual(str(0.1 + 0.2), '0.3')
+        self.assertEqual(format_number(0.1 + 0.2, decimal_places=1), '0.3')
+        self.assertEqual(format_number(0.1 + 0.2, significant_figures=1), '0.3')
+
+        self.assertEqual(format_number(89640, decimal_places=-6), '0E+6')
+        self.assertEqual(format_number(89640, decimal_places=-5), '1E+5')
+        self.assertEqual(format_number(89640, decimal_places=-4), '9E+4')
+        self.assertEqual(format_number(89640, decimal_places=-3), '9.0E+4')
+        self.assertEqual(format_number(89640, decimal_places=-2), '8.96E+4')
+        self.assertEqual(format_number(89640, decimal_places=-1), '8.964E+4')
+        self.assertEqual(format_number(89640, decimal_places=0), '89640')
+        self.assertEqual(format_number(89640, decimal_places=1), '89640.0')
+        self.assertEqual(format_number(89640, decimal_places=2), '89640.00')
+        self.assertEqual(format_number(89640, decimal_places=3), '89640.000')
+        self.assertEqual(format_number(89640, decimal_places=4), '89640.0000')
+        self.assertEqual(format_number(89640, decimal_places=5), '89640.00000')
+        self.assertEqual(format_number(89640, significant_figures=1), '9E+4')
+        self.assertEqual(format_number(89640, significant_figures=2), '9.0E+4')
+        self.assertEqual(format_number(89640, significant_figures=3), '8.96E+4')
+        self.assertEqual(format_number(89640, significant_figures=4), '8.964E+4')
+        self.assertEqual(format_number(89640, significant_figures=5), '8.9640E+4')
+
+        self.assertEqual(format_number(69.42069, decimal_places=-1), '7E+1')
+        self.assertEqual(format_number(69.42069, decimal_places=0), '69')
+        self.assertEqual(format_number(69.42069, decimal_places=1), '69.4')
+        self.assertEqual(format_number(69.42069, decimal_places=2), '69.42')
+        self.assertEqual(format_number(69.42069, decimal_places=3), '69.421')
+        self.assertEqual(format_number(69.42069, decimal_places=4), '69.4207')
+        self.assertEqual(format_number(69.42069, decimal_places=5), '69.42069')
+        self.assertEqual(format_number(69.42069, decimal_places=6), '69.420690')
+        self.assertEqual(format_number(69.42069, significant_figures=1), '7E+1')
+        self.assertEqual(format_number(69.42069, significant_figures=2), '69')
+        self.assertEqual(format_number(69.42069, significant_figures=3), '69.4')
+        self.assertEqual(format_number(69.42069, significant_figures=4), '69.42')
+        self.assertEqual(format_number(69.42069, significant_figures=5), '69.421')
+        self.assertEqual(format_number(69.42069, significant_figures=6), '69.4207')
+        self.assertEqual(format_number(69.42069, significant_figures=7), '69.42069')
+        self.assertEqual(format_number(69.42069, significant_figures=8), '69.420690')
+
+        self.assertEqual(format_number(0.00123456789, decimal_places=1), '0.0')
+        self.assertEqual(format_number(0.00123456789, decimal_places=2), '0.00')
+        self.assertEqual(format_number(0.00123456789, decimal_places=3), '0.001')
+        self.assertEqual(format_number(0.00123456789, decimal_places=4), '0.0012')
+        self.assertEqual(format_number(0.00123456789, decimal_places=5), '0.00123')
+        self.assertEqual(format_number(0.00123456789, decimal_places=6), '0.001235')
+        self.assertEqual(format_number(0.00123456789, decimal_places=7), '0.0012346')
+        self.assertEqual(format_number(0.00123456789, decimal_places=8), '0.00123457')
+        self.assertEqual(format_number(0.00123456789, decimal_places=9), '0.001234568')
+        self.assertEqual(format_number(0.00123456789, decimal_places=10), '0.0012345679')
+        self.assertEqual(format_number(0.00123456789, decimal_places=11), '0.00123456789')
+        self.assertEqual(format_number(0.00123456789, decimal_places=12), '0.001234567890')
+        self.assertEqual(format_number(0.00123456789, significant_figures=1), '1E-3')
+        self.assertEqual(format_number(0.00123456789, significant_figures=2), '1.2E-3')
+        self.assertEqual(format_number(0.00123456789, significant_figures=3), '1.23E-3')
+        self.assertEqual(format_number(0.00123456789, significant_figures=4), '1.235E-3')
+        self.assertEqual(format_number(0.00123456789, significant_figures=5), '1.2346E-3')
+        self.assertEqual(format_number(0.00123456789, significant_figures=6), '1.23457E-3')
+        self.assertEqual(format_number(0.00123456789, significant_figures=7), '1.234568E-3')
+        self.assertEqual(format_number(0.00123456789, significant_figures=8), '1.2345679E-3')
+        self.assertEqual(format_number(0.00123456789, significant_figures=9), '1.23456789E-3')
+        self.assertEqual(format_number(0.00123456789, significant_figures=10), '1.234567890E-3')
+
+        self.assertEqual(format_number(1000, significant_figures=1, force_scientific_exponent=1), '1E+3')
+        self.assertEqual(format_number(100, significant_figures=1, force_scientific_exponent=1), '1E+2')
+        self.assertEqual(format_number(10, significant_figures=1, force_scientific_exponent=1), '1E+1')
+        self.assertEqual(format_number(1, significant_figures=1, force_scientific_exponent=1), '1')
+        self.assertEqual(format_number(0.1, significant_figures=1, force_scientific_exponent=1), '1E-1')
+        self.assertEqual(format_number(0.01, significant_figures=1, force_scientific_exponent=1), '1E-2')
+        self.assertEqual(format_number(0.001, significant_figures=1, force_scientific_exponent=1), '1E-3')
+
+        self.assertEqual(format_number(1000, significant_figures=2, force_scientific_exponent=2), '1.0E+3')
+        self.assertEqual(format_number(100, significant_figures=2, force_scientific_exponent=2), '1.0E+2')
+        self.assertEqual(format_number(10, significant_figures=2, force_scientific_exponent=2), '10')
+        self.assertEqual(format_number(1, significant_figures=2, force_scientific_exponent=2), '1.0')
+        self.assertEqual(format_number(0.1, significant_figures=2, force_scientific_exponent=2), '0.10')
+        self.assertEqual(format_number(0.01, significant_figures=2, force_scientific_exponent=2), '1.0E-2')
+        self.assertEqual(format_number(0.001, significant_figures=2, force_scientific_exponent=2), '1.0E-3')
+
+        self.assertEqual(format_number(1000, significant_figures=2, force_scientific_exponent=3), '1.0E+3')
+        self.assertEqual(format_number(100, significant_figures=2, force_scientific_exponent=3), '1.0E+2')
+        self.assertEqual(format_number(10, significant_figures=2, force_scientific_exponent=3), '10')
+        self.assertEqual(format_number(1, significant_figures=2, force_scientific_exponent=3), '1.0')
+        self.assertEqual(format_number(0.1, significant_figures=2, force_scientific_exponent=3), '0.10')
+        self.assertEqual(format_number(0.01, significant_figures=2, force_scientific_exponent=3), '0.010')
+        self.assertEqual(format_number(0.001, significant_figures=2, force_scientific_exponent=3), '1.0E-3')
+
     def test_descending_product(self):
         factors_1 = [0.1, 0.3, 0.5, 0.823]
         factors_2 = [0.823, 0.5, 0.3, 0.1]
