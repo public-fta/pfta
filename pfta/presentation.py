@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Optional, Union
 from pfta.common import natural_repr
 from pfta.graphics import (
     EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT,
-    Graphic, InputConnectorsGraphic, LabelBoxGraphic, SymbolGraphic,
+    Graphic, InputConnectorsGraphic, LabelBoxGraphic, LabelTextGraphic, SymbolGraphic,
     figure_svg_content,
 )
 from pfta.woe import ImplementationError
@@ -179,6 +179,7 @@ class Node:
         return [
             InputConnectorsGraphic(self),
             LabelBoxGraphic(self),
+            LabelTextGraphic(self),
             SymbolGraphic(self),
         ]
 

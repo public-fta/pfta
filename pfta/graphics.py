@@ -7,7 +7,10 @@ Graphical classes representing SVG content.
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
+
+import math
 import string
+import textwrap
 from typing import TYPE_CHECKING, Optional, Union
 
 from pfta.constants import GateType, SymbolType
@@ -20,6 +23,7 @@ if TYPE_CHECKING:
 
 PAGE_MARGIN = 10
 DEFAULT_FONT_SIZE = 10
+LINE_SPACING = 1.3
 
 EVENT_BOUNDING_WIDTH = 120
 EVENT_BOUNDING_HEIGHT = 210
@@ -30,6 +34,8 @@ SYMBOL_SLOTS_HALF_WIDTH = 30
 LABEL_BOX_Y_OFFSET = -65
 LABEL_BOX_WIDTH = 108
 LABEL_BOX_HEIGHT = 70
+LABEL_BOX_TARGET_RATIO = 5.4  # line length divided by line count
+LABEL_MIN_LINE_LENGTH = 16
 
 INPUT_CONNECTOR_BUS_Y_OFFSET = 95
 INPUT_CONNECTOR_BUS_HALF_HEIGHT = 10
@@ -178,6 +184,48 @@ class LabelBoxGraphic(Graphic):
         height = LABEL_BOX_HEIGHT
 
         return f'<rect x="{left}" y="{top}" width="{width}" height="{height}"/>'
+
+
+class LabelTextGraphic(Graphic):
+    x: int
+    y: int
+    label: str
+
+    def __init__(self, node: 'Node'):
+        self.x = node.x
+        self.y = node.y
+        self.label = node.source_object.label
+
+    def svg_content(self) -> str:
+        if not self.label:
+            return ''
+
+        centre = self.x
+        middle = self.y + LABEL_BOX_Y_OFFSET
+
+        ratio_based_line_length = round(math.sqrt(LABEL_BOX_TARGET_RATIO * len(self.label)))
+        target_line_length = max(LABEL_MIN_LINE_LENGTH, ratio_based_line_length)
+        lines = textwrap.wrap(self.label, target_line_length)
+        line_count = len(lines)
+
+        max_line_length = max((len(line) for line in lines), default=1)
+        font_scale_factor = min(1., LABEL_MIN_LINE_LENGTH / max_line_length)
+        font_size = font_scale_factor * DEFAULT_FONT_SIZE
+        style = f'font-size: {font_size}px'
+
+        return '\n'.join(
+            LabelTextGraphic.line_svg_content(line_number, line, centre, middle, line_count, font_size, style)
+            for line_number, line in enumerate(lines, start=1)
+        )
+
+    @staticmethod
+    def line_svg_content(line_number: int, line: str, centre: int, middle: int, line_count: int,
+                         font_size: float, style: str) -> str:
+        bias = line_number - (1 + line_count) / 2
+        line_middle = middle + bias * font_size * LINE_SPACING  # TODO: max_decimal_places=1
+        content = line  # TODO: escape_xml
+
+        return f'<text x="{centre}" y="{line_middle}" style="{style}">{content}</text>'
 
 
 class SymbolGraphic(Graphic):
