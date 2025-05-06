@@ -70,13 +70,9 @@ def main():
     cut_set_table_from_gate_id = fault_tree.compile_cut_set_tables()
     figure_from_id_from_time = fault_tree.compile_figures()
 
-    output_directory_name = f'{fault_tree_text_file_name}.out'
-    cut_sets_directory_name = f'{output_directory_name}/cut-sets'
-    figures_directory_name = f'{output_directory_name}/figures'
-
-    mkdir_robust(output_directory_name)
-    mkdir_robust(cut_sets_directory_name)
-    mkdir_robust(figures_directory_name)
+    mkdir_robust(output_directory_name := f'{fault_tree_text_file_name}.out')
+    mkdir_robust(cut_sets_directory_name := f'{output_directory_name}/cut-sets')
+    mkdir_robust(figures_directory_name := f'{output_directory_name}/figures')
 
     model_table.write_tsv(f'{output_directory_name}/models.tsv')
     event_table.write_tsv(f'{output_directory_name}/events.tsv')
