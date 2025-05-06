@@ -8,8 +8,8 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
-import decimal
 import math
+import re
 from typing import Iterable, Optional
 
 from pfta.woe import ImplementationError
@@ -38,9 +38,6 @@ def format_number(number: Optional[float],
     if not math.isfinite(number):
         return str(number)
 
-    if return_plain_zero and number == 0:
-        return '0'
-
     is_decimal_places_set = decimal_places is not None
     is_significant_figures_set = significant_figures is not None
 
@@ -50,27 +47,46 @@ def format_number(number: Optional[float],
     if not is_decimal_places_set and not is_significant_figures_set:
         raise ValueError('neither decimal_places nor significant_figures has been set')
 
-    decimal_value = decimal.Decimal(number)
+    if return_plain_zero and number == 0:
+        return '0'
 
     if is_decimal_places_set:
-        return str(round(decimal_value, ndigits=decimal_places))
+        return f'{number:.{decimal_places}f}'
 
     if is_significant_figures_set:
-        exponent = decimal_value.adjusted()
-        critical_place = exponent - (significant_figures - 1)
-        decimal_rounded = round(decimal_value, ndigits=-critical_place)
+        scientific_form = f'{number:.{significant_figures - 1}E}'
 
-        if abs(exponent) < force_scientific_exponent:
-            return str(decimal_rounded)
+        scientific_match = re.fullmatch(
+            '(?P<sign>-?)(?P<mantissa>[0-9.]+)E(?P<exponent_sign>[+-])0*(?P<exponent_magnitude>[0-9]+)',
+            scientific_form,
+        )
+        sign_prefix = scientific_match.group('sign')
+        mantissa = scientific_match.group('mantissa')
+        exponent_sign = scientific_match.group('exponent_sign')
+        exponent_magnitude = scientific_match.group('exponent_magnitude')  # without leading zeroes
+
+        mantissa_digits = mantissa.replace('.', '')
+        exponent = int(f'{exponent_sign}{exponent_magnitude}')
+
+        force_scientific = abs(exponent) >= force_scientific_exponent
+        insufficient_digits_for_unscientific = mantissa_digits[0] != 0 and len(mantissa_digits) - 1 < exponent
+
+        if force_scientific or insufficient_digits_for_unscientific:
+            return f'{sign_prefix}{mantissa}E{exponent_sign}{exponent_magnitude}'
+
+        if exponent >= 0:
+            integer_part = mantissa_digits[0:exponent + 1]
+            fractional_part = mantissa_digits[exponent + 1:]
+
+            magnitude_head = integer_part if integer_part else ''
+            magnitude_trailing = f'.{fractional_part}' if fractional_part else ''
+
+            return f'{sign_prefix}{magnitude_head}{magnitude_trailing}'
+
         else:
-            sign_power, mantissa_digits, _ = decimal_rounded.as_tuple()
+            fractional_part_zeroes = (-exponent - 1) * '0'
 
-            sign_symbol = '-' if sign_power == 1 else ''
-            leading_digit = mantissa_digits[0]
-            trailing_digits = ''.join(str(digit) for digit in mantissa_digits[1:])
-            decimal_point = '.' if trailing_digits else ''
-
-            return f'{sign_symbol}{leading_digit}{decimal_point}{trailing_digits}E{exponent:+d}'
+            return f'{sign_prefix}0.{fractional_part_zeroes}{mantissa_digits}'
 
     raise ImplementationError('bad argument logic')
 
