@@ -51,9 +51,15 @@ def format_number(number: Optional[float],
         return '0'
 
     if is_decimal_places_set:
+        if decimal_places < 0:
+            raise ValueError('decimal_places must be non-negative')
+
         return f'{number:.{decimal_places}f}'
 
     if is_significant_figures_set:
+        if significant_figures <= 0:
+            raise ValueError('significant_figures must be positive')
+
         scientific_form = f'{number:.{significant_figures - 1}E}'
 
         scientific_match = re.fullmatch(
