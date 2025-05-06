@@ -204,6 +204,9 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `computed_probabilities` | [Flattened list] of computed failure probabilities. |
 | `computed_intensities` | [Flattened list] of computed failure intensities. |
 | `computed_rates` | [Flattened list] of computed failure rates. |
+| `computed_expected_probabilities` | List of computed expected values of failure probability (by time). |
+| `computed_expected_intensities` | List of computed expected values of failure intensity (by time). |
+| `computed_expected_rates` | List of computed expected values of failure rate (by time). |
 | `get_computed_probability(time_index, sample_index)` | Produce the computed failure probability associated with `time_index` and `sample_index`. |
 | `get_computed_intensity(time_index, sample_index)` | Produce the computed failure intensity associated with `time_index` and `sample_index`. |
 | `get_computed_rate(time_index, sample_index)` | Produce the computed failure rate associated with `time_index` and `sample_index`. |

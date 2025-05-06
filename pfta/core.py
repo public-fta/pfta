@@ -224,6 +224,9 @@ class FaultTree:
         FaultTree.compute_gate_probabilities(gates, computational_cache)
         FaultTree.compute_gate_intensities(gates, computational_cache)
         FaultTree.compute_gate_rates(gates)
+        FaultTree.compute_gate_expected_probabilities(gates)
+        FaultTree.compute_gate_expected_intensities(gates)
+        FaultTree.compute_gate_expected_rates(gates)
 
         # Finalisation
         self.times = times
@@ -460,6 +463,21 @@ class FaultTree:
     def compute_gate_rates(gates: list['Gate']):
         for gate in gates:
             gate.compute_rates()
+
+    @staticmethod
+    def compute_gate_expected_probabilities(gates: list['Gate']):
+        for gate in gates:
+            gate.compute_expected_probabilities()
+
+    @staticmethod
+    def compute_gate_expected_intensities(gates: list['Gate']):
+        for gate in gates:
+            gate.compute_expected_intensities()
+
+    @staticmethod
+    def compute_gate_expected_rates(gates: list['Gate']):
+        for gate in gates:
+            gate.compute_expected_rates()
 
 
 class Model:
@@ -837,6 +855,9 @@ class Gate:
     computed_probabilities: Optional[list[float]]
     computed_intensities: Optional[list[float]]
     computed_rates: Optional[list[float]]
+    computed_expected_probabilities: Optional[list[float]]
+    computed_expected_intensities: Optional[list[float]]
+    computed_expected_rates: Optional[list[float]]
 
     def __init__(self, id_: str, properties: dict):
         label = properties.get('label')
@@ -866,6 +887,9 @@ class Gate:
         self.computed_probabilities = None
         self.computed_intensities = None
         self.computed_rates = None
+        self.computed_expected_probabilities = None
+        self.computed_expected_intensities = None
+        self.computed_expected_rates = None
 
     def __repr__(self):
         return natural_repr(self)
@@ -906,6 +930,27 @@ class Gate:
         return [
             robust_divide(omega, 1 - q)
             for q, omega in zip(self.computed_probabilities, self.computed_intensities)
+        ]
+
+    @memoise('computed_expected_probabilities')
+    def compute_expected_probabilities(self) -> list[float]:
+        return[
+            statistics.mean(self.computed_probabilities[self.flattened_indexer.get_slice(time_index)])
+            for time_index in range(self.flattened_indexer.time_count)
+        ]
+
+    @memoise('computed_expected_intensities')
+    def compute_expected_intensities(self) -> list[float]:
+        return [
+            statistics.mean(self.computed_intensities[self.flattened_indexer.get_slice(time_index)])
+            for time_index in range(self.flattened_indexer.time_count)
+        ]
+
+    @memoise('computed_expected_rates')
+    def compute_expected_rates(self) -> list[float]:
+        return [
+            statistics.mean(self.computed_rates[self.flattened_indexer.get_slice(time_index)])
+            for time_index in range(self.flattened_indexer.time_count)
         ]
 
     def get_computed_probability(self, time_index: int, sample_index: int) -> float:
