@@ -214,6 +214,7 @@ class FaultTree:
         FaultTree.compute_event_intensities(events, times, sample_size)
         FaultTree.compute_event_rates(events)
         FaultTree.compute_event_expected_probabilities(events)
+        FaultTree.compute_event_expected_intensities(events)
 
         # Prepare cache for computation of gate quantities
         computational_cache = ComputationalCache(tolerance, events)
@@ -435,6 +436,11 @@ class FaultTree:
             event.compute_expected_probabilities()
 
     @staticmethod
+    def compute_event_expected_intensities(events: list['Event']):
+        for event in events:
+            event.compute_expected_intensities()
+
+    @staticmethod
     def compute_gate_probabilities(gates: list['Gate'], computational_cache: ComputationalCache):
         for gate in gates:
             gate.compute_probabilities(computational_cache)
@@ -597,6 +603,7 @@ class Event:
     computed_intensities: Optional[list[float]]
     computed_rates: Optional[list[float]]
     computed_expected_probabilities: Optional[list[float]]
+    computed_expected_intensities: Optional[list[float]]
 
     def __init__(self, id_: str, index: int, properties: dict):
         label = properties.get('label')
@@ -634,6 +641,7 @@ class Event:
         self.computed_intensities = None
         self.computed_rates = None
         self.computed_expected_probabilities = None
+        self.computed_expected_intensities = None
 
     def __repr__(self):
         return natural_repr(self)
@@ -722,6 +730,13 @@ class Event:
     def compute_expected_probabilities(self) -> list[float]:
         return[
             statistics.mean(self.computed_probabilities[self.flattened_indexer.get_slice(time_index)])
+            for time_index in range(self.flattened_indexer.time_count)
+        ]
+
+    @memoise('computed_expected_intensities')
+    def compute_expected_intensities(self) -> list[float]:
+        return [
+            statistics.mean(self.computed_intensities[self.flattened_indexer.get_slice(time_index)])
             for time_index in range(self.flattened_indexer.time_count)
         ]
 
