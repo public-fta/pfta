@@ -103,9 +103,10 @@ class TimeHeaderGraphic(Graphic):
     time_unit: str
     bounding_width: int
 
-    def __init__(self, time: float, time_unit: str, bounding_width: int):
+    def __init__(self, time: float, time_unit: str, significant_figures: int, bounding_width: int):
         self.time = time
         self.time_unit = time_unit
+        self.significant_figures = significant_figures
         self.bounding_width = bounding_width
 
     def svg_content(self) -> str:
@@ -113,7 +114,8 @@ class TimeHeaderGraphic(Graphic):
         middle = -TIME_HEADER_Y_OFFSET
         style = f'font-size: {TIME_HEADER_FONT_SIZE}px'
 
-        content = f't = {self.time} {self.time_unit}'  # TODO: rounding
+        time_value = format_number(self.time, significant_figures=self.significant_figures)
+        content = f't = {time_value} {self.time_unit}'  # TODO: robust unit formatting
 
         return f'<text x="{centre}" y="{middle}" style="{style}">{content}</text>'
 

@@ -104,6 +104,7 @@ class FaultTree:
     seed: str
     sample_size: int
     tolerance: float
+    significant_figures: int
     models: list['Model']
     events: list['Event']
     gates: list['Gate']
@@ -167,6 +168,9 @@ class FaultTree:
         tolerance = fault_tree_properties.get('tolerance', 0)
         tolerance_raw = fault_tree_properties.get('tolerance_raw')
         tolerance_line_number = fault_tree_properties.get('tolerance_line_number')
+        significant_figures = fault_tree_properties.get('significant_figures', 3)
+        significant_figures_raw = fault_tree_properties.get('significant_figures_raw')
+        significant_figures_line_number = fault_tree_properties.get('significant_figures_line_number')
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
         # Identifier conveniences
@@ -184,6 +188,8 @@ class FaultTree:
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
         FaultTree.validate_sample_size(sample_size, sample_size_raw, sample_size_line_number)
         FaultTree.validate_tolerance(tolerance, tolerance_raw, tolerance_line_number)
+        FaultTree.validate_significant_figures(significant_figures, significant_figures_raw,
+                                               significant_figures_line_number)
         FaultTree.validate_event_models(event_from_id, model_from_id)
         FaultTree.validate_gate_inputs(event_from_id, gate_from_id)
         FaultTree.validate_cycle_free(gate_from_id)
@@ -234,6 +240,7 @@ class FaultTree:
         self.seed = seed
         self.sample_size = sample_size
         self.tolerance = tolerance
+        self.significant_figures = significant_figures
         self.models = models
         self.events = events
         self.gates = gates
@@ -335,6 +342,15 @@ class FaultTree:
             raise InvalidToleranceException(
                 tolerance_line_number,
                 f'tolerance {tolerance_raw} negative or not less than unity',
+            )
+
+    @staticmethod
+    def validate_significant_figures(significant_figures: int, significant_figures_raw: str,
+                                     significant_figures_line_number: int):
+        if significant_figures < 1:
+            raise SubUnitValueException(
+                significant_figures_line_number,
+                f'significant figures {significant_figures_raw} less than unity',
             )
 
     @staticmethod

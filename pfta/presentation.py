@@ -34,6 +34,7 @@ class Figure:
     def __init__(self, time_index: int, gate: 'Gate', fault_tree: 'FaultTree'):
         time = fault_tree.times[time_index]
         time_unit = fault_tree.time_unit
+        significant_figures = fault_tree.significant_figures
         event_from_id = {event.id_: event for event in fault_tree.events}
         gate_from_id = {gate.id_: gate for gate in fault_tree.gates}
 
@@ -46,7 +47,7 @@ class Figure:
         top_node.determine_position_recursive()
 
         # Graphics assembly
-        time_header_graphic = TimeHeaderGraphic(time, time_unit, top_node.bounding_width)
+        time_header_graphic = TimeHeaderGraphic(time, time_unit, significant_figures, top_node.bounding_width)
         node_graphics = [
             graphic for node in top_node.reachable_nodes
             for graphic in node.assemble_graphics()

@@ -343,6 +343,16 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
             properties['tolerance_line_number'] = parsed_line.number
             continue
 
+        if key == 'significant_figures':
+            try:
+                properties['significant_figures'] = int(value)
+            except ValueError:
+                raise InvalidIntegerException(parsed_line.number, f'unable to convert `{value}` to integer')
+
+            properties['significant_figures_raw'] = value
+            properties['significant_figures_line_number'] = parsed_line.number
+            continue
+
         raise ImplementationError(f'bad key `{key}`')
 
     properties['unset_property_line_number'] = parsed_assembly.last_line_number() + 1

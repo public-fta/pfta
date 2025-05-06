@@ -92,7 +92,7 @@ VALID_MODEL_KEYS = tuple({
 MODEL_TYPE_EXPLAINER = f'Recognised model types are {natural_join_backticks(VALID_MODEL_TYPES)}'
 
 VALID_KEYS_FROM_CLASS = {
-    'FaultTree': ('times', 'time_unit', 'seed', 'sample_size', 'tolerance'),
+    'FaultTree': ('times', 'time_unit', 'seed', 'sample_size', 'tolerance', 'significant_figures'),
     'Model': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),
     'Event': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS, 'model'),
     'Gate': ('label', 'comment', 'is_paged', 'type', 'inputs'),
