@@ -15,7 +15,8 @@ from typing import TYPE_CHECKING, Optional, Union
 from pfta.common import natural_repr
 from pfta.graphics import (
     EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT,
-    Graphic, TimeHeaderGraphic, InputConnectorsGraphic, LabelBoxGraphic, LabelTextGraphic, SymbolGraphic,
+    Graphic, TimeHeaderGraphic, LabelConnectorGraphic, InputConnectorsGraphic,
+    LabelBoxGraphic, LabelTextGraphic, SymbolGraphic,
     figure_svg_content,
 )
 from pfta.woe import ImplementationError
@@ -183,6 +184,7 @@ class Node:
 
     def assemble_graphics(self) -> list[Graphic]:
         return [
+            LabelConnectorGraphic(self),
             InputConnectorsGraphic(self),
             LabelBoxGraphic(self),
             LabelTextGraphic(self),

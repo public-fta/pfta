@@ -127,6 +127,24 @@ class TimeHeaderGraphic(Graphic):
         return f'<text x="{centre}" y="{middle}" style="{style}">{content}</text>'
 
 
+class LabelConnectorGraphic(Graphic):
+    x: int
+    y: int
+
+    def __init__(self, node: 'Node'):
+        self.x = node.x
+        self.y = node.y
+
+    def svg_content(self) -> str:
+        centre = self.x
+        label_middle = self.y + LABEL_BOX_Y_OFFSET
+        symbol_middle = self.y + SYMBOL_Y_OFFSET
+
+        points = f'{centre},{label_middle} {centre},{symbol_middle}'
+
+        return f'<polyline points="{points}"/>'
+
+
 class InputConnectorsGraphic(Graphic):
     x: int
     y: int
