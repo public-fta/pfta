@@ -68,7 +68,7 @@ where `dt` is an infinitesimal increment in the time `t`.
 Note the conditional nature of the probability.
 
 
-### Failure intensity
+### Failure intensity (a.k.a. frequency)
 
 The failure intensity `ω(t)` (denoted `w(t)` in Vesely's typography) is defined as
 
