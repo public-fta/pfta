@@ -353,6 +353,16 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
             properties['significant_figures_line_number'] = parsed_line.number
             continue
 
+        if key == 'scientific_exponent':
+            try:
+                properties['scientific_exponent'] = int(value)
+            except ValueError:
+                raise InvalidIntegerException(parsed_line.number, f'unable to convert `{value}` to integer')
+
+            properties['scientific_exponent_raw'] = value
+            properties['scientific_exponent_line_number'] = parsed_line.number
+            continue
+
         raise ImplementationError(f'bad key `{key}`')
 
     properties['unset_property_line_number'] = parsed_assembly.last_line_number() + 1

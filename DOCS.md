@@ -16,6 +16,7 @@ The fault tree properties paragraph must be the first paragraph.
 - sample_size: <integer>           (optional; default `1`)
 - tolerance: <float>               (optional; default `0`; tolerance for truncating probability/intensity computations)
 - significant_figures: <int>       (optional; default `3`; number of significant figures displayed in SVG output)
+- scientific_exponent: <int>       (optional; default `3`; exponent threshold for scientific notation in SVG output)
 ```
 
 
@@ -143,6 +144,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `sample_size` | Sample size for sampling distributions. |
 | `tolerance` | Tolerance for truncating probability/intensity computations. |
 | `significant_figures` | Number of significant figures displayed in SVG output. |
+| `scientific_exponent` | Exponent threshold for scientific notation in SVG output. |
 | `models` | List of [failure models]. |
 | `events` | List of [events]. |
 | `gates` | List of [gates]. |

@@ -105,6 +105,7 @@ class FaultTree:
     sample_size: int
     tolerance: float
     significant_figures: int
+    scientific_exponent: int
     models: list['Model']
     events: list['Event']
     gates: list['Gate']
@@ -171,6 +172,9 @@ class FaultTree:
         significant_figures = fault_tree_properties.get('significant_figures', 3)
         significant_figures_raw = fault_tree_properties.get('significant_figures_raw')
         significant_figures_line_number = fault_tree_properties.get('significant_figures_line_number')
+        scientific_exponent = fault_tree_properties.get('scientific_exponent', 3)
+        scientific_exponent_raw = fault_tree_properties.get('scientific_exponent_raw')
+        scientific_exponent_line_number = fault_tree_properties.get('scientific_exponent_line_number')
         unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
 
         # Identifier conveniences
@@ -190,6 +194,8 @@ class FaultTree:
         FaultTree.validate_tolerance(tolerance, tolerance_raw, tolerance_line_number)
         FaultTree.validate_significant_figures(significant_figures, significant_figures_raw,
                                                significant_figures_line_number)
+        FaultTree.validate_scientific_exponent(scientific_exponent, scientific_exponent_raw,
+                                               scientific_exponent_line_number)
         FaultTree.validate_event_models(event_from_id, model_from_id)
         FaultTree.validate_gate_inputs(event_from_id, gate_from_id)
         FaultTree.validate_cycle_free(gate_from_id)
@@ -241,6 +247,7 @@ class FaultTree:
         self.sample_size = sample_size
         self.tolerance = tolerance
         self.significant_figures = significant_figures
+        self.scientific_exponent = scientific_exponent
         self.models = models
         self.events = events
         self.gates = gates
@@ -351,6 +358,15 @@ class FaultTree:
             raise SubUnitValueException(
                 significant_figures_line_number,
                 f'significant figures {significant_figures_raw} less than unity',
+            )
+
+    @staticmethod
+    def validate_scientific_exponent(scientific_exponent: int, scientific_exponent_raw: str,
+                                     scientific_exponent_line_number: int):
+        if scientific_exponent < 0:
+            raise NegativeValueException(
+                scientific_exponent_line_number,
+                f'negative scientific exponent {scientific_exponent_raw}',
             )
 
     @staticmethod
