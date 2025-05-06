@@ -16,7 +16,7 @@ from pfta.common import natural_repr
 from pfta.graphics import (
     EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT,
     Graphic, TimeHeaderGraphic, LabelConnectorGraphic, InputConnectorsGraphic,
-    LabelBoxGraphic, LabelTextGraphic, SymbolGraphic,
+    LabelBoxGraphic, LabelTextGraphic, IdentifierBoxGraphic, SymbolGraphic,
     figure_svg_content,
 )
 from pfta.woe import ImplementationError
@@ -188,6 +188,7 @@ class Node:
             InputConnectorsGraphic(self),
             LabelBoxGraphic(self),
             LabelTextGraphic(self),
+            IdentifierBoxGraphic(self),
             SymbolGraphic(self),
         ]
 

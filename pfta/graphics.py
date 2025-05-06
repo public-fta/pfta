@@ -44,6 +44,10 @@ LABEL_BOX_HEIGHT = 70
 LABEL_BOX_TARGET_RATIO = 5.4  # line length divided by line count
 LABEL_MIN_LINE_LENGTH = 16
 
+IDENTIFIER_BOX_Y_OFFSET = -13
+IDENTIFIER_BOX_WIDTH = 108
+IDENTIFIER_BOX_HEIGHT = 24
+
 INPUT_CONNECTOR_BUS_Y_OFFSET = 95
 INPUT_CONNECTOR_BUS_HALF_HEIGHT = 10
 
@@ -279,6 +283,23 @@ class LabelTextGraphic(Graphic):
         content = escape_xml(line)
 
         return f'<text x="{centre}" y="{line_middle}" style="{style}">{content}</text>'
+
+
+class IdentifierBoxGraphic(Graphic):
+    x: int
+    y: int
+
+    def __init__(self, node: 'Node'):
+        self.x = node.x
+        self.y = node.y
+
+    def svg_content(self) -> str:
+        left = self.x - IDENTIFIER_BOX_WIDTH // 2
+        top = self.y - IDENTIFIER_BOX_HEIGHT // 2 + IDENTIFIER_BOX_Y_OFFSET
+        width = IDENTIFIER_BOX_WIDTH
+        height = IDENTIFIER_BOX_HEIGHT
+
+        return f'<rect x="{left}" y="{top}" width="{width}" height="{height}"/>'
 
 
 class SymbolGraphic(Graphic):
