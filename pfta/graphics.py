@@ -27,6 +27,10 @@ PAGE_MARGIN = 10
 DEFAULT_FONT_SIZE = 10
 LINE_SPACING = 1.3
 
+TIME_HEADER_MARGIN = 20
+TIME_HEADER_Y_OFFSET = 25
+TIME_HEADER_FONT_SIZE = 16
+
 EVENT_BOUNDING_WIDTH = 120
 EVENT_BOUNDING_HEIGHT = 210
 
@@ -92,6 +96,26 @@ ${body_content}
 class Graphic:
     def svg_content(self) -> str:
         raise NotImplementedError
+
+
+class TimeHeaderGraphic(Graphic):
+    time: float
+    time_unit: str
+    bounding_width: int
+
+    def __init__(self, time: float, time_unit: str, bounding_width: int):
+        self.time = time
+        self.time_unit = time_unit
+        self.bounding_width = bounding_width
+
+    def svg_content(self) -> str:
+        centre = self.bounding_width // 2
+        middle = -TIME_HEADER_Y_OFFSET
+        style = f'font-size: {TIME_HEADER_FONT_SIZE}px'
+
+        content = f't = {self.time} {self.time_unit}'  # TODO: rounding
+
+        return f'<text x="{centre}" y="{middle}" style="{style}">{content}</text>'
 
 
 class InputConnectorsGraphic(Graphic):
@@ -405,7 +429,7 @@ def escape_xml(text: str) -> str:
 
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
     left = -PAGE_MARGIN
-    top = -PAGE_MARGIN
+    top = -PAGE_MARGIN - TIME_HEADER_MARGIN - TIME_HEADER_Y_OFFSET
     width = bounding_width + 2 * PAGE_MARGIN
     height = bounding_height + 2 * PAGE_MARGIN
 

@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Optional, Union
 from pfta.common import natural_repr
 from pfta.graphics import (
     EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT,
-    Graphic, InputConnectorsGraphic, LabelBoxGraphic, LabelTextGraphic, SymbolGraphic,
+    Graphic, TimeHeaderGraphic, InputConnectorsGraphic, LabelBoxGraphic, LabelTextGraphic, SymbolGraphic,
     figure_svg_content,
 )
 from pfta.woe import ImplementationError
@@ -28,12 +28,12 @@ class Figure:
     """
     Class representing a figure (a page of a fault tree).
     """
-    time: float
     top_node: 'Node'
     graphics: list[Graphic]
 
     def __init__(self, time_index: int, gate: 'Gate', fault_tree: 'FaultTree'):
         time = fault_tree.times[time_index]
+        time_unit = fault_tree.time_unit
         event_from_id = {event.id_: event for event in fault_tree.events}
         gate_from_id = {gate.id_: gate for gate in fault_tree.gates}
 
@@ -46,15 +46,15 @@ class Figure:
         top_node.determine_position_recursive()
 
         # Graphics assembly
-        graphics = [
+        time_header_graphic = TimeHeaderGraphic(time, time_unit, top_node.bounding_width)
+        node_graphics = [
             graphic for node in top_node.reachable_nodes
             for graphic in node.assemble_graphics()
         ]
 
         # Finalisation
-        self.time = time
         self.top_node = top_node
-        self.graphics = graphics
+        self.graphics = [time_header_graphic, *node_graphics]
 
     def __repr__(self):
         return natural_repr(self)
