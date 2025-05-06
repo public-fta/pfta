@@ -302,6 +302,24 @@ class IdentifierBoxGraphic(Graphic):
         return f'<rect x="{left}" y="{top}" width="{width}" height="{height}"/>'
 
 
+class IdentifierTextGraphic(Graphic):
+    x: int
+    y: int
+    id_: str
+
+    def __init__(self, node: 'Node'):
+        self.x = node.x
+        self.y = node.y
+        self.id_ = node.source_object.id_
+
+    def svg_content(self) -> str:
+        centre = self.x
+        middle = self.y + IDENTIFIER_BOX_Y_OFFSET
+        content = self.id_
+
+        return f'<text x="{centre}" y="{middle}">{escape_xml(content)}</text>'
+
+
 class SymbolGraphic(Graphic):
     x: int
     y: int
