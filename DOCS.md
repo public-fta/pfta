@@ -180,6 +180,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `computed_probabilities` | [Flattened list] of computed failure probabilities. |
 | `computed_intensities` | [Flattened list] of computed failure intensities. |
 | `computed_rates` | [Flattened list] of computed failure rates. |
+| `computed_expected_probabilities` | List of computed expected values of failure probability (by time). |
 
 
 ### Gate

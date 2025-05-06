@@ -9,6 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import random
+import statistics
 import traceback
 from typing import Optional
 
@@ -212,6 +213,7 @@ class FaultTree:
         FaultTree.compute_event_probabilities(events, times, sample_size)
         FaultTree.compute_event_intensities(events, times, sample_size)
         FaultTree.compute_event_rates(events)
+        FaultTree.compute_event_expected_probabilities(events)
 
         # Prepare cache for computation of gate quantities
         computational_cache = ComputationalCache(tolerance, events)
@@ -428,6 +430,11 @@ class FaultTree:
             event.compute_rates()
 
     @staticmethod
+    def compute_event_expected_probabilities(events: list['Event']):
+        for event in events:
+            event.compute_expected_probabilities()
+
+    @staticmethod
     def compute_gate_probabilities(gates: list['Gate'], computational_cache: ComputationalCache):
         for gate in gates:
             gate.compute_probabilities(computational_cache)
@@ -589,6 +596,7 @@ class Event:
     computed_probabilities: Optional[list[float]]
     computed_intensities: Optional[list[float]]
     computed_rates: Optional[list[float]]
+    computed_expected_probabilities: Optional[list[float]]
 
     def __init__(self, id_: str, index: int, properties: dict):
         label = properties.get('label')
@@ -625,6 +633,7 @@ class Event:
         self.computed_probabilities = None
         self.computed_intensities = None
         self.computed_rates = None
+        self.computed_expected_probabilities = None
 
     def __repr__(self):
         return natural_repr(self)
@@ -707,6 +716,13 @@ class Event:
         return [
             robust_divide(omega, 1 - q)
             for q, omega in zip(self.computed_probabilities, self.computed_intensities)
+        ]
+
+    @memoise('computed_expected_probabilities')
+    def compute_expected_probabilities(self) -> list[float]:
+        return[
+            statistics.mean(self.computed_probabilities[self.flattened_indexer.get_slice(time_index)])
+            for time_index in range(self.flattened_indexer.time_count)
         ]
 
     def computed_probability(self, time_index: int, sample_index: int) -> float:
