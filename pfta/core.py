@@ -257,9 +257,9 @@ class FaultTree:
             [
                 event.id_, event.label, event.is_used,
                 time, sample_index,
-                event.computed_probability(time_index, sample_index),
-                event.computed_intensity(time_index, sample_index),
-                event.computed_rate(time_index, sample_index),
+                event.get_computed_probability(time_index, sample_index),
+                event.get_computed_intensity(time_index, sample_index),
+                event.get_computed_rate(time_index, sample_index),
             ]
             for event in self.events
             for time_index, time in enumerate(self.times)
@@ -281,9 +281,9 @@ class FaultTree:
                 gate.id_, gate.label, gate.is_top_gate, gate.is_paged,
                 gate.type_.name, ','.join(gate.input_ids),
                 time, sample_index,
-                gate.computed_probability(time_index, sample_index),
-                gate.computed_intensity(time_index, sample_index),
-                gate.computed_rate(time_index, sample_index),
+                gate.get_computed_probability(time_index, sample_index),
+                gate.get_computed_intensity(time_index, sample_index),
+                gate.get_computed_rate(time_index, sample_index),
             ]
             for gate in self.gates
             for time_index, time in enumerate(self.times)
@@ -725,15 +725,15 @@ class Event:
             for time_index in range(self.flattened_indexer.time_count)
         ]
 
-    def computed_probability(self, time_index: int, sample_index: int) -> float:
+    def get_computed_probability(self, time_index: int, sample_index: int) -> float:
         flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
         return self.computed_probabilities[flattened_index]
 
-    def computed_intensity(self, time_index: int, sample_index: int) -> float:
+    def get_computed_intensity(self, time_index: int, sample_index: int) -> float:
         flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
         return self.computed_intensities[flattened_index]
 
-    def computed_rate(self, time_index: int, sample_index: int) -> float:
+    def get_computed_rate(self, time_index: int, sample_index: int) -> float:
         flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
         return self.computed_rates[flattened_index]
 
@@ -878,15 +878,15 @@ class Gate:
             for q, omega in zip(self.computed_probabilities, self.computed_intensities)
         ]
 
-    def computed_probability(self, time_index: int, sample_index: int) -> float:
+    def get_computed_probability(self, time_index: int, sample_index: int) -> float:
         flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
         return self.computed_probabilities[flattened_index]
 
-    def computed_intensity(self, time_index: int, sample_index: int) -> float:
+    def get_computed_intensity(self, time_index: int, sample_index: int) -> float:
         flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
         return self.computed_intensities[flattened_index]
 
-    def computed_rate(self, time_index: int, sample_index: int) -> float:
+    def get_computed_rate(self, time_index: int, sample_index: int) -> float:
         flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
         return self.computed_rates[flattened_index]
 
