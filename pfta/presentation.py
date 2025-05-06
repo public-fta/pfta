@@ -28,10 +28,12 @@ class Figure:
     """
     Class representing a figure (a page of a fault tree).
     """
+    time: float
     top_node: 'Node'
     graphics: list[Graphic]
 
-    def __init__(self, gate: 'Gate', fault_tree: 'FaultTree'):
+    def __init__(self, time_index: int, gate: 'Gate', fault_tree: 'FaultTree'):
+        time = fault_tree.times[time_index]
         event_from_id = {event.id_: event for event in fault_tree.events}
         gate_from_id = {gate.id_: gate for gate in fault_tree.gates}
 
@@ -50,6 +52,7 @@ class Figure:
         ]
 
         # Finalisation
+        self.time = time
         self.top_node = top_node
         self.graphics = graphics
 

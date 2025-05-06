@@ -148,7 +148,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `compile_event_table()` | Produce a [table] of [events]. |
 | `compile_gate_table()` | Produce a [table] of [gates]. |
 | `compile_cut_set_tables()` | Produce a dictionary from gate identifier to [table] of cut sets. |
-| `compile_figures()` | Produce a dictionary from gate identifier to [figure]. |
+| `compile_figures()` | Produce a nested dictionary from time to gate identifier to [figure]. |
 
 
 ### Model

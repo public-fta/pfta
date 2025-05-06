@@ -302,11 +302,14 @@ class FaultTree:
             for gate in self.gates
         }
 
-    def compile_figures(self) -> dict[str, Figure]:
+    def compile_figures(self) -> dict[float, dict[str, Figure]]:
         return {
-            gate.id_: Figure(gate, fault_tree=self)
-            for gate in self.gates
-            if gate.is_top_gate or gate.is_paged
+            time: {
+                gate.id_: Figure(time_index, gate, fault_tree=self)
+                for gate in self.gates
+                if gate.is_top_gate or gate.is_paged
+            }
+            for time_index, time in enumerate(self.times)
         }
 
     @staticmethod
