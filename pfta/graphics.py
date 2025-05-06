@@ -126,7 +126,7 @@ class TimeHeaderGraphic(Graphic):
         time_value = format_number(self.time, significant_figures=self.significant_figures,
                                    scientific_exponent_threshold=self.scientific_exponent)
         time_quantity = format_quantity(time_value, self.time_unit)
-        content = f't = {time_quantity}'
+        content = escape_xml(f't = {time_quantity}')
 
         return f'<text x="{centre}" y="{middle}" style="{style}">{content}</text>'
 
@@ -315,9 +315,9 @@ class IdentifierTextGraphic(Graphic):
     def svg_content(self) -> str:
         centre = self.x
         middle = self.y + IDENTIFIER_BOX_Y_OFFSET
-        content = self.id_
+        content = escape_xml(self.id_)
 
-        return f'<text x="{centre}" y="{middle}">{escape_xml(content)}</text>'
+        return f'<text x="{centre}" y="{middle}">{content}</text>'
 
 
 class SymbolGraphic(Graphic):
