@@ -212,7 +212,7 @@ class LabelTextGraphic(Graphic):
 
         max_line_length = max((len(line) for line in lines), default=1)
         font_scale_factor = min(1., LABEL_MIN_LINE_LENGTH / max_line_length)
-        font_size = font_scale_factor * DEFAULT_FONT_SIZE
+        font_size = round(font_scale_factor * DEFAULT_FONT_SIZE)
         style = f'font-size: {font_size}px'
 
         return '\n'.join(
@@ -222,7 +222,7 @@ class LabelTextGraphic(Graphic):
 
     @staticmethod
     def line_svg_content(line_number: int, line: str, centre: int, middle: int, line_count: int,
-                         font_size: float, style: str) -> str:
+                         font_size: int, style: str) -> str:
         bias = line_number - (1 + line_count) / 2
         line_middle = format_number(middle + bias * font_size * LINE_SPACING, decimal_places=1)
         content = escape_xml(line)
