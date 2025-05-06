@@ -31,7 +31,7 @@ def robust_invert(x: float) -> float:
 
 def format_number(number: Optional[float],
                   decimal_places: Optional[int] = None, significant_figures: Optional[int] = None,
-                  force_scientific_exponent: int = 3, return_plain_zero: bool = True) -> Optional[str]:
+                  scientific_exponent_threshold: int = 3, return_plain_zero: bool = True) -> Optional[str]:
     if number is None:
         return None
 
@@ -68,7 +68,7 @@ def format_number(number: Optional[float],
         mantissa_digits = mantissa.replace('.', '')
         exponent = int(f'{exponent_sign}{exponent_magnitude}')
 
-        force_scientific = abs(exponent) >= force_scientific_exponent
+        force_scientific = abs(exponent) >= scientific_exponent_threshold
         insufficient_digits_for_unscientific = mantissa_digits[0] != 0 and len(mantissa_digits) - 1 < exponent
 
         if force_scientific or insufficient_digits_for_unscientific:
