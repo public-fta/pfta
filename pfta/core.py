@@ -949,8 +949,8 @@ class FlattenedIndexer:
 
         return time_index * self.sample_size + sample_index
 
-    def get_indices(self, time_index: int) -> range:  # flattened indices for a given time_index are consecutive
+    def get_slice(self, time_index: int) -> slice:  # flattened indices for a given time_index are consecutive
         start = self.get_index(time_index, sample_index=0)
         end = self.get_index(time_index + 1, sample_index=0)
 
-        return range(start, end)
+        return slice(start, end)

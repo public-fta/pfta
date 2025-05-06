@@ -208,7 +208,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `sample_size` | Sample size (from fault tree properties). |
 | `flattened_size` | Product of `time_count` and `sample_size`. |
 | `get_index(time_index, sample_index)` | Produce the flattened index associated with `time_index` and `sample_index`. |
-| `get_indices(time_index)` | Produce the range of flattened indices associated with `time_index`. |
+| `get_slice(time_index)` | Produce the flattened index slice associated with `time_index`. |
 
 Flattened lists of results are effectively indexed by the following comprehension:
 
