@@ -29,7 +29,7 @@ DEFAULT_FONT_SIZE = 10
 LINE_SPACING = 1.3
 
 TIME_HEADER_MARGIN = 20
-TIME_HEADER_Y_OFFSET = 25
+TIME_HEADER_Y_OFFSET = -25
 TIME_HEADER_FONT_SIZE = 16
 
 EVENT_BOUNDING_WIDTH = 120
@@ -116,7 +116,7 @@ class TimeHeaderGraphic(Graphic):
 
     def svg_content(self) -> str:
         centre = self.bounding_width // 2
-        middle = -TIME_HEADER_Y_OFFSET
+        middle = TIME_HEADER_Y_OFFSET
         style = f'font-size: {TIME_HEADER_FONT_SIZE}px'
 
         time_value = format_number(self.time, significant_figures=self.significant_figures,
@@ -438,7 +438,7 @@ def escape_xml(text: str) -> str:
 
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
     left = -PAGE_MARGIN
-    top = -PAGE_MARGIN - TIME_HEADER_MARGIN - TIME_HEADER_Y_OFFSET
+    top = -PAGE_MARGIN - TIME_HEADER_MARGIN + TIME_HEADER_Y_OFFSET
     width = bounding_width + 2 * PAGE_MARGIN
     height = bounding_height + 2 * PAGE_MARGIN
 
