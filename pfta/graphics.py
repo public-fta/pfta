@@ -14,6 +14,7 @@ import string
 import textwrap
 from typing import TYPE_CHECKING, Optional, Union
 
+from pfta.common import format_quantity
 from pfta.constants import GateType, SymbolType
 from pfta.utilities import format_number
 from pfta.woe import ImplementationError
@@ -120,8 +121,8 @@ class TimeHeaderGraphic(Graphic):
 
         time_value = format_number(self.time, significant_figures=self.significant_figures,
                                    scientific_exponent_threshold=self.scientific_exponent)
-
-        content = f't = {time_value} {self.time_unit}'  # TODO: robust unit formatting
+        time_quantity = format_quantity(time_value, self.time_unit)
+        content = f't = {time_quantity}'
 
         return f'<text x="{centre}" y="{middle}" style="{style}">{content}</text>'
 

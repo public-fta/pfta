@@ -50,3 +50,10 @@ def natural_join_backticks(items: Union[tuple, list], penultimate_separator: Opt
 
 def format_cut_set(event_ids: Iterable[str]):
     return '.'.join(event_ids)
+
+
+def format_quantity(value: Union[float, str], unit: str) -> str:
+    if not unit:
+        return value
+
+    return f'{value} {unit}'
