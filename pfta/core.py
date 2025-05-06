@@ -341,14 +341,14 @@ class FaultTree:
     @staticmethod
     def validate_sample_size(sample_size: int, sample_size_raw: str, sample_size_line_number: int):
         if sample_size < 1:
-            raise SubUnitValueException(sample_size_line_number, f'sample size {sample_size_raw} less than unity')
+            raise SubUnitValueException(sample_size_line_number, f'sample size `{sample_size_raw}` less than unity')
 
     @staticmethod
     def validate_tolerance(tolerance: float, tolerance_raw: str, tolerance_line_number: int):
         if not 0 <= tolerance < 1:
             raise InvalidToleranceException(
                 tolerance_line_number,
-                f'tolerance {tolerance_raw} negative or not less than unity',
+                f'tolerance `{tolerance_raw}` negative or not less than unity',
             )
 
     @staticmethod
@@ -357,7 +357,7 @@ class FaultTree:
         if significant_figures < 1:
             raise SubUnitValueException(
                 significant_figures_line_number,
-                f'significant figures {significant_figures_raw} less than unity',
+                f'significant figures `{significant_figures_raw}` less than unity',
             )
 
     @staticmethod
@@ -366,7 +366,7 @@ class FaultTree:
         if scientific_exponent < 0:
             raise NegativeValueException(
                 scientific_exponent_line_number,
-                f'negative scientific exponent {scientific_exponent_raw}',
+                f'negative scientific exponent `{scientific_exponent_raw}`',
             )
 
     @staticmethod
