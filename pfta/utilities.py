@@ -75,18 +75,18 @@ def format_number(number: Optional[float],
             return f'{sign_prefix}{mantissa}E{exponent_sign}{exponent_magnitude}'
 
         if exponent >= 0:
-            integer_part = mantissa_digits[0:exponent + 1]
-            fractional_part = mantissa_digits[exponent + 1:]
+            integer_digits = mantissa_digits[0:exponent + 1]
+            fractional_digits = mantissa_digits[exponent + 1:]
 
-            magnitude_head = integer_part if integer_part else ''
-            magnitude_trailing = f'.{fractional_part}' if fractional_part else ''
+            magnitude_head = integer_digits if integer_digits else ''
+            magnitude_trailing = f'.{fractional_digits}' if fractional_digits else ''
 
             return f'{sign_prefix}{magnitude_head}{magnitude_trailing}'
 
         else:
-            fractional_part_zeroes = (-exponent - 1) * '0'
+            fractional_leading_zeroes = (-exponent - 1) * '0'
 
-            return f'{sign_prefix}0.{fractional_part_zeroes}{mantissa_digits}'
+            return f'{sign_prefix}0.{fractional_leading_zeroes}{mantissa_digits}'
 
     raise ImplementationError('bad argument logic')
 
