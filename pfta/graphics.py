@@ -97,6 +97,7 @@ text {
   font-family: Consolas, Cousine, "Courier New", monospace;
   font-size: ${font_size}px;
   text-anchor: middle;
+  white-space: pre;
 }
 </style>
 ${body_content}
@@ -512,8 +513,8 @@ class QuantityTextGraphic(Graphic):
 
         middle = self.y + QUANTITY_BOX_Y_OFFSET
         line_half_gap = QUANTITY_FONT_SIZE * QUANTITY_LINE_SPACING / 2
-        probability_line_middle = format_number(middle - line_half_gap, decimal_places=1)
-        intensity_line_middle = format_number(middle + line_half_gap, decimal_places=1)
+        probability_middle = format_number(middle - line_half_gap, decimal_places=1)
+        intensity_middle = format_number(middle + line_half_gap, decimal_places=1)
 
         probability_lhs = 'q'  # TODO: wrap in E[ ] if sample_size > 1
         probability_value = format_number(self.probability, significant_figures=self.significant_figures,
@@ -528,13 +529,20 @@ class QuantityTextGraphic(Graphic):
         intensity_line = f'{intensity_lhs} = {intensity_quantity}'
         intensity_content = escape_xml(intensity_line)
 
-        # TODO: logic with probability_line, intensity_line to align at equals(?)
-
         style = f'font-size: {QUANTITY_FONT_SIZE}px'
 
+        max_line_length = max(
+            probability_length := len(probability_line),
+            intensity_length := len(intensity_line),
+        )
+        probability_spaces = (max_line_length - probability_length) * ' '
+        intensity_spaces = (max_line_length - intensity_length) * ' '
+        probability_spacer = f'<tspan style="user-select: none">{probability_spaces}</tspan>'
+        intensity_spacer = f'<tspan style="user-select: none">{intensity_spaces}</tspan>'
+
         return '\n'.join([
-            f'<text x="{centre}" y="{probability_line_middle}" style="{style}">{probability_content}</text>',
-            f'<text x="{centre}" y="{intensity_line_middle}" style="{style}">{intensity_content}</text>',
+            f'<text x="{centre}" y="{probability_middle}" style="{style}">{probability_content}{probability_spacer}</text>',
+            f'<text x="{centre}" y="{intensity_middle}" style="{style}">{intensity_content}{intensity_spacer}</text>',
         ])
 
 
