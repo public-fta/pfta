@@ -525,14 +525,12 @@ class QuantityTextGraphic(Graphic):
         probability_value = format_number(self.probability, significant_figures=self.significant_figures,
                                           scientific_exponent_threshold=self.scientific_exponent)
         probability_line = f'{probability_lhs} = {probability_value}'
-        probability_content = escape_xml(probability_line)
 
         intensity_lhs = 'ω'  # TODO: wrap in E[ ] if sample_size > 1
         intensity_value = format_number(self.intensity, significant_figures=self.significant_figures,
                                         scientific_exponent_threshold=self.scientific_exponent)
         intensity_quantity = format_quantity(intensity_value, self.time_unit, is_reciprocal=True)
         intensity_line = f'{intensity_lhs} = {intensity_quantity}'
-        intensity_content = escape_xml(intensity_line)
 
         style = f'font-size: {QUANTITY_FONT_SIZE}px'
 
@@ -545,9 +543,12 @@ class QuantityTextGraphic(Graphic):
         probability_spacer = f'<tspan class="spacer">{probability_spaces}</tspan>'
         intensity_spacer = f'<tspan class="spacer">{intensity_spaces}</tspan>'
 
+        probability_content = escape_xml(probability_line) + probability_spacer
+        intensity_content = escape_xml(intensity_line) + intensity_spacer
+
         return '\n'.join([
-            f'<text x="{centre}" y="{probability_middle}" style="{style}">{probability_content}{probability_spacer}</text>',
-            f'<text x="{centre}" y="{intensity_middle}" style="{style}">{intensity_content}{intensity_spacer}</text>',
+            f'<text x="{centre}" y="{probability_middle}" style="{style}">{probability_content}</text>',
+            f'<text x="{centre}" y="{intensity_middle}" style="{style}">{intensity_content}</text>',
         ])
 
 
