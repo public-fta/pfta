@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 PAGE_MARGIN = 10
 DEFAULT_FONT_SIZE = 10
-LINE_SPACING = 1.3
+DEFAULT_LINE_SPACING = 1.3
 
 TIME_HEADER_MARGIN = 20
 TIME_HEADER_Y_OFFSET = -25
@@ -72,6 +72,8 @@ UNDEVELOPED_EVENT_CIRCUMRADIUS = 38
 QUANTITY_BOX_Y_OFFSET = 45
 QUANTITY_BOX_WIDTH = 108
 QUANTITY_BOX_HEIGHT = 32
+QUANTITY_FONT_SIZE = 9
+QUANTITY_LINE_SPACING = 1.4
 
 INPUT_CONNECTOR_BUS_Y_OFFSET = 95
 INPUT_CONNECTOR_BUS_HALF_HEIGHT = 10
@@ -282,7 +284,7 @@ class LabelTextGraphic(Graphic):
     def line_svg_content(line_number: int, line: str, centre: int, middle: int, line_count: int,
                          font_size: int, style: str) -> str:
         bias = line_number - (1 + line_count) / 2
-        line_middle = format_number(middle + bias * font_size * LINE_SPACING, decimal_places=1)
+        line_middle = format_number(middle + bias * font_size * DEFAULT_LINE_SPACING, decimal_places=1)
         content = escape_xml(line)
 
         return f'<text x="{centre}" y="{line_middle}" style="{style}">{content}</text>'
@@ -509,7 +511,7 @@ class QuantityTextGraphic(Graphic):
         centre = self.x
 
         middle = self.y + QUANTITY_BOX_Y_OFFSET
-        line_half_gap = DEFAULT_FONT_SIZE * LINE_SPACING / 2
+        line_half_gap = QUANTITY_FONT_SIZE * QUANTITY_LINE_SPACING / 2
         probability_line_middle = format_number(middle - line_half_gap, decimal_places=1)
         intensity_line_middle = format_number(middle + line_half_gap, decimal_places=1)
 
@@ -528,9 +530,11 @@ class QuantityTextGraphic(Graphic):
 
         # TODO: logic with probability_line, intensity_line to align at equals(?)
 
+        style = f'font-size: {QUANTITY_FONT_SIZE}px'
+
         return '\n'.join([
-            f'<text x="{centre}" y="{probability_line_middle}">{probability_content}</text>',
-            f'<text x="{centre}" y="{intensity_line_middle}">{intensity_content}</text>',
+            f'<text x="{centre}" y="{probability_line_middle}" style="{style}">{probability_content}</text>',
+            f'<text x="{centre}" y="{intensity_line_middle}" style="{style}">{intensity_content}</text>',
         ])
 
 
