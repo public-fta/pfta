@@ -75,7 +75,7 @@ def main():
     mkdir_robust(cut_sets_directory_name := f'{output_directory_name}/cut-sets')
     mkdir_robust(figures_directory_name := f'{output_directory_name}/figures')
 
-    figure_index = Index(figure_from_id_from_time, figures_directory_name)
+    figure_index = Index(figure_from_id_from_time, figures_directory_name, fault_tree.time_unit)
 
     model_table.write_tsv(f'{output_directory_name}/models.tsv')
     event_table.write_tsv(f'{output_directory_name}/events.tsv')

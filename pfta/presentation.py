@@ -14,7 +14,7 @@ import os
 import string
 from typing import TYPE_CHECKING, Optional, Union
 
-from pfta.common import natural_repr
+from pfta.common import natural_repr, format_quantity
 from pfta.graphics import (
     EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT,
     Graphic, TimeHeaderGraphic, LabelConnectorGraphic, InputConnectorsGraphic,
@@ -263,11 +263,13 @@ class Index:
     Class representing an index of figures (tracing to and from their contained objects).
     """
     times: list[float]
+    time_unit: str
     figure_ids_from_object_id: dict[str, set[str]]
     object_ids_from_figure_id: dict[str, set[str]]
     figures_directory_name: str
 
-    def __init__(self, figure_from_id_from_time: dict[float, dict[str, Figure]], figures_directory_name: str):
+    def __init__(self, figure_from_id_from_time: dict[float, dict[str, Figure]],
+                 figures_directory_name: str, time_unit: str):
         times = list(figure_from_id_from_time.keys())
         figure_from_id = next(iter(figure_from_id_from_time.values()))
 
@@ -280,18 +282,20 @@ class Index:
                 object_ids_from_figure_id[figure_id].add(node.source_object.id_)
 
         self.times = times
+        self.time_unit = time_unit
         self.figure_ids_from_object_id = figure_ids_from_object_id
         self.object_ids_from_figure_id = object_ids_from_figure_id
         self.figures_directory_name = figures_directory_name
 
     def html_content(self) -> str:
         times = self.times
+        time_unit = self.time_unit
         figures_directory_name = self.figures_directory_name
         object_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
                 f'      <td>{Index.object_content(object_id)}</td>',
-                f'      <td>{", ".join(Index.figure_content(id_, times) for id_ in sorted(figure_ids))}</td>',
+                f'      <td>{", ".join(Index.figure_content(id_, times, time_unit) for id_ in sorted(figure_ids))}</td>',
                 f'    </tr>',
             ])
             for object_id, figure_ids in self.figure_ids_from_object_id.items()
@@ -299,7 +303,7 @@ class Index:
         figure_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
-                f'      <td>{Index.figure_content(figure_id, times)}</td>',
+                f'      <td>{Index.figure_content(figure_id, times, time_unit)}</td>',
                 f'      <td>{", ".join(Index.object_content(id_) for id_ in sorted(object_ids))}</td>',
                 f'    </tr>',
             ])
@@ -320,9 +324,14 @@ class Index:
         return f'<code>{escape_xml(object_id)}</code>'
 
     @staticmethod
-    def figure_content(figure_id: str, times: list[float]) -> str:
-        # TODO: use times
-        return f'<code>{escape_xml(figure_id)}</code>'
+    def figure_content(figure_id: str, times: list[float], time_unit: str) -> str:
+        time_lhs_content = format_quantity('<var>t</var>', time_unit, is_reciprocal=True)
+        links_content = ', '.join(
+            f'<a href="{escape_xml(str(time))}/{escape_xml(figure_id)}.svg"><code>{escape_xml(str(time))}</code></a>'
+            for time in times
+        )
+        return f'<code>{escape_xml(figure_id)}</code> (at {time_lhs_content} = {links_content})'
+
 
 
 class Table:
