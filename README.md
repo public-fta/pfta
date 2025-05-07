@@ -69,7 +69,7 @@ Output files consist of:
 - a table (TSV) of events,
 - a table (TSV) of gates,
 - a table (TSV) of cut sets under each gate, and
-- vector graphics (SVG) for each top gate and paged gate (**TODO**).
+- vector graphics (SVG) for each top gate and paged gate.
 
 
 ## Installation
