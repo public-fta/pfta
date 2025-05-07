@@ -99,6 +99,9 @@ text {
   text-anchor: middle;
   white-space: pre;
 }
+.spacer {
+  user-select: none;
+}
 .time-header {
   font-size: ${time_header_font_size}px
 }
@@ -539,8 +542,8 @@ class QuantityTextGraphic(Graphic):
         )
         probability_spaces = (max_line_length - probability_length) * ' '
         intensity_spaces = (max_line_length - intensity_length) * ' '
-        probability_spacer = f'<tspan style="user-select: none">{probability_spaces}</tspan>'
-        intensity_spacer = f'<tspan style="user-select: none">{intensity_spaces}</tspan>'
+        probability_spacer = f'<tspan class="spacer">{probability_spaces}</tspan>'
+        intensity_spacer = f'<tspan class="spacer">{intensity_spaces}</tspan>'
 
         return '\n'.join([
             f'<text x="{centre}" y="{probability_middle}" style="{style}">{probability_content}{probability_spacer}</text>',
