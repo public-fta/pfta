@@ -500,6 +500,7 @@ class QuantityTextGraphic(Graphic):
     y: int
     probability: float
     intensity: float
+    is_monte_carlo: bool
     time_unit: str
     significant_figures: int
     scientific_exponent: int
@@ -509,6 +510,7 @@ class QuantityTextGraphic(Graphic):
         self.y = node.y
         self.probability = node.source_object.computed_expected_probabilities[node.time_index]
         self.intensity = node.source_object.computed_expected_intensities[node.time_index]
+        self.is_monte_carlo = node.fault_tree.sample_size > 1
         self.time_unit = node.fault_tree.time_unit
         self.significant_figures = node.fault_tree.significant_figures
         self.scientific_exponent = node.fault_tree.scientific_exponent
@@ -521,12 +523,15 @@ class QuantityTextGraphic(Graphic):
         probability_middle = format_number(middle - line_half_gap, decimal_places=1)
         intensity_middle = format_number(middle + line_half_gap, decimal_places=1)
 
-        probability_lhs = 'q'  # TODO: wrap in E[ ] if sample_size > 1
+        def lhs_format(variable_name: str) -> str:
+            return f'E[{variable_name}]' if self.is_monte_carlo else variable_name
+
+        probability_lhs = lhs_format('q')
         probability_value = format_number(self.probability, significant_figures=self.significant_figures,
                                           scientific_exponent_threshold=self.scientific_exponent)
         probability_line = f'{probability_lhs} = {probability_value}'
 
-        intensity_lhs = 'ω'  # TODO: wrap in E[ ] if sample_size > 1
+        intensity_lhs = lhs_format('ω')
         intensity_value = format_number(self.intensity, significant_figures=self.significant_figures,
                                         scientific_exponent_threshold=self.scientific_exponent)
         intensity_quantity = format_quantity(intensity_value, self.time_unit, is_reciprocal=True)
