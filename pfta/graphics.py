@@ -95,9 +95,12 @@ polyline {
 text {
   dominant-baseline: middle;
   font-family: Consolas, Cousine, "Courier New", monospace;
-  font-size: ${font_size}px;
+  font-size: ${default_font_size}px;
   text-anchor: middle;
   white-space: pre;
+}
+.time-header {
+  font-size: ${time_header_font_size}px
 }
 </style>
 ${body_content}
@@ -127,14 +130,13 @@ class TimeHeaderGraphic(Graphic):
     def svg_content(self) -> str:
         centre = self.bounding_width // 2
         middle = TIME_HEADER_Y_OFFSET
-        style = f'font-size: {TIME_HEADER_FONT_SIZE}px'
 
         time_value = format_number(self.time, significant_figures=self.significant_figures,
                                    scientific_exponent_threshold=self.scientific_exponent)
         time_quantity = format_quantity(time_value, self.time_unit)
         content = escape_xml(f't = {time_quantity}')
 
-        return f'<text x="{centre}" y="{middle}" style="{style}">{content}</text>'
+        return f'<text x="{centre}" y="{middle}" class="time-header">{content}</text>'
 
 
 class LabelConnectorGraphic(Graphic):
@@ -578,7 +580,8 @@ def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list
     width = bounding_width + 2 * PAGE_MARGIN
     height = bounding_height + TIME_HEADER_MARGIN - TIME_HEADER_Y_OFFSET + 2 * PAGE_MARGIN
 
-    font_size = DEFAULT_FONT_SIZE
+    default_font_size = DEFAULT_FONT_SIZE
+    time_header_font_size = TIME_HEADER_FONT_SIZE
     body_content = '\n'.join(
         svg_content
         for graphic in graphics
@@ -587,5 +590,6 @@ def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list
 
     return FIGURE_SVG_TEMPLATE.substitute({
         'left': left, 'top': top, 'width': width, 'height': height,
-        'font_size': font_size, 'body_content': body_content,
+        'default_font_size': default_font_size, 'time_header_font_size': time_header_font_size,
+        'body_content': body_content,
     })
