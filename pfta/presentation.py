@@ -289,7 +289,7 @@ class Index:
         object_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
-                f'      <td><code>{escape_xml(object_id)}</code></td>',
+                f'      <td>{Index.object_content(object_id)}</td>',
                 f'      <td>{", ".join(f"<code>{escape_xml(figure_id)}</code>" for figure_id in sorted(figure_ids))}</td>',
                 f'    </tr>',
             ])
@@ -299,7 +299,7 @@ class Index:
             '\n'.join([
                 f'    <tr>',
                 f'      <td><code>{escape_xml(figure_id)}</code></td>',
-                f'      <td>{", ".join(f"<code>{escape_xml(object_id)}</code>" for object_id in sorted(object_ids))}</td>',
+                f'      <td>{", ".join(Index.object_content(object_id) for object_id in sorted(object_ids))}</td>',
                 f'    </tr>',
             ])
             for figure_id, object_ids in self.object_ids_from_figure_id.items()
@@ -313,6 +313,10 @@ class Index:
     def write_html(self, file_name: str):
         with open(file_name, 'w', encoding='utf-8', newline='') as file:
             file.write(self.html_content())
+
+    @staticmethod
+    def object_content(object_id: str) -> str:
+        return f'<code>{escape_xml(object_id)}</code>'
 
 
 class Table:
