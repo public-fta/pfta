@@ -16,7 +16,7 @@ from pfta.common import natural_repr
 from pfta.graphics import (
     EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT,
     Graphic, TimeHeaderGraphic, LabelConnectorGraphic, InputConnectorsGraphic,
-    LabelBoxGraphic, LabelTextGraphic, IdentifierBoxGraphic, IdentifierTextGraphic, SymbolGraphic,
+    LabelBoxGraphic, LabelTextGraphic, IdentifierBoxGraphic, IdentifierTextGraphic, SymbolGraphic, QuantityBoxGraphic,
     figure_svg_content,
 )
 from pfta.woe import ImplementationError
@@ -37,7 +37,7 @@ class Figure:
         gate_from_id = {gate.id_: gate for gate in fault_tree.gates}
 
         # Recursive instantiation
-        top_node = Node(gate.id_, event_from_id, gate_from_id, parent_node=None)
+        top_node = Node(gate.id_, fault_tree, event_from_id, gate_from_id, parent_node=None)
 
         # Recursive sizing and positioning
         top_node.determine_reachables_recursive()
@@ -76,6 +76,7 @@ class Node:
 
     Nodes are instantiated recursively, starting from the top node of the figure.
     """
+    fault_tree: 'FaultTree'
     source_object: Union['Event', 'Gate']
     input_nodes: list['Node']
     parent_node: 'Node'
@@ -86,8 +87,8 @@ class Node:
     x: Optional[int]
     y: Optional[int]
 
-    def __init__(self, id_: str, event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate'],
-                 parent_node: Optional['Node']):
+    def __init__(self, id_: str, fault_tree: 'FaultTree',
+                 event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate'], parent_node: Optional['Node']):
         if id_ in event_from_id:
             source_object = event_from_id[id_]
             input_nodes = []
@@ -99,7 +100,7 @@ class Node:
                 input_nodes = []
             else:
                 input_nodes = [
-                    Node(input_id, event_from_id, gate_from_id, parent_node=self)
+                    Node(input_id, fault_tree, event_from_id, gate_from_id, parent_node=self)
                     for input_id in gate.input_ids
                 ]
 
@@ -107,6 +108,7 @@ class Node:
             raise ImplementationError(f'bad id_ {id_}')
 
         # Indirect fields (from parameters)
+        self.fault_tree = fault_tree
         self.source_object = source_object
         self.input_nodes = input_nodes
         self.parent_node = parent_node
@@ -186,6 +188,7 @@ class Node:
             IdentifierBoxGraphic(self),
             IdentifierTextGraphic(self),
             SymbolGraphic(self),
+            QuantityBoxGraphic(self),
         ]
 
 

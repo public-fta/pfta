@@ -72,6 +72,10 @@ PAGED_GATE_HALF_WIDTH = 40
 DEVELOPED_EVENT_CIRCLE_RADIUS = 30
 UNDEVELOPED_EVENT_CIRCUMRADIUS = 35
 
+QUANTITY_BOX_Y_OFFSET = 45
+QUANTITY_BOX_WIDTH = 108
+QUANTITY_BOX_HEIGHT = 36  # TODO: tweak
+
 FIGURE_SVG_TEMPLATE = string.Template('''\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="${left} ${top} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
@@ -464,6 +468,29 @@ class SymbolGraphic(Graphic):
         points = f'{top_x},{top_y} {left_x},{left_y} {bottom_x},{bottom_y} {right_x},{right_y}'
 
         return f'<polygon points="{points}"/>'
+
+
+class QuantityBoxGraphic(Graphic):
+    x: int
+    y: int
+    time_unit: str
+    significant_figures: int
+    scientific_exponent: int
+
+    def __init__(self, node: 'Node'):
+        self.x = node.x
+        self.y = node.y
+        self.time_unit = node.fault_tree.time_unit
+        self.significant_figures = node.fault_tree.significant_figures
+        self.scientific_exponent = node.fault_tree.scientific_exponent
+
+    def svg_content(self) -> str:
+        left = self.x - QUANTITY_BOX_WIDTH // 2
+        top = self.y - QUANTITY_BOX_HEIGHT // 2 + QUANTITY_BOX_Y_OFFSET
+        width = QUANTITY_BOX_WIDTH
+        height = QUANTITY_BOX_HEIGHT
+
+        return f'<rect x="{left}" y="{top}" width="{width}" height="{height}"/>'
 
 
 def escape_xml(text: str) -> str:
