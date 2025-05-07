@@ -285,12 +285,13 @@ class Index:
         self.figures_directory_name = figures_directory_name
 
     def html_content(self) -> str:
+        times = self.times
         figures_directory_name = self.figures_directory_name
         object_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
                 f'      <td>{Index.object_content(object_id)}</td>',
-                f'      <td>{", ".join(f"<code>{escape_xml(figure_id)}</code>" for figure_id in sorted(figure_ids))}</td>',
+                f'      <td>{", ".join(Index.figure_content(figure_id, times) for figure_id in sorted(figure_ids))}</td>',
                 f'    </tr>',
             ])
             for object_id, figure_ids in self.figure_ids_from_object_id.items()
@@ -298,7 +299,7 @@ class Index:
         figure_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
-                f'      <td><code>{escape_xml(figure_id)}</code></td>',
+                f'      <td>{Index.figure_content(figure_id, times)}</td>',
                 f'      <td>{", ".join(Index.object_content(object_id) for object_id in sorted(object_ids))}</td>',
                 f'    </tr>',
             ])
@@ -317,6 +318,11 @@ class Index:
     @staticmethod
     def object_content(object_id: str) -> str:
         return f'<code>{escape_xml(object_id)}</code>'
+
+    @staticmethod
+    def figure_content(figure_id: str, times: list[float]) -> str:
+        # TODO: use times
+        return f'<code>{escape_xml(figure_id)}</code>'
 
 
 class Table:
