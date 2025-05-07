@@ -65,7 +65,7 @@ INDEX_HTML_TEMPLATE = string.Template('''\
   <thead>
     <tr>
       <th>Object</th>
-      <th>Figures</th>
+      <th>Figures by ${scaled_time_variable_content}</th>
     </tr>
   </thead>
   <tbody>
@@ -76,7 +76,7 @@ ${object_lookup_content}
 <table>
   <thead>
     <tr>
-      <th>Figure</th>
+      <th>Figure by ${scaled_time_variable_content}</th>
       <th>Objects</th>
     </tr>
   </thead>
@@ -288,14 +288,17 @@ class Index:
         self.figures_directory_name = figures_directory_name
 
     def html_content(self) -> str:
-        times = self.times
         time_unit = self.time_unit
         figures_directory_name = self.figures_directory_name
+
+        scaled_time_variable_content = format_quantity('<var>t</var>', time_unit, is_reciprocal=True)
+
+        times = self.times
         object_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
                 f'      <td>{Index.object_content(object_id)}</td>',
-                f'      <td>{", ".join(Index.figure_content(id_, times, time_unit) for id_ in sorted(figure_ids))}</td>',
+                f'      <td>{", ".join(Index.figure_content(id_, times) for id_ in sorted(figure_ids))}</td>',
                 f'    </tr>',
             ])
             for object_id, figure_ids in self.figure_ids_from_object_id.items()
@@ -303,7 +306,7 @@ class Index:
         figure_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
-                f'      <td>{Index.figure_content(figure_id, times, time_unit)}</td>',
+                f'      <td>{Index.figure_content(figure_id, times)}</td>',
                 f'      <td>{", ".join(Index.object_content(id_) for id_ in sorted(object_ids))}</td>',
                 f'    </tr>',
             ])
@@ -312,6 +315,7 @@ class Index:
 
         return INDEX_HTML_TEMPLATE.substitute({
             'figures_directory_name': figures_directory_name,
+            'scaled_time_variable_content': scaled_time_variable_content,
             'object_lookup_content': object_lookup_content, 'figure_lookup_content': figure_lookup_content,
         })
 
@@ -324,13 +328,12 @@ class Index:
         return f'<code>{escape_xml(object_id)}</code>'
 
     @staticmethod
-    def figure_content(figure_id: str, times: list[float], time_unit: str) -> str:
-        time_lhs_content = format_quantity('<var>t</var>', time_unit, is_reciprocal=True)
+    def figure_content(figure_id: str, times: list[float]) -> str:
         links_content = ', '.join(
             f'<a href="{escape_xml(str(time))}/{escape_xml(figure_id)}.svg"><code>{escape_xml(str(time))}</code></a>'
             for time in times
         )
-        return f'<code>{escape_xml(figure_id)}</code> (at {time_lhs_content} = {links_content})'
+        return f'<code>{escape_xml(figure_id)}</code> ({links_content})'
 
 
 
