@@ -53,7 +53,7 @@ INPUT_CONNECTOR_BUS_HALF_HEIGHT = 10
 
 OR_GATE_APEX_HEIGHT = 38  # tip, above centre
 OR_GATE_NECK_HEIGHT = -10  # ears, above centre
-OR_GATE_BODY_HEIGHT = 36  # toes, below centre
+OR_GATE_BODY_HEIGHT = 37  # toes, below centre
 OR_GATE_SLANT_DROP = 2  # control points, below apex
 OR_GATE_SLANT_RUN = 6  # control points, beside apex
 OR_GATE_SLING_RISE = 35  # control points, above toes
@@ -69,12 +69,12 @@ PAGED_GATE_APEX_HEIGHT = 36  # tip, above centre
 PAGED_GATE_BODY_HEIGHT = 32  # toes, below centre
 PAGED_GATE_HALF_WIDTH = 40
 
-DEVELOPED_EVENT_CIRCLE_RADIUS = 30
-UNDEVELOPED_EVENT_CIRCUMRADIUS = 35
+DEVELOPED_EVENT_CIRCLE_RADIUS = 35
+UNDEVELOPED_EVENT_CIRCUMRADIUS = 38
 
 QUANTITY_BOX_Y_OFFSET = 45
 QUANTITY_BOX_WIDTH = 108
-QUANTITY_BOX_HEIGHT = 36  # TODO: tweak
+QUANTITY_BOX_HEIGHT = 32
 
 FIGURE_SVG_TEMPLATE = string.Template('''\
 <?xml version="1.0" encoding="UTF-8"?>
