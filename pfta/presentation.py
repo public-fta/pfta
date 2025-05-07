@@ -330,7 +330,7 @@ class Index:
     @staticmethod
     def figure_content(figure_id: str, times: list[float]) -> str:
         links_content = ', '.join(
-            f'<a href="{escape_xml(str(time))}/{escape_xml(figure_id)}.svg">{escape_xml(str(time))}</a>'
+            f'<a href="{escape_xml(str(time))}/{escape_xml(figure_id)}.svg"><code>{escape_xml(str(time))}</code></a>'
             for time in times
         )
         return f'<code>{escape_xml(figure_id)}.svg</code> ({links_content})'
