@@ -497,7 +497,7 @@ def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list
     left = -PAGE_MARGIN
     top = -PAGE_MARGIN - TIME_HEADER_MARGIN + TIME_HEADER_Y_OFFSET
     width = bounding_width + 2 * PAGE_MARGIN
-    height = bounding_height + 2 * PAGE_MARGIN
+    height = bounding_height + TIME_HEADER_MARGIN - TIME_HEADER_Y_OFFSET + 2 * PAGE_MARGIN
 
     font_size = DEFAULT_FONT_SIZE
     body_content = '\n'.join(
