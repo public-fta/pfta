@@ -291,7 +291,7 @@ class Index:
             '\n'.join([
                 f'    <tr>',
                 f'      <td>{Index.object_content(object_id)}</td>',
-                f'      <td>{", ".join(Index.figure_content(figure_id, times) for figure_id in sorted(figure_ids))}</td>',
+                f'      <td>{", ".join(Index.figure_content(id_, times) for id_ in sorted(figure_ids))}</td>',
                 f'    </tr>',
             ])
             for object_id, figure_ids in self.figure_ids_from_object_id.items()
@@ -300,7 +300,7 @@ class Index:
             '\n'.join([
                 f'    <tr>',
                 f'      <td>{Index.figure_content(figure_id, times)}</td>',
-                f'      <td>{", ".join(Index.object_content(object_id) for object_id in sorted(object_ids))}</td>',
+                f'      <td>{", ".join(Index.object_content(id_) for id_ in sorted(object_ids))}</td>',
                 f'    </tr>',
             ])
             for figure_id, object_ids in self.object_ids_from_figure_id.items()
