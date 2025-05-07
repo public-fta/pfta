@@ -7,9 +7,11 @@ Presentational classes.
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
+
 import collections
 import csv
 import os
+import string
 from typing import TYPE_CHECKING, Optional, Union
 
 from pfta.common import natural_repr
@@ -18,12 +20,73 @@ from pfta.graphics import (
     Graphic, TimeHeaderGraphic, LabelConnectorGraphic, InputConnectorsGraphic,
     LabelBoxGraphic, LabelTextGraphic, IdentifierBoxGraphic, IdentifierTextGraphic,
     SymbolGraphic, QuantityBoxGraphic, QuantityTextGraphic,
-    figure_svg_content,
+    figure_svg_content, escape_xml,
 )
 from pfta.woe import ImplementationError
 
 if TYPE_CHECKING:
     from pfta.core import FaultTree, Event, Gate
+
+
+INDEX_HTML_TEMPLATE = string.Template('''\
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Index of `${figures_directory_name}`</title>
+  <style>
+    html {
+      margin: 0 auto;
+      max-width: 45em;
+    }
+    table {
+      border-spacing: 0;
+      border-collapse: collapse;
+      margin-top: 0.5em;
+      margin-bottom: 1em;
+    }
+    th {
+      background-clip: padding-box;
+      background-color: lightgrey;
+      position: sticky;
+      top: 0;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 0.4em;
+    }
+  </style>
+</head>
+<body>
+<h1>Index of <code>${figures_directory_name}</code></h1>
+<h2>Lookup by object</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Object</th>
+      <th>Figures</th>
+    </tr>
+  </thead>
+  <tbody>
+${object_lookup_content}
+  </tbody>
+</table>
+<h2>Lookup by figure</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Figure</th>
+      <th>Objects</th>
+    </tr>
+  </thead>
+  <tbody>
+${figure_lookup_content}
+  </tbody>
+</table>
+</body>
+</html>
+''')
 
 
 class Figure:
@@ -200,25 +263,52 @@ class Index:
     Class representing an index of figures (tracing to and from their contained objects).
     """
     times: list[float]
+    figure_ids_from_object_id: dict[str, set[str]]
+    object_ids_from_figure_id: dict[str, set[str]]
+    figures_directory_name: str
 
     def __init__(self, figure_from_id_from_time: dict[float, dict[str, Figure]], figures_directory_name: str):
         times = list(figure_from_id_from_time.keys())
         figure_from_id = next(iter(figure_from_id_from_time.values()))
 
-        object_ids_from_figure_id = collections.defaultdict(set)
         figure_ids_from_object_id = collections.defaultdict(set)
+        object_ids_from_figure_id = collections.defaultdict(set)
 
         for figure_id, figure in figure_from_id.items():
             for node in figure.top_node.reachable_nodes:
-                object_ids_from_figure_id[figure_id].add(node.source_object.id_)
                 figure_ids_from_object_id[node.source_object.id_].add(figure_id)
+                object_ids_from_figure_id[figure_id].add(node.source_object.id_)
 
         self.times = times
-        self.object_ids_from_figure_id = object_ids_from_figure_id
         self.figure_ids_from_object_id = figure_ids_from_object_id
+        self.object_ids_from_figure_id = object_ids_from_figure_id
+        self.figures_directory_name = figures_directory_name
 
     def html_content(self) -> str:
-        return ''  # TODO
+        figures_directory_name = self.figures_directory_name
+        object_lookup_content = '\n'.join(
+            '\n'.join([
+                f'    <tr>',
+                f'      <td><code>{escape_xml(object_id)}</code></td>',
+                f'      <td>{", ".join(f"<code>{escape_xml(figure_id)}</code>" for figure_id in sorted(figure_ids))}</td>',
+                f'    </tr>',
+            ])
+            for object_id, figure_ids in self.figure_ids_from_object_id.items()
+        )
+        figure_lookup_content = '\n'.join(
+            '\n'.join([
+                f'    <tr>',
+                f'      <td><code>{escape_xml(figure_id)}</code></td>',
+                f'      <td>{", ".join(f"<code>{escape_xml(object_id)}</code>" for object_id in sorted(object_ids))}</td>',
+                f'    </tr>',
+            ])
+            for figure_id, object_ids in self.object_ids_from_figure_id.items()
+        )
+
+        return INDEX_HTML_TEMPLATE.substitute({
+            'figures_directory_name': figures_directory_name,
+            'object_lookup_content': object_lookup_content, 'figure_lookup_content': figure_lookup_content,
+        })
 
     def write_html(self, file_name: str):
         with open(file_name, 'w', encoding='utf-8', newline='') as file:
