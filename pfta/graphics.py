@@ -20,7 +20,7 @@ from pfta.utilities import format_number
 from pfta.woe import ImplementationError
 
 if TYPE_CHECKING:
-    from pfta.core import Event, Gate
+    from pfta.core import FaultTree, Event, Gate
     from pfta.presentation import Node
 
 
@@ -110,12 +110,11 @@ class TimeHeaderGraphic(Graphic):
     scientific_exponent: int
     bounding_width: int
 
-    def __init__(self, time: float, time_unit: str, significant_figures: int, scientific_exponent: int,
-                 bounding_width: int):
-        self.time = time
-        self.time_unit = time_unit
-        self.significant_figures = significant_figures
-        self.scientific_exponent = scientific_exponent
+    def __init__(self, time_index: int, fault_tree: 'FaultTree', bounding_width: int):
+        self.time = fault_tree.times[time_index]
+        self.time_unit = fault_tree.time_unit
+        self.significant_figures = fault_tree.significant_figures
+        self.scientific_exponent = fault_tree.scientific_exponent
         self.bounding_width = bounding_width
 
     def svg_content(self) -> str:
