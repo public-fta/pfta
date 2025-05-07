@@ -7,7 +7,7 @@ Presentational classes.
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
-
+import collections
 import csv
 import os
 from typing import TYPE_CHECKING, Optional, Union
@@ -193,6 +193,36 @@ class Node:
             QuantityBoxGraphic(self),
             QuantityTextGraphic(self),
         ]
+
+
+class Index:
+    """
+    Class representing an index of figures (tracing to and from their contained objects).
+    """
+    times: list[float]
+
+    def __init__(self, figure_from_id_from_time: dict[float, dict[str, Figure]], figures_directory_name: str):
+        times = list(figure_from_id_from_time.keys())
+        figure_from_id = next(iter(figure_from_id_from_time.values()))
+
+        object_ids_from_figure_id = collections.defaultdict(set)
+        figure_ids_from_object_id = collections.defaultdict(set)
+
+        for figure_id, figure in figure_from_id.items():
+            for node in figure.top_node.reachable_nodes:
+                object_ids_from_figure_id[figure_id].add(node.source_object.id_)
+                figure_ids_from_object_id[node.source_object.id_].add(figure_id)
+
+        self.times = times
+        self.object_ids_from_figure_id = object_ids_from_figure_id
+        self.figure_ids_from_object_id = figure_ids_from_object_id
+
+    def html_content(self) -> str:
+        return ''  # TODO
+
+    def write_html(self, file_name: str):
+        with open(file_name, 'w', encoding='utf-8', newline='') as file:
+            file.write(self.html_content())
 
 
 class Table:

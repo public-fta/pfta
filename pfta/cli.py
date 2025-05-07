@@ -15,6 +15,7 @@ import sys
 
 from pfta._version import __version__
 from pfta.core import FaultTree
+from pfta.presentation import Index
 from pfta.woe import FaultTreeTextException
 
 
@@ -74,6 +75,8 @@ def main():
     mkdir_robust(cut_sets_directory_name := f'{output_directory_name}/cut-sets')
     mkdir_robust(figures_directory_name := f'{output_directory_name}/figures')
 
+    figure_index = Index(figure_from_id_from_time, figures_directory_name)
+
     model_table.write_tsv(f'{output_directory_name}/models.tsv')
     event_table.write_tsv(f'{output_directory_name}/events.tsv')
     gate_table.write_tsv(f'{output_directory_name}/gates.tsv')
@@ -87,7 +90,7 @@ def main():
         for figure_id, figure in figure_from_id.items():
             figure.write_svg(f'{figures_subdirectory_name}/{figure_id}.svg')
 
-    # TODO: `index.html` for figures
+    figure_index.write_html(f'{figures_directory_name}/index.html')
 
 
 if __name__ == '__main__':
