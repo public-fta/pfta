@@ -473,16 +473,10 @@ class SymbolGraphic(Graphic):
 class QuantityBoxGraphic(Graphic):
     x: int
     y: int
-    time_unit: str
-    significant_figures: int
-    scientific_exponent: int
 
     def __init__(self, node: 'Node'):
         self.x = node.x
         self.y = node.y
-        self.time_unit = node.fault_tree.time_unit
-        self.significant_figures = node.fault_tree.significant_figures
-        self.scientific_exponent = node.fault_tree.scientific_exponent
 
     def svg_content(self) -> str:
         left = self.x - QUANTITY_BOX_WIDTH // 2
@@ -491,6 +485,53 @@ class QuantityBoxGraphic(Graphic):
         height = QUANTITY_BOX_HEIGHT
 
         return f'<rect x="{left}" y="{top}" width="{width}" height="{height}"/>'
+
+
+class QuantityTextGraphic(Graphic):
+    x: int
+    y: int
+    probability: float
+    intensity: float
+    time_unit: str
+    significant_figures: int
+    scientific_exponent: int
+
+    def __init__(self, node: 'Node'):
+        self.x = node.x
+        self.y = node.y
+        self.probability = node.source_object.computed_expected_probabilities[node.time_index]
+        self.intensity = node.source_object.computed_expected_intensities[node.time_index]
+        self.time_unit = node.fault_tree.time_unit
+        self.significant_figures = node.fault_tree.significant_figures
+        self.scientific_exponent = node.fault_tree.scientific_exponent
+
+    def svg_content(self) -> str:
+        centre = self.x
+
+        middle = self.y + QUANTITY_BOX_Y_OFFSET
+        line_half_gap = DEFAULT_FONT_SIZE * LINE_SPACING / 2
+        probability_line_middle = format_number(middle - line_half_gap, decimal_places=1)
+        intensity_line_middle = format_number(middle + line_half_gap, decimal_places=1)
+
+        probability_lhs = 'q'  # TODO: wrap in E[ ] if sample_size > 1
+        probability_value = format_number(self.probability, significant_figures=self.significant_figures,
+                                          scientific_exponent_threshold=self.scientific_exponent)
+        probability_line = f'{probability_lhs} = {probability_value}'
+        probability_content = escape_xml(probability_line)
+
+        intensity_lhs = 'ω'  # TODO: wrap in E[ ] if sample_size > 1
+        intensity_value = format_number(self.intensity, significant_figures=self.significant_figures,
+                                        scientific_exponent_threshold=self.scientific_exponent)
+        intensity_quantity = format_quantity(intensity_value, self.time_unit, is_reciprocal=True)
+        intensity_line = f'{intensity_lhs} = {intensity_quantity}'
+        intensity_content = escape_xml(intensity_line)
+
+        # TODO: logic with probability_line, intensity_line to align at equals(?)
+
+        return '\n'.join([
+            f'<text x="{centre}" y="{probability_line_middle}">{probability_content}</text>',
+            f'<text x="{centre}" y="{intensity_line_middle}">{intensity_content}</text>',
+        ])
 
 
 def escape_xml(text: str) -> str:

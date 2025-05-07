@@ -52,8 +52,10 @@ def format_cut_set(event_ids: Iterable[str]):
     return '.'.join(event_ids)
 
 
-def format_quantity(value: Union[float, str], unit: str) -> str:
+def format_quantity(value: Union[float, str], unit: str, is_reciprocal=False) -> str:
     if not unit:
         return value
 
-    return f'{value} {unit}'
+    separator = '/' if is_reciprocal else ' '
+
+    return f'{value}{separator}{unit}'

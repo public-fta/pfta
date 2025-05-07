@@ -16,7 +16,8 @@ from pfta.common import natural_repr
 from pfta.graphics import (
     EVENT_BOUNDING_WIDTH, EVENT_BOUNDING_HEIGHT,
     Graphic, TimeHeaderGraphic, LabelConnectorGraphic, InputConnectorsGraphic,
-    LabelBoxGraphic, LabelTextGraphic, IdentifierBoxGraphic, IdentifierTextGraphic, SymbolGraphic, QuantityBoxGraphic,
+    LabelBoxGraphic, LabelTextGraphic, IdentifierBoxGraphic, IdentifierTextGraphic,
+    SymbolGraphic, QuantityBoxGraphic, QuantityTextGraphic,
     figure_svg_content,
 )
 from pfta.woe import ImplementationError
@@ -37,7 +38,7 @@ class Figure:
         gate_from_id = {gate.id_: gate for gate in fault_tree.gates}
 
         # Recursive instantiation
-        top_node = Node(gate.id_, fault_tree, event_from_id, gate_from_id, parent_node=None)
+        top_node = Node(gate.id_, time_index, fault_tree, event_from_id, gate_from_id, parent_node=None)
 
         # Recursive sizing and positioning
         top_node.determine_reachables_recursive()
@@ -87,7 +88,7 @@ class Node:
     x: Optional[int]
     y: Optional[int]
 
-    def __init__(self, id_: str, fault_tree: 'FaultTree',
+    def __init__(self, id_: str, time_index: int, fault_tree: 'FaultTree',
                  event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate'], parent_node: Optional['Node']):
         if id_ in event_from_id:
             source_object = event_from_id[id_]
@@ -100,7 +101,7 @@ class Node:
                 input_nodes = []
             else:
                 input_nodes = [
-                    Node(input_id, fault_tree, event_from_id, gate_from_id, parent_node=self)
+                    Node(input_id, time_index, fault_tree, event_from_id, gate_from_id, parent_node=self)
                     for input_id in gate.input_ids
                 ]
 
@@ -108,6 +109,7 @@ class Node:
             raise ImplementationError(f'bad id_ {id_}')
 
         # Indirect fields (from parameters)
+        self.time_index = time_index
         self.fault_tree = fault_tree
         self.source_object = source_object
         self.input_nodes = input_nodes
@@ -189,6 +191,7 @@ class Node:
             IdentifierTextGraphic(self),
             SymbolGraphic(self),
             QuantityBoxGraphic(self),
+            QuantityTextGraphic(self),
         ]
 
 
