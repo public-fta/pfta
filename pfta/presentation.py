@@ -333,7 +333,7 @@ class Index:
             f'<a href="{escape_xml(str(time))}/{escape_xml(figure_id)}.svg">{escape_xml(str(time))}</a>'
             for time in times
         )
-        return f'<code>{escape_xml(figure_id)}</code> ({links_content})'
+        return f'<code>{escape_xml(figure_id)}.svg</code> ({links_content})'
 
 
 
