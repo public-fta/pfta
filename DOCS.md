@@ -138,7 +138,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 
 | Attribute | Description |
 | - | - |
-| `times` | Time values. |
+| `times` | List of time values. |
 | `time_unit` | Time unit. |
 | `seed` | Seed used for sampling distributions. |
 | `sample_size` | Sample size for sampling distributions. |
@@ -246,10 +246,24 @@ Objects from `pfta.presentation` that are produced by the methods of [`FaultTree
 
 | Attribute | Description |
 | - | - |
+| `id_` | Identifier of the top node of the figure. |
+| `label` | Label of the top node of the figure. |
 | `top_node` | Top node of the figure. |
 | `graphics` | List of graphics of the figure. |
 | `svg_content()` | Produce the SVG content of the figure. |
-| `write_svg(file_name)` | Write figure to an SVG file. |
+| `write_svg(file_name)` | Write the figure to an SVG file. |
+
+
+### Index
+
+| Attribute | Description |
+| - | - |
+| `times` | List of time values. |
+| `time_unit` | Time unit. |
+| `figures_from_object` | Dictionary from event/gate to set of figures. |
+| `objects_from_figure` | Dictionary from figure to set of events/gates. |
+| `html_content()` | Produce the HTML content of the figure index. |
+| `write_html(file_name)` | Write the figure index to an HTML file. |
 
 
 ### Table
