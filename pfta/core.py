@@ -672,6 +672,12 @@ class Object:
         self.computed_expected_intensities = None
         self.computed_expected_rates = None
 
+    def __lt__(self, other):
+        return self.id_ < other.id_
+
+    def __repr__(self):
+        return natural_repr(self)
+
     @memoise('computed_rates')
     def compute_rates(self) -> list[float]:
         return [
@@ -765,12 +771,6 @@ class Event(Object):
 
         # Fields shared with class Gate
         super().__init__(id_, label, comment)
-
-    def __lt__(self, other):
-        return self.id_ < other.id_
-
-    def __repr__(self):
-        return natural_repr(self)
 
     @memoise('actual_model_type')
     def determine_actual_model_type(self, model_from_id: dict[str, Model]) -> str:
@@ -937,12 +937,6 @@ class Gate(Object):
 
         # Fields shared with class Event
         super().__init__(id_, label, comment)
-
-    def __lt__(self, other):
-        return self.id_ < other.id_
-
-    def __repr__(self):
-        return natural_repr(self)
 
     @memoise('computed_expression')
     def compute_expression(self, event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']) -> Expression:
