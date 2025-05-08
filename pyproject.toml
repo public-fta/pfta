@@ -21,7 +21,7 @@ dynamic = ["version"]
 [project.urls]
 repository = "https://github.com/public-fta/pfta"
 issues = "https://github.com/public-fta/pfta/issues"
-# TODO: changelog
+changelog = "https://github.com/public-fta/pfta/blob/master/CHANGELOG.md"
 
 [project.scripts]
 pfta = "pfta.cli:main"
