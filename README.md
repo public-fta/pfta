@@ -76,6 +76,11 @@ Output files consist of:
 - a table (TSV) of cut sets under each gate, and
 - vector graphics (SVG) for each top gate and paged gate at each value of time.
 
+<img
+  alt="Nice looking SVG output for the example above."
+  src="https://raw.githubusercontent.com/public-fta/pfta/master/candle.svg"
+  width="640">
+
 
 ## Installation
 

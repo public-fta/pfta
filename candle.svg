@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="-10 -55 596 737" xmlns="http://www.w3.org/2000/svg">
+<style>
+circle, path, polygon, rect {
+  fill: lightyellow;
+}
+circle, path, polygon, polyline, rect {
+  stroke: black;
+  stroke-width: 1.3;
+}
+polyline {
+  fill: none;
+}
+text {
+  dominant-baseline: middle;
+  font-family: Consolas, Cousine, "Courier New", monospace;
+  font-size: 10px;
+  text-anchor: middle;
+  white-space: pre;
+}
+.padding {
+  user-select: none;
+}
+.time-header {
+  font-size: 16px
+}
+</style>
+<text x="288" y="-25" class="time-header">t = 2.00 h</text>
+<polyline points="288,48 288,160"/>
+<polyline points="273,160 273,212 144,212 144,272"/>
+<polyline points="288,160 288,215 360,215 360,272"/>
+<polyline points="303,160 303,209 504,209 504,272"/>
+<rect x="223" y="12" width="130" height="72"/>
+<text x="288" y="41.5" style="font-size: 10px">Candlelight</text>
+<text x="288" y="54.5" style="font-size: 10px">fails</text>
+<rect x="223" y="88" width="130" height="24"/>
+<text x="288" y="100">CAN</text>
+<path d="M288,122 C282,124 255,135 255,170 L255,198 Q288,168 321,198 L321,170 C321,135 294,124 288,122"/>
+<rect x="223" y="142" width="130" height="36"/>
+<text x="288" y="153.0">E[q] = 0.487<tspan class="padding">  </tspan></text>
+<text x="288" y="167.0">E[ω] = 0.171/h</text>
+<polyline points="144,272 144,384"/>
+<polyline points="134,384 134,436 72,436 72,496"/>
+<polyline points="154,384 154,436 216,436 216,496"/>
+<rect x="79" y="236" width="130" height="72"/>
+<text x="144" y="265.5" style="font-size: 10px">Candle fails to</text>
+<text x="144" y="278.5" style="font-size: 10px">ignite</text>
+<rect x="79" y="312" width="130" height="24"/>
+<text x="144" y="324">IGN</text>
+<path d="M112,418 L176,418 L176,378 C176,336 112,336 112,378 L112,418"/>
+<rect x="79" y="366" width="130" height="36"/>
+<text x="144" y="377.0">E[q] = 7.87E-4</text>
+<text x="144" y="391.0">E[ω] = 0/h<tspan class="padding">    </tspan></text>
+<polyline points="72,496 72,608"/>
+<rect x="7" y="460" width="130" height="72"/>
+<text x="72" y="483.0" style="font-size: 10px">Single match</text>
+<text x="72" y="496.0" style="font-size: 10px">fails to ignite</text>
+<text x="72" y="509.0" style="font-size: 10px">candle</text>
+<rect x="7" y="536" width="130" height="24"/>
+<text x="72" y="548">MAT</text>
+<circle cx="72" cy="608" r="37"/>
+<rect x="7" y="590" width="130" height="36"/>
+<text x="72" y="601.0">E[q] = 0.199</text>
+<text x="72" y="615.0">E[ω] = 0/h<tspan class="padding">  </tspan></text>
+<polyline points="216,496 216,608"/>
+<rect x="151" y="460" width="130" height="72"/>
+<text x="216" y="489.5" style="font-size: 10px">Lighter fails to</text>
+<text x="216" y="502.5" style="font-size: 10px">ignite candle</text>
+<rect x="151" y="536" width="130" height="24"/>
+<text x="216" y="548">LTR</text>
+<circle cx="216" cy="608" r="37"/>
+<rect x="151" y="590" width="130" height="36"/>
+<text x="216" y="601.0">E[q] = 3.95E-3</text>
+<text x="216" y="615.0">E[ω] = 0/h<tspan class="padding">    </tspan></text>
+<polyline points="360,272 360,384"/>
+<rect x="295" y="236" width="130" height="72"/>
+<text x="360" y="265.5" style="font-size: 10px">Candle explodes</text>
+<text x="360" y="278.5" style="font-size: 10px">on ignition</text>
+<rect x="295" y="312" width="130" height="24"/>
+<text x="360" y="324">EXP</text>
+<polygon points="360,345 321,384 360,423 399,384"/>
+<rect x="295" y="366" width="130" height="36"/>
+<text x="360" y="384">(Undeveloped)</text>
+<polyline points="504,272 504,384"/>
+<rect x="439" y="236" width="130" height="72"/>
+<text x="504" y="265.5" style="font-size: 10px">Candle</text>
+<text x="504" y="278.5" style="font-size: 10px">extinguishes</text>
+<rect x="439" y="312" width="130" height="24"/>
+<text x="504" y="324">EXT</text>
+<circle cx="504" cy="384" r="37"/>
+<rect x="439" y="366" width="130" height="36"/>
+<text x="504" y="377.0">E[q] = 0.487<tspan class="padding">  </tspan></text>
+<text x="504" y="391.0">E[ω] = 0.171/h</text>
+</svg>
