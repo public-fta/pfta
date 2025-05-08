@@ -72,7 +72,6 @@ UNDEVELOPED_EVENT_CIRCUMRADIUS = 38
 QUANTITY_BOX_Y_OFFSET = 45
 QUANTITY_BOX_WIDTH = 108
 QUANTITY_BOX_HEIGHT = 32
-QUANTITY_FONT_SIZE = 9
 QUANTITY_LINE_SPACING = 1.4
 
 INPUT_CONNECTOR_BUS_Y_OFFSET = 95
@@ -526,12 +525,11 @@ class QuantityTextGraphic(Graphic):
     def svg_content(self) -> str:
         centre = self.x
         middle = self.y + QUANTITY_BOX_Y_OFFSET
-        style = f'font-size: {QUANTITY_FONT_SIZE}px'
 
         if self.is_undeveloped_event:
-            return f'<text x="{centre}" y="{middle}" style="{style}">(Undeveloped)</text>'
+            return f'<text x="{centre}" y="{middle}">(Undeveloped)</text>'
 
-        line_half_gap = QUANTITY_FONT_SIZE * QUANTITY_LINE_SPACING / 2
+        line_half_gap = DEFAULT_FONT_SIZE * QUANTITY_LINE_SPACING / 2
         probability_middle = format_number(middle - line_half_gap, decimal_places=1)
         intensity_middle = format_number(middle + line_half_gap, decimal_places=1)
 
@@ -562,8 +560,8 @@ class QuantityTextGraphic(Graphic):
         intensity_content = escape_xml(intensity_line) + intensity_padding
 
         return '\n'.join([
-            f'<text x="{centre}" y="{probability_middle}" style="{style}">{probability_content}</text>',
-            f'<text x="{centre}" y="{intensity_middle}" style="{style}">{intensity_content}</text>',
+            f'<text x="{centre}" y="{probability_middle}">{probability_content}</text>',
+            f'<text x="{centre}" y="{intensity_middle}">{intensity_content}</text>',
         ])
 
 
