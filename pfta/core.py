@@ -644,9 +644,24 @@ class Object:
     Superclass representing computational behaviour shared between events and gates.
     """
     flattened_indexer: Optional['FlattenedIndexer']
+    computed_expression: Optional[Expression]
+    computed_probabilities: Optional[list[float]]
+    computed_intensities: Optional[list[float]]
+    computed_rates: Optional[list[float]]
+    computed_expected_probabilities: Optional[list[float]]
+    computed_expected_intensities: Optional[list[float]]
+    computed_expected_rates: Optional[list[float]]
 
     def __init__(self):
+        # Fields to be set by fault tree
         self.flattened_indexer = None
+        self.computed_expression = None
+        self.computed_probabilities = None
+        self.computed_intensities = None
+        self.computed_rates = None
+        self.computed_expected_probabilities = None
+        self.computed_expected_intensities = None
+        self.computed_expected_rates = None
 
 
 class Event(Object):
@@ -666,13 +681,6 @@ class Event(Object):
     is_used: Optional[bool]
     actual_model_type: Optional[str]
     parameter_samples: Optional[dict[str, list[float]]]
-    computed_expression: Optional[Expression]
-    computed_probabilities: Optional[list[float]]
-    computed_intensities: Optional[list[float]]
-    computed_rates: Optional[list[float]]
-    computed_expected_probabilities: Optional[list[float]]
-    computed_expected_intensities: Optional[list[float]]
-    computed_expected_rates: Optional[list[float]]
 
     def __init__(self, id_: str, index: int, properties: dict):
         label = properties.get('label')
@@ -705,13 +713,6 @@ class Event(Object):
         self.flattened_indexer = None  # assigned here for __dict__ order; to be reassigned by super()
         self.actual_model_type = None
         self.parameter_samples = None
-        self.computed_expression = None
-        self.computed_probabilities = None
-        self.computed_intensities = None
-        self.computed_rates = None
-        self.computed_expected_probabilities = None
-        self.computed_expected_intensities = None
-        self.computed_expected_rates = None
 
         # Fields shared with class Gate
         super().__init__()
@@ -900,13 +901,6 @@ class Gate(Object):
     comment: str
 
     is_top_gate: Optional[bool]
-    computed_expression: Optional[Expression]
-    computed_probabilities: Optional[list[float]]
-    computed_intensities: Optional[list[float]]
-    computed_rates: Optional[list[float]]
-    computed_expected_probabilities: Optional[list[float]]
-    computed_expected_intensities: Optional[list[float]]
-    computed_expected_rates: Optional[list[float]]
 
     def __init__(self, id_: str, properties: dict):
         label = properties.get('label')
@@ -931,13 +925,6 @@ class Gate(Object):
 
         # Fields to be set by fault tree
         self.is_top_gate = None
-        self.computed_expression = None
-        self.computed_probabilities = None
-        self.computed_intensities = None
-        self.computed_rates = None
-        self.computed_expected_probabilities = None
-        self.computed_expected_intensities = None
-        self.computed_expected_rates = None
 
         # Fields shared with class Event
         super().__init__()
