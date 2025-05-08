@@ -99,7 +99,7 @@ text {
   text-anchor: middle;
   white-space: pre;
 }
-.spacer {
+.padding {
   user-select: none;
 }
 .time-header {
@@ -545,11 +545,11 @@ class QuantityTextGraphic(Graphic):
         )
         probability_spaces = (max_line_length - probability_length) * ' '
         intensity_spaces = (max_line_length - intensity_length) * ' '
-        probability_spacer = f'<tspan class="spacer">{probability_spaces}</tspan>'
-        intensity_spacer = f'<tspan class="spacer">{intensity_spaces}</tspan>'
+        probability_padding = f'<tspan class="padding">{probability_spaces}</tspan>'
+        intensity_padding = f'<tspan class="padding">{intensity_spaces}</tspan>'
 
-        probability_content = escape_xml(probability_line) + probability_spacer
-        intensity_content = escape_xml(intensity_line) + intensity_spacer
+        probability_content = escape_xml(probability_line) + probability_padding
+        intensity_content = escape_xml(intensity_line) + intensity_padding
 
         return '\n'.join([
             f'<text x="{centre}" y="{probability_middle}" style="{style}">{probability_content}</text>',
