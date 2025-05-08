@@ -93,6 +93,7 @@ class Figure:
     """
     Class representing a figure (a page of a fault tree).
     """
+    id_: str
     top_node: 'Node'
     graphics: list[Graphic]
 
@@ -116,8 +117,12 @@ class Figure:
         ]
 
         # Finalisation
+        self.id_ = top_node.source_object.id_
         self.top_node = top_node
         self.graphics = [time_header_graphic, *node_graphics]
+
+    def __lt__(self, other):
+        return self.id_ < other.id_
 
     def __repr__(self):
         return natural_repr(self)
@@ -264,27 +269,30 @@ class Index:
     """
     times: list[float]
     time_unit: str
-    figure_ids_from_object_id: dict[str, set[str]]
-    object_ids_from_figure_id: dict[str, set[str]]
+    figures_from_object: dict[Union['Event', 'Gate'], set[Figure]]
+    objects_from_figure: dict[Figure, set[Union['Event', 'Gate']]]
     figures_directory_name: str
 
     def __init__(self, figure_from_id_from_time: dict[float, dict[str, Figure]],
                  figures_directory_name: str, time_unit: str):
         times = list(figure_from_id_from_time.keys())
-        figure_from_id = next(iter(figure_from_id_from_time.values()))
+        figures = next(iter(figure_from_id_from_time.values())).values()
 
-        figure_ids_from_object_id = collections.defaultdict(set)
-        object_ids_from_figure_id = collections.defaultdict(set)
+        figures_from_object = collections.defaultdict(set)
+        objects_from_figure = collections.defaultdict(set)
 
-        for figure_id, figure in figure_from_id.items():
+        for figure in figures:
             for node in figure.top_node.reachable_nodes:
-                figure_ids_from_object_id[node.source_object.id_].add(figure_id)
-                object_ids_from_figure_id[figure_id].add(node.source_object.id_)
+                figures_from_object[node.source_object].add(figure)
+                objects_from_figure[figure].add(node.source_object)
+
+        figures_from_object = dict(sorted(figures_from_object.items()))
+        objects_from_figure = dict(sorted(objects_from_figure.items()))
 
         self.times = times
         self.time_unit = time_unit
-        self.figure_ids_from_object_id = figure_ids_from_object_id
-        self.object_ids_from_figure_id = object_ids_from_figure_id
+        self.figures_from_object = figures_from_object
+        self.objects_from_figure = objects_from_figure
         self.figures_directory_name = figures_directory_name
 
     def html_content(self) -> str:
@@ -297,20 +305,20 @@ class Index:
         object_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
-                f'      <td>{Index.object_content(object_id)}</td>',
-                f'      <td>{", ".join(Index.figure_content(id_, times) for id_ in sorted(figure_ids))}</td>',
+                f'      <td>{Index.object_content(source_object)}</td>',
+                f'      <td>{", ".join(Index.figure_content(figure, times) for figure in sorted(figures))}</td>',
                 f'    </tr>',
             ])
-            for object_id, figure_ids in self.figure_ids_from_object_id.items()
+            for source_object, figures in self.figures_from_object.items()
         )
         figure_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
-                f'      <td>{Index.figure_content(figure_id, times)}</td>',
-                f'      <td>{", ".join(Index.object_content(id_) for id_ in sorted(object_ids))}</td>',
+                f'      <td>{Index.figure_content(figure, times)}</td>',
+                f'      <td>{", ".join(Index.object_content(source_object) for source_object in sorted(source_objects))}</td>',
                 f'    </tr>',
             ])
-            for figure_id, object_ids in self.object_ids_from_figure_id.items()
+            for figure, source_objects in self.objects_from_figure.items()
         )
 
         return INDEX_HTML_TEMPLATE.substitute({
@@ -324,15 +332,17 @@ class Index:
             file.write(self.html_content())
 
     @staticmethod
-    def object_content(object_id: str) -> str:
-        return f'<code>{escape_xml(object_id)}</code>'
+    def object_content(source_object: Union['Event', 'Gate']) -> str:
+        return f'<code>{escape_xml(source_object.id_)}</code>'
 
     @staticmethod
-    def figure_content(figure_id: str, times: list[float]) -> str:
+    def figure_content(figure: Figure, times: list[float]) -> str:
+        figure_id = figure.top_node.source_object.id_
         links_content = ', '.join(
             f'<a href="{escape_xml(str(time))}/{escape_xml(figure_id)}.svg"><code>{escape_xml(str(time))}</code></a>'
             for time in times
         )
+
         return f'<code>{escape_xml(figure_id)}.svg</code> ({links_content})'
 
 

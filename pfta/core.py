@@ -704,6 +704,9 @@ class Event:
         self.computed_expected_intensities = None
         self.computed_expected_rates = None
 
+    def __lt__(self, other):
+        return self.id_ < other.id_
+
     def __repr__(self):
         return natural_repr(self)
 
@@ -925,6 +928,9 @@ class Gate:
         self.computed_expected_probabilities = None
         self.computed_expected_intensities = None
         self.computed_expected_rates = None
+
+    def __lt__(self, other):
+        return self.id_ < other.id_
 
     def __repr__(self):
         return natural_repr(self)
