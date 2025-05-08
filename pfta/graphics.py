@@ -14,6 +14,7 @@ import string
 import textwrap
 from typing import TYPE_CHECKING, Optional
 
+import pfta.core
 from pfta.common import format_quantity
 from pfta.constants import GateType, SymbolType
 from pfta.utilities import format_number
@@ -360,9 +361,7 @@ class SymbolGraphic(Graphic):
 
     @staticmethod
     def determine_type(parent_node: Optional['Node'], source_object: 'Object') -> SymbolType:
-        class_name = type(source_object).__name__
-
-        if class_name == 'Event':
+        if isinstance(source_object, pfta.core.Event):
             event = source_object
 
             if event.actual_model_type == 'Undeveloped':
@@ -370,7 +369,7 @@ class SymbolGraphic(Graphic):
             else:
                 return SymbolType.DEVELOPED_EVENT
 
-        if class_name == 'Gate':
+        if isinstance(source_object, pfta.core.Gate):
             gate = source_object
 
             if gate.is_paged and parent_node is not None:
@@ -384,7 +383,7 @@ class SymbolGraphic(Graphic):
 
             raise ImplementationError(f'bad gate type {gate.type_}')
 
-        raise ImplementationError(f'bad class_name {class_name}')
+        raise ImplementationError(f'bad class_name {type(source_object).__name__}')
 
     @staticmethod
     def or_gate_svg_content(x: int, y: int) -> str:
@@ -508,7 +507,7 @@ class QuantityTextGraphic(Graphic):
     def __init__(self, node: 'Node'):
         source_object = node.source_object
         is_undeveloped_event = (
-            type(source_object).__name__ == 'Event'
+            isinstance(source_object, pfta.core.Event)
             and source_object.actual_model_type == 'Undeveloped'
         )
 
