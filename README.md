@@ -34,7 +34,7 @@ PFTA reads a textual representation of a fault tree. For example:
 Gate: CAN
 - label: Candlelight fails
 - type: OR
-- inputs: IGN, EXT
+- inputs: IGN, EXP, EXT
 
 Gate: IGN
 - label: Candle fails to ignite
@@ -52,6 +52,10 @@ Event: LTR
 - model_type: Fixed
 - probability: loguniform(lower=0.001, upper=0.01)
 - intensity: 0
+
+Event: EXP
+- label: Candle explodes on ignition
+- model_type: Undeveloped
 
 Event: EXT
 - label: Candle extinguishes
