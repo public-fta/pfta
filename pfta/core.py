@@ -663,6 +663,46 @@ class Object:
         self.computed_expected_intensities = None
         self.computed_expected_rates = None
 
+    @memoise('computed_rates')
+    def compute_rates(self) -> list[float]:
+        return [
+            robust_divide(omega, 1 - q)
+            for q, omega in zip(self.computed_probabilities, self.computed_intensities)
+        ]
+
+    @memoise('computed_expected_probabilities')
+    def compute_expected_probabilities(self) -> list[float]:
+        return[
+            statistics.mean(self.computed_probabilities[self.flattened_indexer.get_slice(time_index)])
+            for time_index in range(self.flattened_indexer.time_count)
+        ]
+
+    @memoise('computed_expected_intensities')
+    def compute_expected_intensities(self) -> list[float]:
+        return [
+            statistics.mean(self.computed_intensities[self.flattened_indexer.get_slice(time_index)])
+            for time_index in range(self.flattened_indexer.time_count)
+        ]
+
+    @memoise('computed_expected_rates')
+    def compute_expected_rates(self) -> list[float]:
+        return [
+            statistics.mean(self.computed_rates[self.flattened_indexer.get_slice(time_index)])
+            for time_index in range(self.flattened_indexer.time_count)
+        ]
+
+    def get_computed_probability(self, time_index: int, sample_index: int) -> float:
+        flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
+        return self.computed_probabilities[flattened_index]
+
+    def get_computed_intensity(self, time_index: int, sample_index: int) -> float:
+        flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
+        return self.computed_intensities[flattened_index]
+
+    def get_computed_rate(self, time_index: int, sample_index: int) -> float:
+        flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
+        return self.computed_rates[flattened_index]
+
 
 class Event(Object):
     """
@@ -796,46 +836,6 @@ class Event(Object):
 
         raise ImplementationError(f'bad actual_model_type {self.actual_model_type}')
 
-    @memoise('computed_rates')
-    def compute_rates(self) -> list[float]:
-        return [
-            robust_divide(omega, 1 - q)
-            for q, omega in zip(self.computed_probabilities, self.computed_intensities)
-        ]
-
-    @memoise('computed_expected_probabilities')
-    def compute_expected_probabilities(self) -> list[float]:
-        return[
-            statistics.mean(self.computed_probabilities[self.flattened_indexer.get_slice(time_index)])
-            for time_index in range(self.flattened_indexer.time_count)
-        ]
-
-    @memoise('computed_expected_intensities')
-    def compute_expected_intensities(self) -> list[float]:
-        return [
-            statistics.mean(self.computed_intensities[self.flattened_indexer.get_slice(time_index)])
-            for time_index in range(self.flattened_indexer.time_count)
-        ]
-
-    @memoise('computed_expected_rates')
-    def compute_expected_rates(self) -> list[float]:
-        return [
-            statistics.mean(self.computed_rates[self.flattened_indexer.get_slice(time_index)])
-            for time_index in range(self.flattened_indexer.time_count)
-        ]
-
-    def get_computed_probability(self, time_index: int, sample_index: int) -> float:
-        flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
-        return self.computed_probabilities[flattened_index]
-
-    def get_computed_intensity(self, time_index: int, sample_index: int) -> float:
-        flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
-        return self.computed_intensities[flattened_index]
-
-    def get_computed_rate(self, time_index: int, sample_index: int) -> float:
-        flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
-        return self.computed_rates[flattened_index]
-
     @staticmethod
     def validate_model_xor_type_set(id_: str, model_type: str, model_id: str, unset_property_line_number: int):
         is_model_type_set = model_type is not None
@@ -965,46 +965,6 @@ class Gate(Object):
             disjunction_intensity(self.computed_expression.terms, flattened_index, computational_cache)
             for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
-
-    @memoise('computed_rates')
-    def compute_rates(self) -> list[float]:
-        return [
-            robust_divide(omega, 1 - q)
-            for q, omega in zip(self.computed_probabilities, self.computed_intensities)
-        ]
-
-    @memoise('computed_expected_probabilities')
-    def compute_expected_probabilities(self) -> list[float]:
-        return[
-            statistics.mean(self.computed_probabilities[self.flattened_indexer.get_slice(time_index)])
-            for time_index in range(self.flattened_indexer.time_count)
-        ]
-
-    @memoise('computed_expected_intensities')
-    def compute_expected_intensities(self) -> list[float]:
-        return [
-            statistics.mean(self.computed_intensities[self.flattened_indexer.get_slice(time_index)])
-            for time_index in range(self.flattened_indexer.time_count)
-        ]
-
-    @memoise('computed_expected_rates')
-    def compute_expected_rates(self) -> list[float]:
-        return [
-            statistics.mean(self.computed_rates[self.flattened_indexer.get_slice(time_index)])
-            for time_index in range(self.flattened_indexer.time_count)
-        ]
-
-    def get_computed_probability(self, time_index: int, sample_index: int) -> float:
-        flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
-        return self.computed_probabilities[flattened_index]
-
-    def get_computed_intensity(self, time_index: int, sample_index: int) -> float:
-        flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
-        return self.computed_intensities[flattened_index]
-
-    def get_computed_rate(self, time_index: int, sample_index: int) -> float:
-        flattened_index = self.flattened_indexer.get_index(time_index, sample_index)
-        return self.computed_rates[flattened_index]
 
     def compile_cut_set_table(self, events: list[Event], times: list[float], sample_size: int,
                               computational_cache: ComputationalCache) -> Table:
