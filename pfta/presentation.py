@@ -65,6 +65,7 @@ INDEX_HTML_TEMPLATE = string.Template('''\
   <thead>
     <tr>
       <th>Object</th>
+      <th>Type</th>
       <th>Label</th>
       <th>Figures by ${scaled_time_variable_content}</th>
     </tr>
@@ -310,6 +311,7 @@ class Index:
             '\n'.join([
                 f'    <tr>',
                 f'      <td>{Index.object_content(object_)}</td>',
+                f'      <td>{Index.object_type(object_)}</td>',
                 f'      <td>{Index.label_content(object_.label)}</td>',
                 f'      <td>{", ".join(Index.figure_content(figure, times) for figure in sorted(figures))}</td>',
                 f'    </tr>',
@@ -340,6 +342,10 @@ class Index:
     @staticmethod
     def object_content(source_object: 'Object') -> str:
         return f'<code>{escape_xml(source_object.id_)}</code>'
+
+    @staticmethod
+    def object_type(source_object: 'Object') -> str:
+        return f'<code>{type(source_object).__name__}</code>'
 
     @staticmethod
     def label_content(label: str) -> str:
