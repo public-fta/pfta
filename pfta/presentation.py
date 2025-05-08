@@ -65,6 +65,7 @@ INDEX_HTML_TEMPLATE = string.Template('''\
   <thead>
     <tr>
       <th>Object</th>
+      <th>Label</th>
       <th>Figures by ${scaled_time_variable_content}</th>
     </tr>
   </thead>
@@ -77,6 +78,7 @@ ${object_lookup_content}
   <thead>
     <tr>
       <th>Figure by ${scaled_time_variable_content}</th>
+      <th>Label</th>
       <th>Objects</th>
     </tr>
   </thead>
@@ -94,6 +96,7 @@ class Figure:
     Class representing a figure (a page of a fault tree).
     """
     id_: str
+    label: str
     top_node: 'Node'
     graphics: list[Graphic]
 
@@ -118,6 +121,7 @@ class Figure:
 
         # Finalisation
         self.id_ = top_node.source_object.id_
+        self.label = top_node.source_object.label
         self.top_node = top_node
         self.graphics = [time_header_graphic, *node_graphics]
 
@@ -306,6 +310,7 @@ class Index:
             '\n'.join([
                 f'    <tr>',
                 f'      <td>{Index.object_content(source_object)}</td>',
+                f'      <td>{Index.label_content(source_object.label)}</td>',
                 f'      <td>{", ".join(Index.figure_content(figure, times) for figure in sorted(figures))}</td>',
                 f'    </tr>',
             ])
@@ -315,6 +320,7 @@ class Index:
             '\n'.join([
                 f'    <tr>',
                 f'      <td>{Index.figure_content(figure, times)}</td>',
+                f'      <td>{Index.label_content(figure.label)}</td>',
                 f'      <td>{", ".join(Index.object_content(source_object) for source_object in sorted(source_objects))}</td>',
                 f'    </tr>',
             ])
@@ -334,6 +340,10 @@ class Index:
     @staticmethod
     def object_content(source_object: Union['Event', 'Gate']) -> str:
         return f'<code>{escape_xml(source_object.id_)}</code>'
+
+    @staticmethod
+    def label_content(label: str) -> str:
+        return escape_xml(label) if label else ''
 
     @staticmethod
     def figure_content(figure: Figure, times: list[float]) -> str:
