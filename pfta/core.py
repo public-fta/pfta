@@ -639,7 +639,13 @@ class Model:
         raise ImplementationError(f'bad parameter `{parameter}`')
 
 
-class Event:
+class Object:
+    """
+    Superclass representing computational behaviour shared between events and gates.
+    """
+
+
+class Event(Object):
     """
     Class representing a primary event.
     """
@@ -875,7 +881,7 @@ class Event:
             raise InvalidModelKeyComboException(unset_property_line_number, message, explainer)
 
 
-class Gate:
+class Gate(Object):
     """
     Class representing a gate.
     """
