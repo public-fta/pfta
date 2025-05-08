@@ -6,7 +6,7 @@
 Gate: CAN
 - label: Candlelight fails
 - type: OR
-- inputs: IGN, STL, EXT
+- inputs: IGN, EXP, EXT
 
 Gate: IGN
 - label: Candle fails to ignite
@@ -25,7 +25,7 @@ Event: LTR
 - probability: loguniform(lower=0.001, upper=0.01)
 - intensity: 0
 
-Event: STL
+Event: EXP
 - label: Candle explodes on ignition
 - model_type: Undeveloped
 
