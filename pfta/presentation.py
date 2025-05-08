@@ -12,7 +12,7 @@ import collections
 import csv
 import os
 import string
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 from pfta.common import natural_repr, format_quantity
 from pfta.graphics import (
@@ -25,7 +25,7 @@ from pfta.graphics import (
 from pfta.woe import ImplementationError
 
 if TYPE_CHECKING:
-    from pfta.core import FaultTree, Event, Gate
+    from pfta.core import FaultTree, Object, Event, Gate
 
 
 INDEX_HTML_TEMPLATE = string.Template('''\
@@ -150,7 +150,7 @@ class Node:
     Nodes are instantiated recursively, starting from the top node of the figure.
     """
     fault_tree: 'FaultTree'
-    source_object: Union['Event', 'Gate']
+    source_object: 'Object'
     input_nodes: list['Node']
     parent_node: 'Node'
 
@@ -273,8 +273,8 @@ class Index:
     """
     times: list[float]
     time_unit: str
-    figures_from_object: dict[Union['Event', 'Gate'], set[Figure]]
-    objects_from_figure: dict[Figure, set[Union['Event', 'Gate']]]
+    figures_from_object: dict['Object', set[Figure]]
+    objects_from_figure: dict[Figure, set['Object']]
     figures_directory_name: str
 
     def __init__(self, figure_from_id_from_time: dict[float, dict[str, Figure]],
@@ -338,7 +338,7 @@ class Index:
             file.write(self.html_content())
 
     @staticmethod
-    def object_content(source_object: Union['Event', 'Gate']) -> str:
+    def object_content(source_object: 'Object') -> str:
         return f'<code>{escape_xml(source_object.id_)}</code>'
 
     @staticmethod

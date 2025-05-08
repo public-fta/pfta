@@ -12,7 +12,7 @@ import math
 import re
 import string
 import textwrap
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 from pfta.common import format_quantity
 from pfta.constants import GateType, SymbolType
@@ -20,7 +20,7 @@ from pfta.utilities import format_number
 from pfta.woe import ImplementationError
 
 if TYPE_CHECKING:
-    from pfta.core import FaultTree, Event, Gate
+    from pfta.core import FaultTree, Object
     from pfta.presentation import Node
 
 
@@ -359,7 +359,7 @@ class SymbolGraphic(Graphic):
         raise ImplementationError(f'bad symbol type {self.type_}')
 
     @staticmethod
-    def determine_type(parent_node: Optional['Node'], source_object: Union['Event', 'Gate']) -> SymbolType:
+    def determine_type(parent_node: Optional['Node'], source_object: 'Object') -> SymbolType:
         class_name = type(source_object).__name__
 
         if class_name == 'Event':
