@@ -643,6 +643,10 @@ class Object:
     """
     Superclass representing computational behaviour shared between events and gates.
     """
+    flattened_indexer: Optional['FlattenedIndexer']
+
+    def __init__(self):
+        self.flattened_indexer = None
 
 
 class Event(Object):
@@ -660,7 +664,6 @@ class Event(Object):
     model_dict: dict[str, Distribution]
 
     is_used: Optional[bool]
-    flattened_indexer: Optional['FlattenedIndexer']
     actual_model_type: Optional[str]
     parameter_samples: Optional[dict[str, list[float]]]
     computed_expression: Optional[Expression]
@@ -699,7 +702,7 @@ class Event(Object):
 
         # Fields to be set by fault tree
         self.is_used = None
-        self.flattened_indexer = None
+        self.flattened_indexer = None  # assigned here for __dict__ order; to be reassigned by super()
         self.actual_model_type = None
         self.parameter_samples = None
         self.computed_expression = None
@@ -709,6 +712,9 @@ class Event(Object):
         self.computed_expected_probabilities = None
         self.computed_expected_intensities = None
         self.computed_expected_rates = None
+
+        # Fields shared with class Gate
+        super().__init__()
 
     def __lt__(self, other):
         return self.id_ < other.id_
@@ -894,7 +900,6 @@ class Gate(Object):
     comment: str
 
     is_top_gate: Optional[bool]
-    flattened_indexer: Optional['FlattenedIndexer']
     computed_expression: Optional[Expression]
     computed_probabilities: Optional[list[float]]
     computed_intensities: Optional[list[float]]
@@ -926,7 +931,6 @@ class Gate(Object):
 
         # Fields to be set by fault tree
         self.is_top_gate = None
-        self.flattened_indexer = None
         self.computed_expression = None
         self.computed_probabilities = None
         self.computed_intensities = None
@@ -934,6 +938,9 @@ class Gate(Object):
         self.computed_expected_probabilities = None
         self.computed_expected_intensities = None
         self.computed_expected_rates = None
+
+        # Fields shared with class Event
+        super().__init__()
 
     def __lt__(self, other):
         return self.id_ < other.id_
