@@ -555,8 +555,8 @@ class QuantityTextGraphic(Graphic):
         )
         probability_spaces = (max_line_length - probability_length) * ' '
         intensity_spaces = (max_line_length - intensity_length) * ' '
-        probability_padding = f'<tspan class="padding">{probability_spaces}</tspan>'
-        intensity_padding = f'<tspan class="padding">{intensity_spaces}</tspan>'
+        probability_padding = f'<tspan class="padding">{probability_spaces}</tspan>' if probability_spaces else ''
+        intensity_padding = f'<tspan class="padding">{intensity_spaces}</tspan>' if intensity_spaces else ''
 
         probability_content = escape_xml(probability_line) + probability_padding
         intensity_content = escape_xml(intensity_line) + intensity_padding
