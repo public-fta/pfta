@@ -1,0 +1,36 @@
+- times: nan
+- time_unit: yr
+
+Gate: FB
+- label: Conway causeth floor to be buttered
+- type: OR
+- inputs: BF, TFBSD
+
+Event: BF
+- label: Conway knocketh butter onto floor
+- model_type: Fixed
+- probability: 0
+- intensity: 0.1
+
+Gate: TFBSD
+- label: Conway knocketh toast onto floor butter side down
+- type: AND
+- inputs: TF, TB, BSD
+
+Event: TF
+- label: Conway knocketh toast onto floor
+- model_type: Fixed
+- probability: 0
+- intensity: 0.2
+
+Event: TB
+- label: Falling toast is buttered
+- model_type: Fixed
+- probability: 0.75
+- intensity: 0
+
+Event: BSD
+- label: Buttered toast landeth butter side down
+- model_type: Fixed
+- probability: 0.9
+- intensity: 0
