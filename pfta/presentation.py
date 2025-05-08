@@ -309,22 +309,22 @@ class Index:
         object_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
-                f'      <td>{Index.object_content(source_object)}</td>',
-                f'      <td>{Index.label_content(source_object.label)}</td>',
+                f'      <td>{Index.object_content(object_)}</td>',
+                f'      <td>{Index.label_content(object_.label)}</td>',
                 f'      <td>{", ".join(Index.figure_content(figure, times) for figure in sorted(figures))}</td>',
                 f'    </tr>',
             ])
-            for source_object, figures in self.figures_from_object.items()
+            for object_, figures in self.figures_from_object.items()
         )
         figure_lookup_content = '\n'.join(
             '\n'.join([
                 f'    <tr>',
                 f'      <td>{Index.figure_content(figure, times)}</td>',
                 f'      <td>{Index.label_content(figure.label)}</td>',
-                f'      <td>{", ".join(Index.object_content(source_object) for source_object in sorted(source_objects))}</td>',
+                f'      <td>{", ".join(Index.object_content(object_) for object_ in sorted(objects))}</td>',
                 f'    </tr>',
             ])
-            for figure, source_objects in self.objects_from_figure.items()
+            for figure, objects in self.objects_from_figure.items()
         )
 
         return INDEX_HTML_TEMPLATE.substitute({
