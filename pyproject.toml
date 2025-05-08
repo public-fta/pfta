@@ -8,7 +8,7 @@ requires-python = ">=3.11"
 authors = [{name="Conway", email="pypi.sheep257@passmail.net"}]
 description = "Public Fault Tree Analyser (PFTA)"
 readme = "README.md"
-# TODO: keywords
+keywords = ["fault tree", "minimal cut sets", "failure probability", "failure rate"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
