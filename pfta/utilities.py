@@ -31,7 +31,7 @@ def robust_invert(x: float) -> float:
 
 def format_number(number: Optional[float],
                   decimal_places: Optional[int] = None, significant_figures: Optional[int] = None,
-                  scientific_exponent_threshold: int = 3, return_plain_zero: bool = True) -> Optional[str]:
+                  scientific_exponent_threshold: int = 3, simple_zero: bool = True) -> Optional[str]:
     if number is None:
         return None
 
@@ -47,7 +47,7 @@ def format_number(number: Optional[float],
     if not is_decimal_places_set and not is_significant_figures_set:
         raise ValueError('neither decimal_places nor significant_figures has been set')
 
-    if return_plain_zero and number == 0:
+    if simple_zero and number == 0:
         return '0'
 
     if is_decimal_places_set:
