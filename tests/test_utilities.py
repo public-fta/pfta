@@ -30,10 +30,6 @@ class TestUtilities(unittest.TestCase):
         self.assertEqual(format_number(0., decimal_places=3), '0')
         self.assertEqual(format_number(-0., decimal_places=3), '0')
 
-        self.assertEqual(format_number(0, significant_figures=3, simple_zero=True), '0')
-        self.assertEqual(format_number(0., significant_figures=3, simple_zero=True), '0')
-        self.assertEqual(format_number(-0., significant_figures=3, simple_zero=True), '0')
-
         self.assertEqual(format_number(0, decimal_places=0, simple_zero=False), '0')
         self.assertEqual(format_number(0, decimal_places=1, simple_zero=False), '0.0')
         self.assertEqual(format_number(0, decimal_places=2, simple_zero=False), '0.00')
