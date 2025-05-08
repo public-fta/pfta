@@ -498,6 +498,7 @@ class QuantityBoxGraphic(Graphic):
 class QuantityTextGraphic(Graphic):
     x: int
     y: int
+    is_undeveloped_event: bool
     probability: float
     intensity: float
     is_monte_carlo: bool
@@ -506,10 +507,17 @@ class QuantityTextGraphic(Graphic):
     scientific_exponent: int
 
     def __init__(self, node: 'Node'):
+        source_object = node.source_object
+        is_undeveloped_event = (
+            type(source_object).__name__ == 'Event'
+            and source_object.actual_model_type == 'Undeveloped'
+        )
+
         self.x = node.x
         self.y = node.y
-        self.probability = node.source_object.computed_expected_probabilities[node.time_index]
-        self.intensity = node.source_object.computed_expected_intensities[node.time_index]
+        self.is_undeveloped_event = is_undeveloped_event
+        self.probability = source_object.computed_expected_probabilities[node.time_index]
+        self.intensity = source_object.computed_expected_intensities[node.time_index]
         self.is_monte_carlo = node.fault_tree.sample_size > 1
         self.time_unit = node.fault_tree.time_unit
         self.significant_figures = node.fault_tree.significant_figures
@@ -517,8 +525,12 @@ class QuantityTextGraphic(Graphic):
 
     def svg_content(self) -> str:
         centre = self.x
-
         middle = self.y + QUANTITY_BOX_Y_OFFSET
+        style = f'font-size: {QUANTITY_FONT_SIZE}px'
+
+        if self.is_undeveloped_event:
+            return f'<text x="{centre}" y="{middle}" style="{style}">(Undeveloped)</text>'
+
         line_half_gap = QUANTITY_FONT_SIZE * QUANTITY_LINE_SPACING / 2
         probability_middle = format_number(middle - line_half_gap, decimal_places=1)
         intensity_middle = format_number(middle + line_half_gap, decimal_places=1)
@@ -536,8 +548,6 @@ class QuantityTextGraphic(Graphic):
                                         scientific_exponent_threshold=self.scientific_exponent)
         intensity_quantity = format_quantity(intensity_value, self.time_unit, is_reciprocal=True)
         intensity_line = f'{intensity_lhs} = {intensity_quantity}'
-
-        style = f'font-size: {QUANTITY_FONT_SIZE}px'
 
         max_line_length = max(
             probability_length := len(probability_line),
