@@ -1,0 +1,83 @@
+- times: 0, 1
+- time_unit: h
+
+
+Event: A
+- label: Finite probability
+- model_type: Fixed
+- probability: 0.1
+- intensity: 0
+
+Event: B
+- label: Finite probability
+- model_type: Fixed
+- probability: 0.2
+- intensity: 0
+
+Event: C
+- label: Finite probability
+- model_type: Fixed
+- probability: 0.3
+- intensity: 0
+
+Event: I
+- label: Infinite intensity
+- model_type: Fixed
+- probability: 0
+- intensity: inf
+
+Event: M
+- label: Indeterminate intensity
+- model_type: Fixed
+- probability: 0
+- intensity: nan
+
+Event: N
+- label: Indeterminate probability
+- model_type: Fixed
+- probability: nan
+- intensity: 0
+
+
+Gate: OR
+- label: Normal OR gate
+- type: OR
+- inputs: A, B, C
+
+Gate: OR-NAN-INT
+- label: OR gate indeterminate intensity spoilage
+- type: OR
+- inputs: A, B, C, M
+
+Gate: OR-NAN-PROB
+- label: OR gate indeterminate probability spoilage
+- type: OR
+- inputs: A, B, C, N
+
+Gate: OR-INF-INT
+- label: OR gate infinite intensity spoilage
+- type: OR
+- inputs: A, B, C, I
+
+Gate: AND-INF-INT
+- label: AND gate infinite intensity spoilage
+- type: AND
+- inputs: A, B, C, I
+
+
+Gate: AI
+- type: AND
+- inputs: A, I
+
+Gate: AM
+- type: AND
+- inputs: A, M
+
+Gate: AN
+- type: AND
+- inputs: A, N
+
+Gate: ABS-NAN-IMM
+- label: Absorption spoilage immunity
+- type: OR
+- inputs: A, AI, AM, AN
