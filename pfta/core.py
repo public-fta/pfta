@@ -643,6 +643,10 @@ class Object:
     """
     Superclass representing computational behaviour shared between events and gates.
     """
+    id_: Optional[str]
+    label: Optional[str]
+    comment: Optional[str]
+
     flattened_indexer: Optional['FlattenedIndexer']
     computed_expression: Optional[Expression]
     computed_probabilities: Optional[list[float]]
@@ -652,7 +656,12 @@ class Object:
     computed_expected_intensities: Optional[list[float]]
     computed_expected_rates: Optional[list[float]]
 
-    def __init__(self):
+    def __init__(self, id_: str, label: Optional[str], comment: Optional[str]):
+        # Direct fields (from parameters or properties)
+        self.id_ = id_
+        self.label = label
+        self.comment = comment
+
         # Fields to be set by fault tree
         self.flattened_indexer = None
         self.computed_expression = None
@@ -708,10 +717,10 @@ class Event(Object):
     """
     Class representing a primary event.
     """
-    id_: str
+    id_: Optional[str]
     index: int
-    label: str
-    comment: str
+    label: Optional[str]
+    comment: Optional[str]
     model_id: str
     model_id_line_number: int
 
@@ -737,10 +746,10 @@ class Event(Object):
         Event.validate_model_key_combo(id_, model_type, model_keys, unset_property_line_number)
 
         # Direct fields (from parameters or properties)
-        self.id_ = id_
+        self.id_ = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
         self.index = index
-        self.label = label
-        self.comment = comment
+        self.label = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
+        self.comment = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
         self.model_id = model_id
         self.model_id_line_number = model_id_line_number
 
@@ -750,12 +759,12 @@ class Event(Object):
 
         # Fields to be set by fault tree
         self.is_used = None
-        self.flattened_indexer = None  # assigned here for __dict__ order; to be reassigned by super()
+        self.flattened_indexer = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
         self.actual_model_type = None
         self.parameter_samples = None
 
         # Fields shared with class Gate
-        super().__init__()
+        super().__init__(id_, label, comment)
 
     def __lt__(self, other):
         return self.id_ < other.id_
@@ -892,13 +901,13 @@ class Gate(Object):
     """
     Class representing a gate.
     """
-    id_: str
-    label: str
+    id_: Optional[str]
+    label: Optional[str]
     is_paged: bool
     type_: GateType
     input_ids: list[str]
     input_ids_line_number: int
-    comment: str
+    comment: Optional[str]
 
     is_top_gate: Optional[bool]
 
@@ -915,19 +924,19 @@ class Gate(Object):
         Gate.validate_input_ids_set(id_, input_ids, unset_property_line_number)
 
         # Direct fields (from parameters or properties)
-        self.id_ = id_
-        self.label = label
+        self.id_ = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
+        self.label = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
         self.is_paged = is_paged
         self.type_ = type_
         self.input_ids = input_ids
         self.input_ids_line_number = input_ids_line_number
-        self.comment = comment
+        self.comment = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
 
         # Fields to be set by fault tree
         self.is_top_gate = None
 
         # Fields shared with class Event
-        super().__init__()
+        super().__init__(id_, label, comment)
 
     def __lt__(self, other):
         return self.id_ < other.id_
