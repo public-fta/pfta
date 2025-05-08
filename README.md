@@ -151,6 +151,6 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only). <br>
 This is free software with NO WARRANTY etc. etc., see [`LICENSE`].
 
 
-[`DOCS.md`]: DOCS.md
-[`LICENSE`]: LICENSE
-[`MATHS.md`]: MATHS.md
+[`DOCS.md`]: https://github.com/public-fta/pfta/blob/master/DOCS.md
+[`LICENSE`]: https://github.com/public-fta/pfta/blob/master/LICENSE
+[`MATHS.md`]: https://github.com/public-fta/pfta/blob/master/MATHS.md
