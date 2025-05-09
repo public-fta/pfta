@@ -4,6 +4,7 @@ Free and open-source fault tree analysis.
 
 - For rudimentary documentation, see [`DOCS.md`].
 - For an overview of the mathematics, see [`MATHS.md`].
+- For example fault trees, see [`examples/`].
 
 
 ## Features
@@ -161,6 +162,7 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only). <br>
 This is free software with NO WARRANTY etc. etc., see [`LICENSE`].
 
 
+[`examples/`]: https://github.com/public-fta/pfta/tree/master/examples
 [`DOCS.md`]: https://github.com/public-fta/pfta/blob/master/DOCS.md
 [`LICENSE`]: https://github.com/public-fta/pfta/blob/master/LICENSE
 [`MATHS.md`]: https://github.com/public-fta/pfta/blob/master/MATHS.md
