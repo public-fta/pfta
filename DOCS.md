@@ -85,19 +85,21 @@ An event declaration may do one of the following:
 
    ```
    Event: <identifier>
-   - label: <string>      (optional)
-   - comment: <string>    (optional)
+   - label: <string>                          (optional)
+   - comment: <string>                        (optional)
    - model: <identifier>
+   - appearance: Basic | Undeveloped | House  (optional; default `Basic`)
    ```
 
 2. Utilise its own failure model properties:
 
    ```
    Event: <identifier>
-   - label: <string>                                 (optional)
-   - comment: <string>                               (optional)
+   - label: <string>                          (optional)
+   - comment: <string>                        (optional)
    - model_type: Fixed | ConstantRate
    # <followed by the parameter properties relevant to the chosen `model_type`>
+   - appearance: Basic | Undeveloped | House  (optional; default `Basic`)
    ```
 
 
