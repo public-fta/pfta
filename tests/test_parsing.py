@@ -471,7 +471,10 @@ class TestParsing(unittest.TestCase):
                     id_='EV-001',
                     object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
                     property_lines=[
-                        ParsedLine(5, LineType.PROPERTY, info={'key': 'model_type', 'value': 'Undeveloped'})
+                        ParsedLine(
+                            5, LineType.PROPERTY,
+                            info={'key': 'model_type', 'value': 'Fixed', 'probability': '1', 'intensity': '0'},
+                        )
                     ],
                 ),
             )
@@ -487,7 +490,7 @@ class TestParsing(unittest.TestCase):
                 id_='EV-001',
                 object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Event', 'id': 'EV-001'}),
                 property_lines=[
-                    ParsedLine(5, LineType.PROPERTY, info={'key': 'model_type', 'value': 'uNdeVELopED'})
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'model_type', 'value': 'fiXeD'})
                 ],
             ),
         )

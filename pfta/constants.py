@@ -69,9 +69,6 @@ GATE_TYPE_EXPLAINER = (
 )
 
 VALID_KEY_COMBOS_FROM_MODEL_TYPE = {
-    'Undeveloped': (
-        (),
-    ),
     'Fixed': (
         ('probability', 'intensity'),
     ),

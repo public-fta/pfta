@@ -31,10 +31,14 @@ class TestCore(unittest.TestCase):
                 - times: 1
 
                 Event: EV-001
-                - model_type: Undeveloped
+                - model_type: Fixed
+                - probability: 1
+                - intensity: 0
 
                 Event: EV-001
-                - model_type: Undeveloped
+                - model_type: Fixed
+                - probability: 1
+                - intensity: 0
             '''),
         )
 
@@ -149,7 +153,9 @@ class TestCore(unittest.TestCase):
                 - model: MD-NO
 
                 Model: MD-YES
-                - model_type: Undeveloped
+                - model_type: Fixed
+                - probability: 1
+                - intensity: 0
             '''),
         )
 
@@ -165,7 +171,9 @@ class TestCore(unittest.TestCase):
                 - inputs: EV-YES, EV-NO
 
                 Event: EV-YES
-                - model_type: Undeveloped
+                - model_type: Fixed
+                - probability: 1
+                - intensity: 0
             '''),
         )
 
@@ -210,12 +218,6 @@ class TestCore(unittest.TestCase):
         )
 
     def test_model(self):
-        # Reasonable model
-        try:
-            Model('MD-001', {'label': 'First model', 'model_type': 'Undeveloped'})
-        except (UnsetPropertyException, InvalidModelKeyComboException):
-            self.fail('UnsetPropertyException or InvalidModelKeyComboException should not have been raised')
-
         # Unset model type
         self.assertRaises(
             UnsetPropertyException,
@@ -262,12 +264,6 @@ class TestCore(unittest.TestCase):
         )
 
     def test_event(self):
-        # Reasonable event
-        try:
-            Event('EV-001', 0, {'label': 'First event', 'model_type': 'Undeveloped'})
-        except (UnsetPropertyException, InvalidModelKeyComboException):
-            self.fail('UnsetPropertyException or InvalidModelKeyComboException should not have been raised')
-
         # Unset model type
         self.assertRaises(
             UnsetPropertyException,

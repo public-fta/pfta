@@ -364,7 +364,7 @@ class SymbolGraphic(Graphic):
         if isinstance(source_object, pfta.core.Event):
             event = source_object
 
-            if event.actual_model_type == 'Undeveloped':
+            if event.actual_model_type == 'Undeveloped':  # TODO: eliminate
                 return SymbolType.UNDEVELOPED_EVENT
             else:
                 return SymbolType.DEVELOPED_EVENT
@@ -508,12 +508,12 @@ class QuantityTextGraphic(Graphic):
         source_object = node.source_object
         is_undeveloped_event = (
             isinstance(source_object, pfta.core.Event)
-            and source_object.actual_model_type == 'Undeveloped'
+            and source_object.actual_model_type == 'Undeveloped'  # TODO: eliminate
         )
 
         self.x = node.x
         self.y = node.y
-        self.is_undeveloped_event = is_undeveloped_event
+        self.is_undeveloped_event = is_undeveloped_event  # TODO: eliminate
         self.probability = source_object.computed_expected_probabilities[node.time_index]
         self.intensity = source_object.computed_expected_intensities[node.time_index]
         self.sample_size = node.fault_tree.sample_size
@@ -524,9 +524,6 @@ class QuantityTextGraphic(Graphic):
     def svg_content(self) -> str:
         centre = self.x
         middle = self.y + QUANTITY_BOX_Y_OFFSET
-
-        if self.is_undeveloped_event:
-            return f'<text x="{centre}" y="{middle}">(Undeveloped)</text>'
 
         line_half_gap = DEFAULT_FONT_SIZE * DEFAULT_LINE_SPACING / 2
         probability_middle = format_number(middle - line_half_gap, decimal_places=1)

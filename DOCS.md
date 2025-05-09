@@ -36,22 +36,6 @@ Parameter values may be supplied as either:
   - `uniform(lower=<value>, upper=<value>)`
 
 
-#### Undeveloped
-
-```
-Model: <identifier>
-- label: <string>          (optional)
-- comment: <string>        (optional)
-- model_type: Undeveloped
-```
-
-Events using an undeveloped model have their failure quantities computed as
-
-```
-q(t) = 0,
-ω(t) = 0.
-```
-
 #### Fixed
 
 ```
@@ -112,7 +96,7 @@ An event declaration may do one of the following:
    Event: <identifier>
    - label: <string>                                 (optional)
    - comment: <string>                               (optional)
-   - model_type: Undeveloped | Fixed | ConstantRate
+   - model_type: Fixed | ConstantRate
    # <followed by the parameter properties relevant to the chosen `model_type`>
    ```
 

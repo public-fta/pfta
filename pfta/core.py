@@ -791,9 +791,6 @@ class Event(Object):
 
     @memoise('computed_probabilities')
     def compute_probabilities(self, times: list[float], sample_size: int) -> list[float]:
-        if self.actual_model_type == 'Undeveloped':
-            return [0. for _ in range(len(times) * sample_size)]
-
         if self.actual_model_type == 'Fixed':
             return self.parameter_samples['probability']
 
@@ -819,9 +816,6 @@ class Event(Object):
 
     @memoise('computed_intensities')
     def compute_intensities(self, times: list[float], sample_size: int) -> list[float]:
-        if self.actual_model_type == 'Undeveloped':
-            return [0. for _ in range(len(times) * sample_size)]
-
         if self.actual_model_type == 'Fixed':
             return self.parameter_samples['intensity']
 
