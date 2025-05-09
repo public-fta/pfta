@@ -73,7 +73,6 @@ UNDEVELOPED_EVENT_CIRCUMRADIUS = 39
 QUANTITY_BOX_Y_OFFSET = 45
 QUANTITY_BOX_WIDTH = 108
 QUANTITY_BOX_HEIGHT = 32
-QUANTITY_LINE_SPACING = 1.3
 
 INPUT_CONNECTOR_BUS_Y_OFFSET = 95
 INPUT_CONNECTOR_BUS_HALF_HEIGHT = 10
@@ -528,7 +527,7 @@ class QuantityTextGraphic(Graphic):
         if self.is_undeveloped_event:
             return f'<text x="{centre}" y="{middle}">(Undeveloped)</text>'
 
-        line_half_gap = DEFAULT_FONT_SIZE * QUANTITY_LINE_SPACING / 2
+        line_half_gap = DEFAULT_FONT_SIZE * DEFAULT_LINE_SPACING / 2
         probability_middle = format_number(middle - line_half_gap, decimal_places=1)
         intensity_middle = format_number(middle + line_half_gap, decimal_places=1)
 
