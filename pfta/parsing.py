@@ -179,16 +179,16 @@ def compile_distribution_pattern(name: str, parameters: tuple[str]) -> re.Patter
 
 
 def parse_line(line_number: int, line: str) -> ParsedLine:
-    if re.match(r'^\s*$', line):  # blank line (allow whitespace)
+    if re.fullmatch(r'^\s*$', line):  # blank line (allow whitespace)
         return ParsedLine(line_number, LineType.BLANK, info={})
 
-    if re.match(r'^\s*#.*$', line):  # comment match (allow whitespace)
+    if re.fullmatch(r'^\s*#.*$', line):  # comment match (allow whitespace)
         return ParsedLine(line_number, LineType.COMMENT, info={})
 
-    if object_match := re.match(r'^(?P<class>[^\s:]+):\s+(?P<id>.+?)\s*$', line):
+    if object_match := re.fullmatch(r'^(?P<class>[^\s:]+):\s+(?P<id>.+?)\s*$', line):
         return ParsedLine(line_number, LineType.OBJECT, info=object_match.groupdict())
 
-    if property_match := re.match(r'^- (?P<key>[^\s:]+):\s+(?P<value>.+?)\s*$', line):
+    if property_match := re.fullmatch(r'^- (?P<key>[^\s:]+):\s+(?P<value>.+?)\s*$', line):
         return ParsedLine(line_number, LineType.PROPERTY, info=property_match.groupdict())
 
     raise InvalidLineException(line_number, f'invalid line `{line}`', LINE_EXPLAINER)
@@ -495,7 +495,7 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
 def parse_distribution(string: str, line_number: int) -> Distribution:
     for name, (distribution_class, parameters) in DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME.items():
         distribution_pattern = compile_distribution_pattern(name, parameters)
-        if distribution_match := re.match(distribution_pattern, string):
+        if distribution_match := re.fullmatch(distribution_pattern, string):
             float_from_parameter = parse_distribution_parameters(distribution_match)
             return distribution_class(**float_from_parameter, line_number=line_number)
 
