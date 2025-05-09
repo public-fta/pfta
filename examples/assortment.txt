@@ -2,6 +2,12 @@
 
 - times: 0, 1
 - time_unit: h
+- sample_size: 10
+
+Model: CENTURY
+- model_type: Fixed
+- probability: loguniform(lower=0.01, upper=1)
+- intensity: 0
 
 
 Event: A
@@ -61,6 +67,14 @@ Event: EV-HSE
 - probability: 0
 - intensity: 0
 
+Event: CENTURY-A
+- label: `loguniform` instance A
+- model: CENTURY
+
+Event: CENTURY-B
+- label: `loguniform` instance B
+- model: CENTURY
+
 
 Gate: OR
 - label: Normal OR gate
@@ -114,9 +128,9 @@ Gate: OBJ
 Gate: GT-AND
 - label: AND gate
 - type: AND
-- inputs: EV-BSC, EV-UND, EV-HSE
+- inputs: EV-BSC, EV-UND, EV-HSE, CENTURY-A
 
 Gate: GT-OR
 - label: OR gate
 - type: OR
-- inputs: EV-BSC, EV-UND, EV-HSE
+- inputs: CENTURY-A, CENTURY-B
