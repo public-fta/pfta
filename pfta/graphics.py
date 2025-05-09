@@ -467,18 +467,13 @@ class SymbolGraphic(Graphic):
 
     @staticmethod
     def undeveloped_event_svg_content(x: int, y: int) -> str:
-        centre = x
-        middle = y + SYMBOL_Y_OFFSET
-        half_height = UNDEVELOPED_EVENT_HALF_HEIGHT
-        half_width = UNDEVELOPED_EVENT_HALF_WIDTH
+        top_x = bottom_x = x
+        left_y = right_y = y + SYMBOL_Y_OFFSET
 
-        top_x = bottom_x = centre
-        left_y = right_y = middle
-
-        left_x = centre - half_width
-        right_x = centre + half_width
-        top_y = middle - half_height
-        bottom_y = middle + half_height
+        left_x = x - UNDEVELOPED_EVENT_HALF_WIDTH
+        right_x = x + UNDEVELOPED_EVENT_HALF_WIDTH
+        top_y = y - UNDEVELOPED_EVENT_HALF_HEIGHT + SYMBOL_Y_OFFSET
+        bottom_y = y + UNDEVELOPED_EVENT_HALF_HEIGHT + SYMBOL_Y_OFFSET
 
         points = f'{top_x},{top_y} {left_x},{left_y} {bottom_x},{bottom_y} {right_x},{right_y}'
 
