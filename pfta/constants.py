@@ -40,9 +40,10 @@ class SymbolType(enum.Enum):
     AND_GATE = 1
     # TODO: VOTE_GATE = 2
     PAGED_GATE = 3
-    BASIC_EVENT = 4
-    UNDEVELOPED_EVENT = 5
-    HOUSE_EVENT = 6
+    NULL_GATE = 4
+    BASIC_EVENT = 5
+    UNDEVELOPED_EVENT = 6
+    HOUSE_EVENT = 7
 
 
 LINE_EXPLAINER = '\n'.join([

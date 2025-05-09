@@ -359,6 +359,9 @@ class SymbolGraphic(Graphic):
         if self.type_ == SymbolType.PAGED_GATE:
             return SymbolGraphic.paged_gate_svg_content(self.x, self.y)
 
+        if self.type_ == SymbolType.NULL_GATE:
+            return ''
+
         if self.type_ == SymbolType.BASIC_EVENT:
             return SymbolGraphic.basic_event_svg_content(self.x, self.y)
 
@@ -391,6 +394,9 @@ class SymbolGraphic(Graphic):
 
             if gate.is_paged and parent_node is not None:
                 return SymbolType.PAGED_GATE
+
+            if len(gate.input_ids) == 1:
+                return SymbolType.NULL_GATE
 
             if gate.type_ == GateType.OR:
                 return SymbolType.OR_GATE
