@@ -16,6 +16,7 @@ from pfta.constants import (
     LineType,
     LINE_EXPLAINER, VALID_CLASSES, CLASS_EXPLAINER,
     BOOLEAN_FROM_STRING, IS_PAGED_EXPLAINER,
+    EVENT_APPEARANCE_FROM_STRING, EVENT_APPEARANCE_EXPLAINER,
     GATE_TYPE_FROM_STRING, GATE_TYPE_EXPLAINER,
     VALID_MODEL_TYPES, VALID_MODEL_KEYS, MODEL_TYPE_EXPLAINER,
     VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS,
@@ -67,6 +68,10 @@ class InvalidModelTypeException(FaultTreeTextException):
 
 
 class InvalidBooleanException(FaultTreeTextException):
+    pass
+
+
+class InvalidEventAppearanceException(FaultTreeTextException):
     pass
 
 
@@ -430,6 +435,17 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
         if key == 'model':
             properties['model_id'] = value
             properties['model_id_line_number'] = parsed_line.number
+            continue
+
+        if key == 'appearance':
+            try:
+                properties['appearance'] = EVENT_APPEARANCE_FROM_STRING[value]
+            except KeyError:
+                raise InvalidEventAppearanceException(
+                    parsed_line.number,
+                    f'invalid value `{value}`',
+                    EVENT_APPEARANCE_EXPLAINER,
+                )
             continue
 
         raise ImplementationError(f'bad key `{key}`')

@@ -24,6 +24,12 @@ class LineType(enum.Enum):
     PROPERTY = 3
 
 
+class EventAppearance(enum.Enum):
+    BASIC = 0
+    UNDEVELOPED = 1
+    HOUSE = 2
+
+
 class GateType(enum.Enum):
     OR = 0
     AND = 1
@@ -60,6 +66,15 @@ IS_PAGED_EXPLAINER = (
     f'Boolean property must be {natural_join_backticks(tuple(BOOLEAN_FROM_STRING), "or")} (case-sensitive).'
 )
 
+EVENT_APPEARANCE_FROM_STRING = {
+    'Basic': EventAppearance.BASIC,
+    'Undeveloped': EventAppearance.UNDEVELOPED,
+    'House': EventAppearance.HOUSE,
+}
+EVENT_APPEARANCE_EXPLAINER = (
+    f'Event appearance must be {natural_join_backticks(tuple(EVENT_APPEARANCE_FROM_STRING), "or")} (case-sensitive).'
+)
+
 GATE_TYPE_FROM_STRING = {
     'OR': GateType.OR,
     'AND': GateType.AND,
@@ -94,7 +109,7 @@ VALID_KEYS_FROM_CLASS = {
         'significant_figures', 'scientific_exponent',
     ),
     'Model': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),
-    'Event': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS, 'model'),
+    'Event': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS, 'model', 'appearance'),
     'Gate': ('label', 'comment', 'is_paged', 'type', 'inputs'),
 }
 KEY_EXPLAINER_FROM_CLASS = {
