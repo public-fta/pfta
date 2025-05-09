@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 
+
+## [v0.2.0] First reasonable (2025-05-10)
+
 - Implemented VOTE gates
 - Removed model type `Undeveloped`
 - Added model types `True` and `False` (which trigger cut set simplification)
@@ -17,5 +20,6 @@
 - First reasonably working version. Vote gates yet to be implemented.
 
 
-[Unreleased]: https://github.com/public-fta/pfta/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/public-fta/pfta/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/public-fta/pfta/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/public-fta/pfta/releases/tag/v0.1.0
