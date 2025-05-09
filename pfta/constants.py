@@ -33,6 +33,7 @@ class EventAppearance(enum.Enum):
 class GateType(enum.Enum):
     OR = 0
     AND = 1
+    VOTE = 2
 
 
 class SymbolType(enum.Enum):
@@ -77,12 +78,8 @@ EVENT_APPEARANCE_EXPLAINER = (
     f'Event appearance must be {natural_join_backticks(tuple(EVENT_APPEARANCE_FROM_STRING), "or")} (case-sensitive).'
 )
 
-GATE_TYPE_FROM_STRING = {
-    'OR': GateType.OR,
-    'AND': GateType.AND,
-}
 GATE_TYPE_EXPLAINER = (
-    f'Gate type must be {natural_join_backticks(tuple(GATE_TYPE_FROM_STRING), "or")} (case-sensitive).'
+    f'Gate type must be `OR`, `AND`, or of the form `VOTE(<int>)` (case-sensitive).'
 )
 
 VALID_KEY_COMBOS_FROM_MODEL_TYPE = {

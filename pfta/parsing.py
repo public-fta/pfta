@@ -13,11 +13,11 @@ from typing import Optional
 
 from pfta.common import none_aware_dict_eq, natural_repr
 from pfta.constants import (
-    LineType,
+    LineType, GateType,
     LINE_EXPLAINER, VALID_CLASSES, CLASS_EXPLAINER,
     BOOLEAN_FROM_STRING, IS_PAGED_EXPLAINER,
     EVENT_APPEARANCE_FROM_STRING, EVENT_APPEARANCE_EXPLAINER,
-    GATE_TYPE_FROM_STRING, GATE_TYPE_EXPLAINER,
+    GATE_TYPE_EXPLAINER,
     VALID_MODEL_TYPES, VALID_MODEL_KEYS, MODEL_TYPE_EXPLAINER,
     VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS,
     VALID_ID_REGEX, ID_EXPLAINER,
@@ -474,10 +474,25 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
             continue
 
         if key == 'type':
-            try:
-                properties['type'] = GATE_TYPE_FROM_STRING[value]
-            except KeyError:
+            if value == 'OR':
+                properties['type'] = GateType.OR
+                properties['vote_threshold'] = None
+
+            elif value == 'AND':
+                properties['type'] = GateType.AND
+                properties['vote_threshold'] = None
+
+            elif vote_match := re.fullmatch(r'VOTE\((?P<vote_threshold>[0-9]+)\)', value):
+                properties['type'] = GateType.VOTE
+                digits = vote_match.group('vote_threshold')
+                try:
+                    properties['vote_threshold'] = int(vote_match.group('vote_threshold'))
+                except ValueError:
+                    raise InvalidIntegerException(parsed_line.number, f'unable to convert `{digits}` to integer')
+
+            else:
                 raise InvalidGateTypeException(parsed_line.number, f'invalid value `{value}`', GATE_TYPE_EXPLAINER)
+
             continue
 
         if key == 'inputs':

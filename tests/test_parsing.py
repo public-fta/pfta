@@ -626,3 +626,15 @@ class TestParsing(unittest.TestCase):
                 ],
             ),
         )
+        self.assertRaises(
+            InvalidGateTypeException,
+            parse_gate_properties,
+            ParsedAssembly(
+                class_='Gate',
+                id_='GT-001',
+                object_line=ParsedLine(4, LineType.OBJECT, info={'class': 'Gate', 'id': 'GT-001'}),
+                property_lines=[
+                    ParsedLine(5, LineType.PROPERTY, info={'key': 'type', 'value': 'VOTE(I)'})
+                ],
+            ),
+        )
