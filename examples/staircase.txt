@@ -1,4 +1,4 @@
-# Procedurally generated from `generate_staircase.py`.
+# A staircase, procedurally generated from `generate_staircase.py`.
 
 
 - times: nan

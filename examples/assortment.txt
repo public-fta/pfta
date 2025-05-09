@@ -1,3 +1,5 @@
+# Assortment of interesting edge cases.
+
 - times: 0, 1
 - time_unit: h
 

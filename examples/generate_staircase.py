@@ -61,7 +61,7 @@ def or_gate_text(level):
 
 def main():
     fault_tree_text = '\n'.join([
-        '# Procedurally generated from `generate_staircase.py`.',
+        '# A staircase, procedurally generated from `generate_staircase.py`.',
         '',
         '',
         fault_tree_properties_text(),

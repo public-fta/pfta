@@ -1,0 +1,3 @@
+# An empty fault tree (minimal compiling example).
+
+- times: nan
