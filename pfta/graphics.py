@@ -8,6 +8,7 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
+import html
 import math
 import re
 import string
@@ -531,31 +532,26 @@ class QuantityTextGraphic(Graphic):
         probability_middle = format_number(middle - line_half_gap, decimal_places=1)
         intensity_middle = format_number(middle + line_half_gap, decimal_places=1)
 
-        def lhs_format(variable_name: str) -> str:
-            return f'E[{variable_name}]' if self.is_monte_carlo else variable_name
-
-        probability_lhs = lhs_format('q')
         probability_value = format_number(self.probability, significant_figures=self.significant_figures,
                                           scientific_exponent_threshold=self.scientific_exponent)
-        probability_line = f'{probability_lhs} = {probability_value}'
+        probability_rhs = escape_xml(probability_value)
 
-        intensity_lhs = lhs_format('ω')
         intensity_value = format_number(self.intensity, significant_figures=self.significant_figures,
                                         scientific_exponent_threshold=self.scientific_exponent)
         intensity_quantity = format_quantity(intensity_value, self.time_unit, is_reciprocal=True)
-        intensity_line = f'{intensity_lhs} = {intensity_quantity}'
+        intensity_rhs = escape_xml(intensity_quantity)
 
-        max_line_length = max(
-            probability_length := len(probability_line),
-            intensity_length := len(intensity_line),
+        max_rhs_length = max(
+            probability_rhs_length := len(unescape_xml(probability_rhs)),
+            intensity_rhs_length := len(unescape_xml(intensity_rhs)),
         )
-        probability_spaces = (max_line_length - probability_length) * ' '
-        intensity_spaces = (max_line_length - intensity_length) * ' '
+        probability_spaces = (max_rhs_length - probability_rhs_length) * ' '
+        intensity_spaces = (max_rhs_length - intensity_rhs_length) * ' '
         probability_padding = f'<tspan class="padding">{probability_spaces}</tspan>' if probability_spaces else ''
         intensity_padding = f'<tspan class="padding">{intensity_spaces}</tspan>' if intensity_spaces else ''
 
-        probability_content = escape_xml(probability_line) + probability_padding
-        intensity_content = escape_xml(intensity_line) + intensity_padding
+        probability_content = f'q = {probability_rhs}' + probability_padding
+        intensity_content = f'ω = {intensity_rhs}' + intensity_padding
 
         return '\n'.join([
             f'<text x="{centre}" y="{probability_middle}">{probability_content}</text>',
@@ -587,6 +583,13 @@ def escape_xml(text: str) -> str:
     text = re.sub('>', '&gt;', text)
 
     return text
+
+
+def unescape_xml(xml: str) -> str:
+    """
+    Unescape XML entities.
+    """
+    return html.unescape(xml)
 
 
 def figure_svg_content(bounding_width: int, bounding_height: int, graphics: list[Graphic]) -> str:
