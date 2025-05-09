@@ -70,7 +70,8 @@ PAGED_GATE_HALF_WIDTH = 40
 
 BASIC_EVENT_RADIUS = 38
 
-UNDEVELOPED_EVENT_CIRCUMRADIUS = 39
+UNDEVELOPED_EVENT_HALF_HEIGHT = 38
+UNDEVELOPED_EVENT_HALF_WIDTH = 54
 
 QUANTITY_BOX_Y_OFFSET = 45
 QUANTITY_BOX_WIDTH = 108
@@ -468,15 +469,16 @@ class SymbolGraphic(Graphic):
     def undeveloped_event_svg_content(x: int, y: int) -> str:
         centre = x
         middle = y + SYMBOL_Y_OFFSET
-        circumradius = UNDEVELOPED_EVENT_CIRCUMRADIUS
+        half_height = UNDEVELOPED_EVENT_HALF_HEIGHT
+        half_width = UNDEVELOPED_EVENT_HALF_WIDTH
 
         top_x = bottom_x = centre
         left_y = right_y = middle
 
-        left_x = centre - circumradius
-        right_x = centre + circumradius
-        top_y = middle - circumradius
-        bottom_y = middle + circumradius
+        left_x = centre - half_width
+        right_x = centre + half_width
+        top_y = middle - half_height
+        bottom_y = middle + half_height
 
         points = f'{top_x},{top_y} {left_x},{left_y} {bottom_x},{bottom_y} {right_x},{right_y}'
 
