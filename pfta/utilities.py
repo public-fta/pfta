@@ -7,11 +7,12 @@ Mathematical utility methods.
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
-
+import itertools
 import math
 import re
-from typing import Iterable, Optional
+from typing import Iterable, Optional, Collection
 
+from pfta.boolean import Term
 from pfta.woe import ImplementationError
 
 
@@ -119,6 +120,16 @@ def descending_sum(terms: Iterable[float]) -> float:
         1e-9 + 5e-10 + 2.5e-12 + 2.5e-12 + 5e-13 = 1.5055e-09
     """
     return sum(sorted(terms, reverse=True))
+
+
+def concrete_combinations(terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
+    """
+    Compute concrete term combinations (subset-tuples) of given order (size).
+
+    Concrete, because `itertools.combinations` returns an iterator (which gets consumed on first iteration),
+    and we convert it to a list so that it persists multiple iterations.
+    """
+    return list(itertools.combinations(terms, order))
 
 
 def find_cycles(adjacency_dict: dict):

@@ -9,13 +9,12 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import collections
-import itertools
 import math
 from typing import TYPE_CHECKING, Collection, DefaultDict, Iterable, Optional
 
 from pfta.boolean import Term
 from pfta.common import natural_repr
-from pfta.utilities import robust_divide, descending_product, descending_sum
+from pfta.utilities import robust_divide, descending_product, descending_sum, concrete_combinations
 
 if TYPE_CHECKING:
     from pfta.core import Event
@@ -215,16 +214,6 @@ def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
 
     q = constant_rate_model_probability(t, lambda_, mu)
     return lambda_ * (1 - q)
-
-
-def concrete_combinations(terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
-    """
-    Compute concrete term combinations (subset-tuples) of given order (size).
-
-    Concrete, because `itertools.combinations` returns an iterator (which gets consumed on first iteration),
-    and we convert it to a list so that it persists multiple iterations.
-    """
-    return list(itertools.combinations(terms, order))
 
 
 def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) -> bool:
