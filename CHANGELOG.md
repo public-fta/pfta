@@ -6,6 +6,7 @@
 - Improved graphics sizes
 - Changed `E[q]`, `E[ω]` to sample size tooltip
 - Removed model type `Undeveloped`
+- Added event property `appearance`
 
 
 ## [v0.1.0] First unstable (2025-05-09)

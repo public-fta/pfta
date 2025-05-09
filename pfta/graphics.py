@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Optional
 
 import pfta.core
 from pfta.common import format_quantity
-from pfta.constants import GateType, SymbolType
+from pfta.constants import EventAppearance, GateType, SymbolType
 from pfta.utilities import format_number
 from pfta.woe import ImplementationError
 
@@ -364,10 +364,16 @@ class SymbolGraphic(Graphic):
         if isinstance(source_object, pfta.core.Event):
             event = source_object
 
-            if event.actual_model_type == 'Undeveloped':  # TODO: eliminate
+            if event.appearance == EventAppearance.BASIC:
+                return SymbolType.DEVELOPED_EVENT  # TODO: change to BASIC_EVENT
+
+            if event.appearance == EventAppearance.UNDEVELOPED:
                 return SymbolType.UNDEVELOPED_EVENT
-            else:
-                return SymbolType.DEVELOPED_EVENT
+
+            if event.appearance == EventAppearance.HOUSE:
+                return SymbolType.DEVELOPED_EVENT  # TODO: change to HOUSE_EVENT
+
+            raise ImplementationError(f'bad event appearance {event.appearance}')
 
         if isinstance(source_object, pfta.core.Gate):
             gate = source_object
@@ -496,7 +502,6 @@ class QuantityBoxGraphic(Graphic):
 class QuantityTextGraphic(Graphic):
     x: int
     y: int
-    is_undeveloped_event: bool
     probability: float
     intensity: float
     sample_size: int
@@ -505,17 +510,10 @@ class QuantityTextGraphic(Graphic):
     scientific_exponent: int
 
     def __init__(self, node: 'Node'):
-        source_object = node.source_object
-        is_undeveloped_event = (
-            isinstance(source_object, pfta.core.Event)
-            and source_object.actual_model_type == 'Undeveloped'  # TODO: eliminate
-        )
-
         self.x = node.x
         self.y = node.y
-        self.is_undeveloped_event = is_undeveloped_event  # TODO: eliminate
-        self.probability = source_object.computed_expected_probabilities[node.time_index]
-        self.intensity = source_object.computed_expected_intensities[node.time_index]
+        self.probability = node.source_object.computed_expected_probabilities[node.time_index]
+        self.intensity = node.source_object.computed_expected_intensities[node.time_index]
         self.sample_size = node.fault_tree.sample_size
         self.time_unit = node.fault_tree.time_unit
         self.significant_figures = node.fault_tree.significant_figures

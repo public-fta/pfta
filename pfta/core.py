@@ -20,7 +20,7 @@ from pfta.computation import (
     constant_rate_model_probability, constant_rate_model_intensity,
     disjunction_probability, disjunction_intensity,
 )
-from pfta.constants import LineType, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
+from pfta.constants import LineType, EventAppearance, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_model_properties, parse_event_properties, parse_gate_properties,
@@ -729,6 +729,7 @@ class Event(Object):
     comment: Optional[str]
     model_id: str
     model_id_line_number: int
+    appearance: EventAppearance
 
     model_type: str
     model_dict: dict[str, Distribution]
@@ -743,6 +744,7 @@ class Event(Object):
         model_type = properties.get('model_type')
         model_id = properties.get('model_id')
         model_id_line_number = properties.get('model_id_line_number')
+        appearance = properties.get('appearance', EventAppearance.BASIC)
         unset_property_line_number = properties.get('unset_property_line_number')
 
         model_dict = Model.extract_model_dict(properties)
@@ -758,6 +760,7 @@ class Event(Object):
         self.comment = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
         self.model_id = model_id
         self.model_id_line_number = model_id_line_number
+        self.appearance = appearance
 
         # Indirect fields
         self.model_type = model_type
