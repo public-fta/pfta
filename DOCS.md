@@ -76,6 +76,18 @@ q(t) = [λ₀/(λ₀+μ₀)] [1−exp(−(λ₀+μ₀)t)],
 
 where `λ₀ = failure_rate = 1/mean_failure_time` and `μ₀ = repair_rate = 1/mean_repair_time`.
 
+#### True | False
+
+```
+Model: <identifier>
+- label: <string>           (optional)
+- comment: <string>         (optional)
+- model_type: True | False
+```
+
+Events using a Boolean model are eternally unchanging.
+Cut sets are simplified using the Boolean value (`True` or `False`).
+
 
 ### Event paragraph
 

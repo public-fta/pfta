@@ -790,6 +790,12 @@ class Event(Object):
 
     @memoise('computed_expression')
     def compute_expression(self) -> Expression:
+        if self.actual_model_type == 'True':
+            return Expression(Term(encoding=0))
+
+        if self.actual_model_type == 'False':
+            return Expression()
+
         return Expression(Term.create_from_event_index(self.index))
 
     @memoise('computed_probabilities')
@@ -987,7 +993,7 @@ class Gate(Object):
         ]
         data = [
             [
-                format_cut_set(events[index].id_ for index in term.event_indices()),
+                format_cut_set(tuple(events[index].id_ for index in term.event_indices())),
                 term.order(),
                 time, sample_index,
                 computational_cache.probability(term, self.flattened_indexer.get_index(time_index, sample_index)),

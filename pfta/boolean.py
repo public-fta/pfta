@@ -9,6 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import itertools
+from typing import Optional
 
 from pfta.woe import ImplementationError
 
@@ -164,11 +165,14 @@ class Expression:
     def __repr__(self):
         return f'Expression({", ".join(repr(t) for t in self.terms)})'
 
-    def sole_term(self) -> Term:
+    def sole_term_encoding(self) -> Optional[int]:
+        if not self.terms:  # expression is False
+            return None
+
         if len(self.terms) != 1:
             raise ImplementationError(f'`{self}` does not have a sole term')
 
-        return next(iter(self.terms))
+        return next(iter(self.terms)).encoding
 
     @staticmethod
     def conjunction(*expressions: 'Expression') -> 'Expression':

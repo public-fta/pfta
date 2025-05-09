@@ -48,7 +48,10 @@ def natural_join_backticks(items: Union[tuple, list], penultimate_separator: Opt
     return natural_join([f'`{item}`' for item in items], penultimate_separator)
 
 
-def format_cut_set(event_ids: Iterable[str]):
+def format_cut_set(event_ids: tuple[str, ...]) -> str:
+    if not event_ids:
+        return 'True'
+
     return '.'.join(event_ids)
 
 
