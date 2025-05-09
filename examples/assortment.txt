@@ -28,6 +28,24 @@ Event: C
 - probability: 0.3
 - intensity: 0
 
+Event: D
+- label: Finite intensity
+- model_type: Fixed
+- probability: 0
+- intensity: 600
+
+Event: E
+- label: Finite intensity
+- model_type: Fixed
+- probability: 0
+- intensity: 80
+
+Event: F
+- label: Finite intensity
+- model_type: Fixed
+- probability: 0
+- intensity: 9
+
 Event: I
 - label: Infinite intensity
 - model_type: Fixed
@@ -171,3 +189,43 @@ Gate: GT-OR-TRUE
 Gate: GT-OR-FALSE
 - type: OR
 - inputs: A, EV-FALSE, C
+
+
+Gate: ELECTIONS
+- type: OR
+- inputs: 0oo2, 1oo2, 2oo2, 3oo2, 2oo3, 3oo5, 4oo6
+
+Gate: 0oo2
+- label: 0 out of 2 = True
+- type: VOTE(0)
+- inputs: A, B
+
+Gate: 1oo2
+- label: 1 out of 2 = OR
+- type: VOTE(1)
+- inputs: A, B
+
+Gate: 2oo2
+- label: 2 out of 2 = AND
+- type: VOTE(2)
+- inputs: A, B
+
+Gate: 3oo2
+- label: 3 out of 2 = False
+- type: VOTE(3)
+- inputs: A, B
+
+Gate: 2oo3
+- label: 2 out of 3
+- type: VOTE(2)
+- inputs: A, B, C
+
+Gate: 3oo5
+- label: 3 out of 5
+- type: VOTE(3)
+- inputs: A, B, C, D, E
+
+Gate: 4oo6
+- label: 4 out of 5
+- type: VOTE(4)
+- inputs: A, B, C, D, E, F

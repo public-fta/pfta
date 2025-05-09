@@ -11,6 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import itertools
 from typing import Optional
 
+from pfta.utilities import concrete_combinations
 from pfta.woe import ImplementationError
 
 
@@ -196,4 +197,14 @@ class Expression:
             term
             for expression in expressions
             for term in expression.terms
+        ))
+
+    @staticmethod
+    def vote(*input_expressions: 'Expression', threshold: int) -> 'Expression':
+        """
+        Compute the vote of a sequence of expressions.
+        """
+        return Expression.disjunction(*(
+            Expression.conjunction(*combo)
+            for combo in concrete_combinations(input_expressions, threshold)
         ))

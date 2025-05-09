@@ -122,7 +122,7 @@ Gate: <identifier>
 - label: <string>                        (optional)
 - comment: <string>                      (optional)
 - is_paged: True | False                 (optional; default `False`; whether the gate should have its own page in graphical output)
-- type: AND | OR                         (mandatory)
+- type: AND | OR | VOTE(<int>)           (mandatory)
 - inputs: <comma separated identifiers>  (mandatory)
 ```
 

@@ -287,3 +287,52 @@ class TestBoolean(unittest.TestCase):
             ),
             Expression(Term(0b001), Term(0b010), Term(0b100)),
         )
+
+    def test_expression_vote(self):
+        # (0 out of 2)(A, B) = True
+        self.assertEqual(
+            Expression.vote(Expression(Term(0b01)), Expression(Term(0b10)), threshold=0),
+            Expression(Term(0)),
+        )
+
+        # (1 out of 2)(A, B) = A + B
+        self.assertEqual(
+            Expression.vote(Expression(Term(0b01)), Expression(Term(0b10)), threshold=1),
+            Expression(Term(0b01), Term(0b10)),
+        )
+
+        # (2 out of 2)(A, B) = AB
+        self.assertEqual(
+            Expression.vote(Expression(Term(0b01)), Expression(Term(0b10)), threshold=2),
+            Expression(Term(0b11)),
+        )
+
+        # (3 out of 2)(A, B) = False
+        self.assertEqual(
+            Expression.vote(Expression(Term(0b01)), Expression(Term(0b10)), threshold=3),
+            Expression(),
+        )
+
+        # (3 out of 5)(A, B, C, D, E)
+        self.assertEqual(
+            Expression.vote(
+                Expression(Term(0b00001)),
+                Expression(Term(0b00010)),
+                Expression(Term(0b00100)),
+                Expression(Term(0b01000)),
+                Expression(Term(0b10000)),
+                threshold=3,
+            ),
+            Expression(
+                Term(0b00111),  # ABC
+                Term(0b01011),  # ABD
+                Term(0b10011),  # ABE
+                Term(0b01101),  # ACD
+                Term(0b10101),  # ACE
+                Term(0b11001),  # ADE
+                Term(0b01110),  # BCD
+                Term(0b10110),  # BCE
+                Term(0b11010),  # BDE
+                Term(0b11100),  # CDE
+            ),
+        )

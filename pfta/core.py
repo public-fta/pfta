@@ -917,6 +917,7 @@ class Gate(Object):
     label: Optional[str]
     is_paged: bool
     type_: GateType
+    vote_threshold: Optional[int]
     input_ids: list[str]
     input_ids_line_number: int
     comment: Optional[str]
@@ -927,6 +928,7 @@ class Gate(Object):
         label = properties.get('label')
         is_paged = properties.get('is_paged', False)
         type_ = properties.get('type')
+        vote_threshold = properties.get('vote_threshold')
         input_ids = properties.get('input_ids')
         input_ids_line_number = properties.get('input_ids_line_number')
         comment = properties.get('comment')
@@ -940,6 +942,7 @@ class Gate(Object):
         self.label = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
         self.is_paged = is_paged
         self.type_ = type_
+        self.vote_threshold = vote_threshold
         self.input_ids = input_ids
         self.input_ids_line_number = input_ids_line_number
         self.comment = None  # placeholder assigned here for __dict__ order; to be reassigned by super()
@@ -959,13 +962,15 @@ class Gate(Object):
         ]
 
         if self.type_ == GateType.AND:
-            boolean_operator = Expression.conjunction
-        elif self.type_ == GateType.OR:
-            boolean_operator = Expression.disjunction
-        else:
-            raise ImplementationError(f'bad gate type `{self.type_}`')
+            return Expression.conjunction(*input_expressions)
 
-        return boolean_operator(*input_expressions)
+        if self.type_ == GateType.OR:
+            return Expression.disjunction(*input_expressions)
+
+        if self.type_ == GateType.VOTE:
+            return Expression.vote(*input_expressions, threshold=self.vote_threshold)
+
+        raise ImplementationError(f'bad gate type `{self.type_}`')
 
     @memoise('computed_probabilities')
     def compute_probabilities(self, computational_cache: ComputationalCache) -> list[float]:

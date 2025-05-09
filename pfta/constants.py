@@ -39,7 +39,7 @@ class GateType(enum.Enum):
 class SymbolType(enum.Enum):
     OR_GATE = 0
     AND_GATE = 1
-    # TODO: VOTE_GATE = 2
+    VOTE_GATE = 2
     PAGED_GATE = 3
     NULL_GATE = 4
     BASIC_EVENT = 5

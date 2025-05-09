@@ -10,10 +10,11 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import itertools
 import math
 import re
-from typing import Iterable, Optional, Collection
+from typing import Iterable, Optional, Collection, TypeVar
 
-from pfta.boolean import Term
 from pfta.woe import ImplementationError
+
+T = TypeVar('T')
 
 
 def robust_divide(x: float, y: float) -> float:
@@ -122,14 +123,14 @@ def descending_sum(terms: Iterable[float]) -> float:
     return sum(sorted(terms, reverse=True))
 
 
-def concrete_combinations(terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
+def concrete_combinations(items: Collection[T], order: int) -> list[tuple[T, ...]]:
     """
     Compute concrete term combinations (subset-tuples) of given order (size).
 
     Concrete, because `itertools.combinations` returns an iterator (which gets consumed on first iteration),
     and we convert it to a list so that it persists multiple iterations.
     """
-    return list(itertools.combinations(terms, order))
+    return list(itertools.combinations(items, order))
 
 
 def find_cycles(adjacency_dict: dict):

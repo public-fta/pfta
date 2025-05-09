@@ -3,6 +3,7 @@
 
 ## [Unreleased]
 
+- Implemented VOTE gates
 - Removed model type `Undeveloped`
 - Added model types `True` and `False` (which trigger cut set simplification)
 - Added event property `appearance: Basic | Undeveloped | House`

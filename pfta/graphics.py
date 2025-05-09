@@ -65,6 +65,8 @@ AND_GATE_BODY_HEIGHT = 34  # toes, below centre
 AND_GATE_SLING_RISE = 42  # control points, above toes
 AND_GATE_HALF_WIDTH = 32
 
+VOTE_GATE_THRESHOLD_TEXT_HEIGHT = 25  # number, above centre
+
 PAGED_GATE_APEX_HEIGHT = 36  # tip, above centre
 PAGED_GATE_BODY_HEIGHT = 32  # toes, below centre
 PAGED_GATE_HALF_WIDTH = 40
@@ -343,11 +345,13 @@ class SymbolGraphic(Graphic):
     x: int
     y: int
     type_: SymbolType
+    vote_threshold: Optional[int]
 
     def __init__(self, node: 'Node'):
         self.x = node.x
         self.y = node.y
         self.type_ = SymbolGraphic.determine_type(node.parent_node, node.source_object)
+        self.vote_threshold = SymbolGraphic.determine_vote_threshold(node.source_object)
 
     def svg_content(self) -> str:
         if self.type_ == SymbolType.OR_GATE:
@@ -355,6 +359,9 @@ class SymbolGraphic(Graphic):
 
         if self.type_ == SymbolType.AND_GATE:
             return SymbolGraphic.and_gate_svg_content(self.x, self.y)
+
+        if self.type_ == SymbolType.VOTE_GATE:
+            return SymbolGraphic.vote_gate_svg_content(self.x, self.y, self.vote_threshold)
 
         if self.type_ == SymbolType.PAGED_GATE:
             return SymbolGraphic.paged_gate_svg_content(self.x, self.y)
@@ -404,9 +411,19 @@ class SymbolGraphic(Graphic):
             if gate.type_ == GateType.AND:
                 return SymbolType.AND_GATE
 
+            if gate.type_ == GateType.VOTE:
+                return SymbolType.VOTE_GATE
+
             raise ImplementationError(f'bad gate type {gate.type_}')
 
         raise ImplementationError(f'bad class_name {type(source_object).__name__}')
+
+    @staticmethod
+    def determine_vote_threshold(source_object: 'Object') -> Optional[int]:
+        if isinstance(source_object, pfta.core.Gate):
+            return source_object.vote_threshold
+
+        return None
 
     @staticmethod
     def or_gate_svg_content(x: int, y: int) -> str:
@@ -458,6 +475,17 @@ class SymbolGraphic(Graphic):
         ])
 
         return f'<path d="{commands}"/>'
+
+    @staticmethod
+    def vote_gate_svg_content(x: int, y: int, vote_threshold: Optional[int]) -> str:
+        text_x = x
+        text_y = y - VOTE_GATE_THRESHOLD_TEXT_HEIGHT + SYMBOL_Y_OFFSET
+        content = vote_threshold
+
+        return '\n'.join([
+            SymbolGraphic.or_gate_svg_content(x, y),
+            f'<text x="{text_x}" y="{text_y}">{content}</text>'
+        ])
 
     @staticmethod
     def paged_gate_svg_content(x: int, y: int) -> str:
