@@ -6,6 +6,7 @@
 - Improved graphics sizes
 - Changed `E[q]`, `E[ω]` to sample size tooltip
 - Removed model type `Undeveloped`
+- Added model types `True` and `False`
 - Added event property `appearance: Basic | Undeveloped | House`
 
 

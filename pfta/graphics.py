@@ -16,6 +16,7 @@ import textwrap
 from typing import TYPE_CHECKING, Optional
 
 import pfta.core
+from pfta.boolean import Term, Expression
 from pfta.common import format_quantity
 from pfta.constants import EventAppearance, GateType, SymbolType
 from pfta.utilities import format_number
@@ -522,6 +523,7 @@ class QuantityBoxGraphic(Graphic):
 class QuantityTextGraphic(Graphic):
     x: int
     y: int
+    expression: Expression
     probability: float
     intensity: float
     sample_size: int
@@ -532,6 +534,7 @@ class QuantityTextGraphic(Graphic):
     def __init__(self, node: 'Node'):
         self.x = node.x
         self.y = node.y
+        self.expression = node.source_object.computed_expression
         self.probability = node.source_object.computed_expected_probabilities[node.time_index]
         self.intensity = node.source_object.computed_expected_intensities[node.time_index]
         self.sample_size = node.fault_tree.sample_size
@@ -542,6 +545,12 @@ class QuantityTextGraphic(Graphic):
     def svg_content(self) -> str:
         centre = self.x
         middle = self.y + QUANTITY_BOX_Y_OFFSET
+
+        if self.expression == Expression(Term(encoding=0)):
+            return f'<text x="{centre}" y="{middle}">True</text>'
+
+        if self.expression == Expression():
+            return f'<text x="{centre}" y="{middle}">False</text>'
 
         line_half_gap = DEFAULT_FONT_SIZE * DEFAULT_LINE_SPACING / 2
         probability_middle = format_number(middle - line_half_gap, decimal_places=1)
