@@ -499,7 +499,7 @@ class QuantityTextGraphic(Graphic):
     is_undeveloped_event: bool
     probability: float
     intensity: float
-    is_monte_carlo: bool
+    sample_size: int
     time_unit: str
     significant_figures: int
     scientific_exponent: int
@@ -516,7 +516,7 @@ class QuantityTextGraphic(Graphic):
         self.is_undeveloped_event = is_undeveloped_event
         self.probability = source_object.computed_expected_probabilities[node.time_index]
         self.intensity = source_object.computed_expected_intensities[node.time_index]
-        self.is_monte_carlo = node.fault_tree.sample_size > 1
+        self.sample_size = node.fault_tree.sample_size
         self.time_unit = node.fault_tree.time_unit
         self.significant_figures = node.fault_tree.significant_figures
         self.scientific_exponent = node.fault_tree.scientific_exponent
@@ -553,9 +553,14 @@ class QuantityTextGraphic(Graphic):
         probability_content = f'q = {probability_rhs}' + probability_padding
         intensity_content = f'ω = {intensity_rhs}' + intensity_padding
 
+        if self.sample_size > 1:
+            tooltip = f'<title>mean value estimated from a sample of size {self.sample_size}</title>'
+        else:
+            tooltip = ''
+
         return '\n'.join([
-            f'<text x="{centre}" y="{probability_middle}">{probability_content}</text>',
-            f'<text x="{centre}" y="{intensity_middle}">{intensity_content}</text>',
+            f'<text x="{centre}" y="{probability_middle}">{tooltip}{probability_content}</text>',
+            f'<text x="{centre}" y="{intensity_middle}">{tooltip}{intensity_content}</text>',
         ])
 
 
