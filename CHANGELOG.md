@@ -3,11 +3,12 @@
 
 ## [Unreleased]
 
-- Improved graphics sizes
-- Changed `E[q]`, `E[ω]` to sample size tooltip
 - Removed model type `Undeveloped`
-- Added model types `True` and `False`
+- Added model types `True` and `False` (which trigger cut set simplification)
 - Added event property `appearance: Basic | Undeveloped | House`
+- Changed `E[q]`, `E[ω]` to sample size tooltip
+- Made single-input gates show as null gates
+- Improved graphics sizes
 
 
 ## [v0.1.0] First unstable (2025-05-09)
