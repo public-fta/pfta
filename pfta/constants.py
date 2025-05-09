@@ -40,7 +40,7 @@ class SymbolType(enum.Enum):
     AND_GATE = 1
     # TODO: VOTE_GATE = 2
     PAGED_GATE = 3
-    DEVELOPED_EVENT = 4
+    BASIC_EVENT = 4
     UNDEVELOPED_EVENT = 5
 
 

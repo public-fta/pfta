@@ -68,7 +68,8 @@ PAGED_GATE_APEX_HEIGHT = 36  # tip, above centre
 PAGED_GATE_BODY_HEIGHT = 32  # toes, below centre
 PAGED_GATE_HALF_WIDTH = 40
 
-DEVELOPED_EVENT_CIRCLE_RADIUS = 38
+BASIC_EVENT_RADIUS = 38
+
 UNDEVELOPED_EVENT_CIRCUMRADIUS = 39
 
 QUANTITY_BOX_Y_OFFSET = 45
@@ -351,8 +352,8 @@ class SymbolGraphic(Graphic):
         if self.type_ == SymbolType.PAGED_GATE:
             return SymbolGraphic.paged_gate_svg_content(self.x, self.y)
 
-        if self.type_ == SymbolType.DEVELOPED_EVENT:
-            return SymbolGraphic.developed_event_svg_content(self.x, self.y)
+        if self.type_ == SymbolType.BASIC_EVENT:
+            return SymbolGraphic.basic_event_svg_content(self.x, self.y)
 
         if self.type_ == SymbolType.UNDEVELOPED_EVENT:
             return SymbolGraphic.undeveloped_event_svg_content(self.x, self.y)
@@ -365,13 +366,13 @@ class SymbolGraphic(Graphic):
             event = source_object
 
             if event.appearance == EventAppearance.BASIC:
-                return SymbolType.DEVELOPED_EVENT  # TODO: change to BASIC_EVENT
+                return SymbolType.BASIC_EVENT
 
             if event.appearance == EventAppearance.UNDEVELOPED:
                 return SymbolType.UNDEVELOPED_EVENT
 
             if event.appearance == EventAppearance.HOUSE:
-                return SymbolType.DEVELOPED_EVENT  # TODO: change to HOUSE_EVENT
+                return SymbolType.BASIC_EVENT  # TODO: change to HOUSE_EVENT
 
             raise ImplementationError(f'bad event appearance {event.appearance}')
 
@@ -456,10 +457,10 @@ class SymbolGraphic(Graphic):
         return f'<polygon points="{points}"/>'
 
     @staticmethod
-    def developed_event_svg_content(x: int, y: int) -> str:
+    def basic_event_svg_content(x: int, y: int) -> str:
         centre = x
         middle = y + SYMBOL_Y_OFFSET
-        radius = DEVELOPED_EVENT_CIRCLE_RADIUS
+        radius = BASIC_EVENT_RADIUS
 
         return f'<circle cx="{centre}" cy="{middle}" r="{radius}"/>'
 
