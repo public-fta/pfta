@@ -67,6 +67,16 @@ Event: EV-HSE
 - probability: 0
 - intensity: 0
 
+Event: EV-TRUE
+- label: Eternally true
+- appearance: House
+- model_type: True
+
+Event: EV-FALSE
+- label: Eternally false
+- appearance: House
+- model_type: False
+
 Event: CENTURY-A
 - label: `loguniform` instance A
 - model: CENTURY
@@ -123,7 +133,7 @@ Gate: ABS-NAN-IMM
 Gate: OBJ
 - label: Object types
 - type: OR
-- inputs: GT-AND, GT-OR
+- inputs: GT-AND, GT-OR, GT-NULL
 
 Gate: GT-AND
 - label: AND gate
@@ -134,3 +144,30 @@ Gate: GT-OR
 - label: OR gate
 - type: OR
 - inputs: CENTURY-A, CENTURY-B
+
+Gate: GT-NULL
+- label: NULL gate
+- type: OR
+# TODO: Change to actual null gate
+- inputs: GT-BOOLEAN
+
+Gate: GT-BOOLEAN
+- label: Boolean testing
+- type: OR
+- inputs: GT-AND-TRUE, GT-AND-FALSE, GT-OR-TRUE, GT-OR-FALSE
+
+Gate: GT-AND-TRUE
+- type: AND
+- inputs: A, EV-TRUE, C
+
+Gate: GT-AND-FALSE
+- type: AND
+- inputs: A, EV-FALSE, C
+
+Gate: GT-OR-TRUE
+- type: OR
+- inputs: A, EV-TRUE, C
+
+Gate: GT-OR-FALSE
+- type: OR
+- inputs: A, EV-FALSE, C

@@ -797,6 +797,12 @@ class Event(Object):
         if self.actual_model_type == 'Fixed':
             return self.parameter_samples['probability']
 
+        if self.actual_model_type == 'True':
+            return [1 for _ in range(len(times) * sample_size)]
+
+        if self.actual_model_type == 'False':
+            return [0 for _ in range(len(times) * sample_size)]
+
         time_values = [t for t in times for _ in range(sample_size)]
 
         if self.actual_model_type == 'ConstantRate':
@@ -821,6 +827,9 @@ class Event(Object):
     def compute_intensities(self, times: list[float], sample_size: int) -> list[float]:
         if self.actual_model_type == 'Fixed':
             return self.parameter_samples['intensity']
+
+        if self.actual_model_type in ('True', 'False'):
+            return [0 for _ in range(len(times) * sample_size)]
 
         time_values = [t for t in times for _ in range(sample_size)]
 

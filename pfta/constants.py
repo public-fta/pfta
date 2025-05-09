@@ -94,6 +94,12 @@ VALID_KEY_COMBOS_FROM_MODEL_TYPE = {
         ('mean_failure_time', 'repair_rate'),
         ('mean_failure_time', 'mean_repair_time'),
     ),
+    'True': (
+        (),
+    ),
+    'False': (
+        (),
+    ),
 }
 VALID_MODEL_TYPES = tuple(VALID_KEY_COMBOS_FROM_MODEL_TYPE)
 VALID_MODEL_KEYS = tuple({
