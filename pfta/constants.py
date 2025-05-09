@@ -42,6 +42,7 @@ class SymbolType(enum.Enum):
     PAGED_GATE = 3
     BASIC_EVENT = 4
     UNDEVELOPED_EVENT = 5
+    HOUSE_EVENT = 6
 
 
 LINE_EXPLAINER = '\n'.join([

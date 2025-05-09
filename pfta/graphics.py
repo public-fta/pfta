@@ -73,6 +73,11 @@ BASIC_EVENT_RADIUS = 38
 UNDEVELOPED_EVENT_HALF_HEIGHT = 38
 UNDEVELOPED_EVENT_HALF_WIDTH = 54
 
+HOUSE_EVENT_APEX_HEIGHT = 38  # tip, above centre
+HOUSE_EVENT_SHOULDER_HEIGHT = 24  # corners, above centre
+HOUSE_EVENT_BODY_HEIGHT = 26  # toes, below centre
+HOUSE_EVENT_HALF_WIDTH = 36
+
 QUANTITY_BOX_Y_OFFSET = 45
 QUANTITY_BOX_WIDTH = 108
 QUANTITY_BOX_HEIGHT = 32
@@ -359,6 +364,9 @@ class SymbolGraphic(Graphic):
         if self.type_ == SymbolType.UNDEVELOPED_EVENT:
             return SymbolGraphic.undeveloped_event_svg_content(self.x, self.y)
 
+        if self.type_ == SymbolType.HOUSE_EVENT:
+            return SymbolGraphic.house_event_svg_content(self.x, self.y)
+
         raise ImplementationError(f'bad symbol type {self.type_}')
 
     @staticmethod
@@ -373,7 +381,7 @@ class SymbolGraphic(Graphic):
                 return SymbolType.UNDEVELOPED_EVENT
 
             if event.appearance == EventAppearance.HOUSE:
-                return SymbolType.BASIC_EVENT  # TODO: change to HOUSE_EVENT
+                return SymbolType.HOUSE_EVENT
 
             raise ImplementationError(f'bad event appearance {event.appearance}')
 
@@ -476,6 +484,20 @@ class SymbolGraphic(Graphic):
         bottom_y = y + UNDEVELOPED_EVENT_HALF_HEIGHT + SYMBOL_Y_OFFSET
 
         points = f'{top_x},{top_y} {left_x},{left_y} {bottom_x},{bottom_y} {right_x},{right_y}'
+
+        return f'<polygon points="{points}"/>'
+
+    @staticmethod
+    def house_event_svg_content(x: int, y: int) -> str:
+        top_x = x
+        top_y = y - HOUSE_EVENT_APEX_HEIGHT + SYMBOL_Y_OFFSET
+
+        left_x = x - HOUSE_EVENT_HALF_WIDTH
+        right_x = x + HOUSE_EVENT_HALF_WIDTH
+        shoulder_y = y - HOUSE_EVENT_SHOULDER_HEIGHT + SYMBOL_Y_OFFSET
+        toe_y = y + HOUSE_EVENT_BODY_HEIGHT + SYMBOL_Y_OFFSET
+
+        points = f'{top_x},{top_y} {left_x},{shoulder_y} {left_x},{toe_y} {right_x},{toe_y} {right_x},{shoulder_y}'
 
         return f'<polygon points="{points}"/>'
 

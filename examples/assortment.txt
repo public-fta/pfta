@@ -40,6 +40,27 @@ Event: N
 - probability: nan
 - intensity: 0
 
+Event: EV-BSC
+- label: Basic event
+- appearance: Basic
+- model_type: Fixed
+- probability: 0
+- intensity: 0
+
+Event: EV-UND
+- label: Undeveloped event
+- appearance: Undeveloped
+- model_type: Fixed
+- probability: 0
+- intensity: 0
+
+Event: EV-HSE
+- label: House event
+- appearance: House
+- model_type: Fixed
+- probability: 0
+- intensity: 0
+
 
 Gate: OR
 - label: Normal OR gate
@@ -83,3 +104,19 @@ Gate: ABS-NAN-IMM
 - label: Absorption spoilage immunity
 - type: OR
 - inputs: A, AI, AM, AN
+
+
+Gate: OBJ
+- label: Object types
+- type: OR
+- inputs: GT-AND, GT-OR
+
+Gate: GT-AND
+- label: AND gate
+- type: AND
+- inputs: EV-BSC, EV-UND, EV-HSE
+
+Gate: GT-OR
+- label: OR gate
+- type: OR
+- inputs: EV-BSC, EV-UND, EV-HSE
