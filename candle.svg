@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="-10 -55 596 737" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-10 -55 500 695" xmlns="http://www.w3.org/2000/svg">
 <style>
 circle, path, polygon, rect {
   fill: lightyellow;
@@ -25,70 +25,71 @@ text {
   font-size: 16px
 }
 </style>
-<text x="288" y="-25" class="time-header">t = 2.00 h</text>
-<polyline points="288,48 288,160"/>
-<polyline points="273,160 273,212 144,212 144,272"/>
-<polyline points="288,160 288,215 360,215 360,272"/>
-<polyline points="303,160 303,209 504,209 504,272"/>
-<rect x="223" y="12" width="130" height="72"/>
-<text x="288" y="41.5" style="font-size: 10px">Candlelight</text>
-<text x="288" y="54.5" style="font-size: 10px">fails</text>
-<rect x="223" y="88" width="130" height="24"/>
-<text x="288" y="100">CAN</text>
-<path d="M288,122 C282,124 255,135 255,170 L255,198 Q288,168 321,198 L321,170 C321,135 294,124 288,122"/>
-<rect x="223" y="142" width="130" height="36"/>
-<text x="288" y="153.0">E[q] = 0.487<tspan class="padding">  </tspan></text>
-<text x="288" y="167.0">E[ω] = 0.171/h</text>
-<polyline points="144,272 144,384"/>
-<polyline points="134,384 134,436 72,436 72,496"/>
-<polyline points="154,384 154,436 216,436 216,496"/>
-<rect x="79" y="236" width="130" height="72"/>
-<text x="144" y="265.5" style="font-size: 10px">Candle fails to</text>
-<text x="144" y="278.5" style="font-size: 10px">ignite</text>
-<rect x="79" y="312" width="130" height="24"/>
-<text x="144" y="324">IGN</text>
-<path d="M112,418 L176,418 L176,378 C176,336 112,336 112,378 L112,418"/>
-<rect x="79" y="366" width="130" height="36"/>
-<text x="144" y="377.0">E[q] = 7.87E-4</text>
-<text x="144" y="391.0">E[ω] = 0/h<tspan class="padding">    </tspan></text>
-<polyline points="72,496 72,608"/>
-<rect x="7" y="460" width="130" height="72"/>
-<text x="72" y="483.0" style="font-size: 10px">Single match</text>
-<text x="72" y="496.0" style="font-size: 10px">fails to ignite</text>
-<text x="72" y="509.0" style="font-size: 10px">candle</text>
-<rect x="7" y="536" width="130" height="24"/>
-<text x="72" y="548">MAT</text>
-<circle cx="72" cy="608" r="37"/>
-<rect x="7" y="590" width="130" height="36"/>
-<text x="72" y="601.0">E[q] = 0.199</text>
-<text x="72" y="615.0">E[ω] = 0/h<tspan class="padding">  </tspan></text>
-<polyline points="216,496 216,608"/>
-<rect x="151" y="460" width="130" height="72"/>
-<text x="216" y="489.5" style="font-size: 10px">Lighter fails to</text>
-<text x="216" y="502.5" style="font-size: 10px">ignite candle</text>
-<rect x="151" y="536" width="130" height="24"/>
-<text x="216" y="548">LTR</text>
-<circle cx="216" cy="608" r="37"/>
-<rect x="151" y="590" width="130" height="36"/>
-<text x="216" y="601.0">E[q] = 3.95E-3</text>
-<text x="216" y="615.0">E[ω] = 0/h<tspan class="padding">    </tspan></text>
-<polyline points="360,272 360,384"/>
-<rect x="295" y="236" width="130" height="72"/>
-<text x="360" y="265.5" style="font-size: 10px">Candle explodes</text>
-<text x="360" y="278.5" style="font-size: 10px">on ignition</text>
-<rect x="295" y="312" width="130" height="24"/>
-<text x="360" y="324">EXP</text>
-<polygon points="360,345 321,384 360,423 399,384"/>
-<rect x="295" y="366" width="130" height="36"/>
-<text x="360" y="384">(Undeveloped)</text>
-<polyline points="504,272 504,384"/>
-<rect x="439" y="236" width="130" height="72"/>
-<text x="504" y="265.5" style="font-size: 10px">Candle</text>
-<text x="504" y="278.5" style="font-size: 10px">extinguishes</text>
-<rect x="439" y="312" width="130" height="24"/>
-<text x="504" y="324">EXT</text>
-<circle cx="504" cy="384" r="37"/>
-<rect x="439" y="366" width="130" height="36"/>
-<text x="504" y="377.0">E[q] = 0.487<tspan class="padding">  </tspan></text>
-<text x="504" y="391.0">E[ω] = 0.171/h</text>
+<text x="240" y="-25" class="time-header">t = 2.00 h</text>
+<polyline points="240,40 240,150"/>
+<polyline points="225,150 225,200 120,200 120,250"/>
+<polyline points="240,150 240,203 300,203 300,250"/>
+<polyline points="255,150 255,197 420,197 420,250"/>
+<rect x="186" y="5" width="108" height="70"/>
+<text x="240" y="33.5" style="font-size: 10px">Candlelight</text>
+<text x="240" y="46.5" style="font-size: 10px">fails</text>
+<rect x="186" y="80" width="108" height="24"/>
+<text x="240" y="92">CAN</text>
+<path d="M240,112 C234,114 207,125 207,160 L207,186 Q240,156 273,186 L273,160 C273,125 246,114 240,112"/>
+<rect x="186" y="134" width="108" height="32"/>
+<text x="240" y="143.5"><title>mean value estimated from a sample of size 1000</title>q = 0.487<tspan class="padding">  </tspan></text>
+<text x="240" y="156.5"><title>mean value estimated from a sample of size 1000</title>ω = 0.171/h</text>
+<polyline points="120,250 120,360"/>
+<polyline points="110,360 110,410 60,410 60,460"/>
+<polyline points="130,360 130,410 180,410 180,460"/>
+<rect x="66" y="215" width="108" height="70"/>
+<text x="120" y="243.5" style="font-size: 10px">Candle fails to</text>
+<text x="120" y="256.5" style="font-size: 10px">ignite</text>
+<rect x="66" y="290" width="108" height="24"/>
+<text x="120" y="302">IGN</text>
+<path d="M88,394 L152,394 L152,354 C152,312 88,312 88,354 L88,394"/>
+<rect x="66" y="344" width="108" height="32"/>
+<text x="120" y="353.5"><title>mean value estimated from a sample of size 1000</title>q = 7.87E-4</text>
+<text x="120" y="366.5"><title>mean value estimated from a sample of size 1000</title>ω = 0/h<tspan class="padding">    </tspan></text>
+<polyline points="60,460 60,570"/>
+<rect x="6" y="425" width="108" height="70"/>
+<text x="60" y="447.0" style="font-size: 10px">Single match</text>
+<text x="60" y="460.0" style="font-size: 10px">fails to ignite</text>
+<text x="60" y="473.0" style="font-size: 10px">candle</text>
+<rect x="6" y="500" width="108" height="24"/>
+<text x="60" y="512">MAT</text>
+<circle cx="60" cy="570" r="38"/>
+<rect x="6" y="554" width="108" height="32"/>
+<text x="60" y="563.5"><title>mean value estimated from a sample of size 1000</title>q = 0.199</text>
+<text x="60" y="576.5"><title>mean value estimated from a sample of size 1000</title>ω = 0/h<tspan class="padding">  </tspan></text>
+<polyline points="180,460 180,570"/>
+<rect x="126" y="425" width="108" height="70"/>
+<text x="180" y="453.5" style="font-size: 10px">Lighter fails to</text>
+<text x="180" y="466.5" style="font-size: 10px">ignite candle</text>
+<rect x="126" y="500" width="108" height="24"/>
+<text x="180" y="512">LTR</text>
+<circle cx="180" cy="570" r="38"/>
+<rect x="126" y="554" width="108" height="32"/>
+<text x="180" y="563.5"><title>mean value estimated from a sample of size 1000</title>q = 3.95E-3</text>
+<text x="180" y="576.5"><title>mean value estimated from a sample of size 1000</title>ω = 0/h<tspan class="padding">    </tspan></text>
+<polyline points="300,250 300,360"/>
+<rect x="246" y="215" width="108" height="70"/>
+<text x="300" y="243.5" style="font-size: 10px">Candle explodes</text>
+<text x="300" y="256.5" style="font-size: 10px">on ignition</text>
+<rect x="246" y="290" width="108" height="24"/>
+<text x="300" y="302">EXP</text>
+<polygon points="300,322 246,360 300,398 354,360"/>
+<rect x="246" y="344" width="108" height="32"/>
+<text x="300" y="353.5"><title>mean value estimated from a sample of size 1000</title>q = 0<tspan class="padding">  </tspan></text>
+<text x="300" y="366.5"><title>mean value estimated from a sample of size 1000</title>ω = 0/h</text>
+<polyline points="420,250 420,360"/>
+<rect x="366" y="215" width="108" height="70"/>
+<text x="420" y="243.5" style="font-size: 10px">Candle</text>
+<text x="420" y="256.5" style="font-size: 10px">extinguishes</text>
+<rect x="366" y="290" width="108" height="24"/>
+<text x="420" y="302">EXT</text>
+<circle cx="420" cy="360" r="38"/>
+<rect x="366" y="344" width="108" height="32"/>
+<text x="420" y="353.5"><title>mean value estimated from a sample of size 1000</title>q = 0.487<tspan class="padding">  </tspan></text>
+<text x="420" y="366.5"><title>mean value estimated from a sample of size 1000</title>ω = 0.171/h</text>
 </svg>

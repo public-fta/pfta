@@ -56,7 +56,10 @@ Event: LTR
 
 Event: EXP
 - label: Candle explodes on ignition
-- model_type: Undeveloped
+- appearance: Undeveloped
+- model_type: Fixed
+- probability: 0
+- intensity: 0
 
 Event: EXT
 - label: Candle extinguishes
