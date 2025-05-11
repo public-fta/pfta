@@ -177,7 +177,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `is_used` | Whether the event is actually utilised by a gate in the fault tree. |
 | `flattened_indexer` | [Flattened list] indexer. |
 | `actual_model_type` | The actual `model_type`, either from the utilised failure model or the event itself. |
-| `parameter_samples` | Dictionary from string parameter to [flattened list] of of sampled values. |
+| `parameter_samples` | Dictionary from string parameter to [flattened list] of sampled values. |
 | `computed_expression` | Boolean algebraic representation of the event. |
 | `computed_probabilities` | [Flattened list] of computed failure probabilities. |
 | `computed_intensities` | [Flattened list] of computed failure intensities. |
