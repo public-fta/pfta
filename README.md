@@ -145,13 +145,13 @@ Gate: AB_OR_C
 ''')
 
 fault_tree.gates[0]
-# Gate(id_='AB', label=None, is_paged=False, type_=<GateType.AND: 1>, vote_threshold=None, input_ids=['A', 'B'], input_ids_line_number=21, comment=None, is_top_gate=False, flattened_indexer=FlattenedIndexer(time_count=1, sample_size=1, flattened_size=1), computed_expression=Expression(Term(0b11)), computed_probabilities=[0.0], computed_intensities=[0.63], computed_rates=[0.63], computed_expected_probabilities=[0.0], computed_expected_intensities=[0.63], computed_expected_rates=[0.63])
+# Gate(id_='AB', label=None, is_paged=False, type_=<GateType.AND: 2>, vote_threshold=None, input_ids=['A', 'B'], input_ids_line_number=21, comment=None, is_top_gate=False, flattened_indexer=FlattenedIndexer(time_count=1, sample_size=1, flattened_size=1), computed_expression=Expression(Term(0b11)), computed_probabilities=[0.0], computed_intensities=[0.63], computed_rates=[0.63], computed_expected_probabilities=[0.0], computed_expected_intensities=[0.63], computed_expected_rates=[0.63])
 
 fault_tree.gates[0].computed_rates
 # [0.63]
 
 fault_tree.gates[1]
-# Gate(id_='AB_OR_C', label=None, is_paged=False, type_=<GateType.OR: 0>, vote_threshold=None, input_ids=['AB', 'C'], input_ids_line_number=25, comment=None, is_top_gate=True, flattened_indexer=FlattenedIndexer(time_count=1, sample_size=1, flattened_size=1), computed_expression=Expression(Term(0b11), Term(0b100)), computed_probabilities=[0.0], computed_intensities=[0.6301], computed_rates=[0.6301], computed_expected_probabilities=[0.0], computed_expected_intensities=[0.6301], computed_expected_rates=[0.6301])
+# Gate(id_='AB_OR_C', label=None, is_paged=False, type_=<GateType.OR: 1>, vote_threshold=None, input_ids=['AB', 'C'], input_ids_line_number=25, comment=None, is_top_gate=True, flattened_indexer=FlattenedIndexer(time_count=1, sample_size=1, flattened_size=1), computed_expression=Expression(Term(0b11), Term(0b100)), computed_probabilities=[0.0], computed_intensities=[0.6301], computed_rates=[0.6301], computed_expected_probabilities=[0.0], computed_expected_intensities=[0.6301], computed_expected_rates=[0.6301])
 
 fault_tree.gates[1].computed_rates
 # [0.6301]
