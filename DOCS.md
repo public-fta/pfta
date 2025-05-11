@@ -15,8 +15,8 @@ The fault tree properties paragraph must be the first paragraph.
 - seed: <string>                   (optional; used when sampling distributions)
 - sample_size: <integer>           (optional; default `1`)
 - tolerance: <float>               (optional; default `0`; tolerance for truncating probability/intensity computations)
-- significant_figures: <int>       (optional; default `3`; number of significant figures displayed in SVG output)
-- scientific_exponent: <int>       (optional; default `3`; exponent threshold for scientific notation in SVG output)
+- significant_figures: <integer>   (optional; default `3`; number of significant figures displayed in SVG output)
+- scientific_exponent: <integer>   (optional; default `3`; exponent threshold for scientific notation in SVG output)
 ```
 
 
@@ -122,7 +122,7 @@ Gate: <identifier>
 - label: <string>                        (optional)
 - comment: <string>                      (optional)
 - is_paged: True | False                 (optional; default `False`; whether the gate should have its own page in graphical output)
-- type: AND | OR | VOTE(<int>)           (mandatory)
+- type: AND | OR | VOTE(<integer>)       (mandatory)
 - inputs: <comma separated identifiers>  (mandatory)
 ```
 

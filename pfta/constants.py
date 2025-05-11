@@ -79,7 +79,7 @@ EVENT_APPEARANCE_EXPLAINER = (
 )
 
 GATE_TYPE_EXPLAINER = (
-    f'Gate type must be `OR`, `AND`, or of the form `VOTE(<int>)` (case-sensitive).'
+    f'Gate type must be `OR`, `AND`, or of the form `VOTE(<integer>)` (case-sensitive).'
 )
 
 VALID_KEY_COMBOS_FROM_MODEL_TYPE = {

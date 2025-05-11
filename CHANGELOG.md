@@ -4,6 +4,7 @@
 ## [Unreleased]
 
 - Removed unused import `Iterable` in `common.py`
+- Changed `<int>` to `<integer>` in documentation for consistency
 
 
 ## [v0.2.0] First reasonable (2025-05-10)
