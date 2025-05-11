@@ -129,7 +129,7 @@ DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME = {
     'lognormal': (LogNormalDistribution, ('mu', 'sigma')),
     'loguniform': (LogUniformDistribution, ('lower', 'upper')),
     'normal': (NormalDistribution, ('mu', 'sigma')),
-    'triangular':(TriangularDistribution, ('lower', 'upper', 'mode')),
+    'triangular': (TriangularDistribution, ('lower', 'upper', 'mode')),
     'uniform': (UniformDistribution, ('lower', 'upper')),
 }
 DISTRIBUTION_EXPLAINER = '\n'.join([

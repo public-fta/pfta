@@ -694,7 +694,7 @@ class Object:
 
     @memoise('computed_expected_probabilities')
     def compute_expected_probabilities(self) -> list[float]:
-        return[
+        return [
             statistics.mean(self.computed_probabilities[self.flattened_indexer.get_slice(time_index)])
             for time_index in range(self.flattened_indexer.time_count)
         ]
