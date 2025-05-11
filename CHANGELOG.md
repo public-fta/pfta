@@ -3,6 +3,7 @@
 
 ## [Unreleased]
 
+- Implemented actual `NULL` gate (rather than have them be a visual form of a single-input OR/AND gate)
 - Removed unused import `Iterable` in `common.py`
 - Changed `<int>` to `<integer>` in documentation for consistency
 

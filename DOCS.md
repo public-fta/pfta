@@ -119,11 +119,11 @@ An event declaration may do one of the following:
 
 ```
 Gate: <identifier>
-- label: <string>                        (optional)
-- comment: <string>                      (optional)
-- is_paged: True | False                 (optional; default `False`; whether the gate should have its own page in graphical output)
-- type: AND | OR | VOTE(<integer>)       (mandatory)
-- inputs: <comma separated identifiers>  (mandatory)
+- label: <string>                          (optional)
+- comment: <string>                        (optional)
+- is_paged: True | False                   (optional; default `False`; whether the gate should have its own page in graphical output)
+- type: NULL | AND | OR | VOTE(<integer>)  (mandatory)
+- inputs: <comma separated identifiers>    (mandatory)
 ```
 
 
