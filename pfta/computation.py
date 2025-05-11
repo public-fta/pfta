@@ -169,7 +169,7 @@ def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> floa
     if math.isnan(mu):
         return float('nan')
 
-    return lambda_ / (lambda_+mu) * -math.expm1(-(lambda_+mu) * t)
+    return lambda_ / (lambda_ + mu) * -math.expm1(-(lambda_ + mu) * t)
 
 
 def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
