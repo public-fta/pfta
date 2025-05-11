@@ -108,7 +108,7 @@ q(t) = 1 − ω(t) / λ(t).
 Initially I could not understand
 how a primary event with constant failure probability `q(t) = Q`
 could be represented using this framework,
-which has `λ(t)` and `μ(t)` has the fundamental quantities.
+which has `λ(t)` and `μ(t)` as the fundamental quantities.
 
 After much thought, it occurred to me that we must have
 
@@ -214,7 +214,7 @@ of its constituent primary events.
 Using the [notation defined above](#notation), this may be written as
 
 ```
-q[C] = ∏{e|C} q[C].
+q[C] = ∏{e|C} q[e].
 ```
 
 Note that for an empty minimal cut set, we have `q[True] = 1`.

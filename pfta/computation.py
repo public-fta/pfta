@@ -49,7 +49,7 @@ class ComputationalCache:
 
         From `MATHS.md`, the failure probability of a minimal cut set `C = x y z ...` is given by
             q[C] = q[x] q[y] q[z] ...
-                 = ∏{e|C} q[C],
+                 = ∏{e|C} q[e],
         a straight product of the failure probabilities of its constituent primary events (i.e. factors).
         """
         if index not in self._probability_from_index_from_encoding[term.encoding]:

@@ -4,6 +4,7 @@
 ## [Unreleased]
 
 - Fixed minor coding style violations (including W605 invalid escape sequence `\#`)
+- Fixed maths typos
 
 
 ## [v0.3.0] Proper NULL gates (2025-05-11)
