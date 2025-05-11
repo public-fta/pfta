@@ -8,7 +8,7 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
-from typing import Iterable, Optional, Union
+from typing import Optional, Union
 
 
 def none_aware_dict_eq(self, other):

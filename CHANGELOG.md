@@ -3,6 +3,8 @@
 
 ## [Unreleased]
 
+- Removed unused import `Iterable` in `common.py`
+
 
 ## [v0.2.0] First reasonable (2025-05-10)
 
