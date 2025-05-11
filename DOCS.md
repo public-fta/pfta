@@ -229,7 +229,7 @@ Flattened lists of results are effectively indexed by the following comprehensio
 ```python
 [
     (flattened_index := time_index * sample_size + sample_index)
-    for time_index, _ in enumerate(times)
+    for time_index in range(len(times))
     for sample_index in range(sample_size)
 ]
 ```
