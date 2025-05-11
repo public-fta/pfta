@@ -83,6 +83,10 @@ class UnknownInputException(FaultTreeTextException):
     pass
 
 
+class InputCountException(FaultTreeTextException):
+    pass
+
+
 class CircularInputsException(FaultTreeTextException):
     pass
 
@@ -388,6 +392,9 @@ class FaultTree:
                         gate.input_ids_line_number,
                         f'no event or gate with identifier `{input_id}`',
                     )
+
+            if gate.type_ == GateType.NULL and len(gate.input_ids) != 1:
+                raise InputCountException(gate.input_ids_line_number, 'NULL gate must have exactly one input')
 
     @staticmethod
     def validate_cycle_free(gate_from_id: dict[str, 'Gate']):

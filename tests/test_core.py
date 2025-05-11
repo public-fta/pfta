@@ -14,7 +14,7 @@ import unittest
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException, ModelPropertyClashException, InvalidModelKeyComboException,
     NegativeValueException, SubUnitValueException, InvalidToleranceException,
-    UnknownModelException, UnknownInputException, CircularInputsException,
+    UnknownModelException, UnknownInputException, InputCountException, CircularInputsException,
     DistributionSamplingError, InvalidProbabilityValueException,
     FaultTree, Model, Event, Gate,
 )
@@ -174,6 +174,39 @@ class TestCore(unittest.TestCase):
                 - model_type: Fixed
                 - probability: 1
                 - intensity: 0
+            '''),
+        )
+
+        # Incorrect input count on NULL gate
+        self.assertRaises(
+            InputCountException,
+            FaultTree,
+            textwrap.dedent('''
+                - times: 1
+
+                Gate: GT-001
+                - type: NULL
+                - inputs: ,
+
+                Event: EV-YES
+                - model_type: True
+            '''),
+        )
+        self.assertRaises(
+            InputCountException,
+            FaultTree,
+            textwrap.dedent('''
+                - times: 1
+
+                Gate: GT-001
+                - type: NULL
+                - inputs: EV-YES, EV-NO
+
+                Event: EV-YES
+                - model_type: True
+
+                Event: EV-NO
+                - model_type: False
             '''),
         )
 
