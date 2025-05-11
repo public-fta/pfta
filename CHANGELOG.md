@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 
+
+## [v0.3.1] Closed SVG paths (2025-05-12)
+
 - Fixed AND/OR gate corner imperfection due to SVG paths not being closed
 - Fixed minor coding style violations (including W605 invalid escape sequence `\#`)
 - Fixed typos in maths
@@ -32,7 +35,8 @@
 - First reasonably working version. Vote gates yet to be implemented.
 
 
-[Unreleased]: https://github.com/public-fta/pfta/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/public-fta/pfta/compare/v0.3.1...HEAD
+[v0.3.1]: https://github.com/public-fta/pfta/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/public-fta/pfta/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/public-fta/pfta/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/public-fta/pfta/releases/tag/v0.1.0
