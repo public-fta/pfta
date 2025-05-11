@@ -961,6 +961,9 @@ class Gate(Object):
             for input_id in self.input_ids
         ]
 
+        if self.type_ == GateType.NULL:
+            return input_expressions[0]
+
         if self.type_ == GateType.AND:
             return Expression.conjunction(*input_expressions)
 

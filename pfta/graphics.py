@@ -402,7 +402,7 @@ class SymbolGraphic(Graphic):
             if gate.is_paged and parent_node is not None:
                 return SymbolType.PAGED_GATE
 
-            if len(gate.input_ids) == 1:
+            if gate.type_ == GateType.NULL:
                 return SymbolType.NULL_GATE
 
             if gate.type_ == GateType.OR:

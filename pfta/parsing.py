@@ -474,7 +474,11 @@ def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
             continue
 
         if key == 'type':
-            if value == 'OR':
+            if value == 'NULL':
+                properties['type'] = GateType.NULL
+                properties['vote_threshold'] = None
+
+            elif value == 'OR':
                 properties['type'] = GateType.OR
                 properties['vote_threshold'] = None
 

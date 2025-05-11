@@ -31,17 +31,18 @@ class EventAppearance(enum.Enum):
 
 
 class GateType(enum.Enum):
-    OR = 0
-    AND = 1
-    VOTE = 2
+    NULL = 0
+    OR = 1
+    AND = 2
+    VOTE = 3
 
 
 class SymbolType(enum.Enum):
-    OR_GATE = 0
-    AND_GATE = 1
-    VOTE_GATE = 2
-    PAGED_GATE = 3
-    NULL_GATE = 4
+    NULL_GATE = 0
+    OR_GATE = 1
+    AND_GATE = 2
+    VOTE_GATE = 3
+    PAGED_GATE = 4
     BASIC_EVENT = 5
     UNDEVELOPED_EVENT = 6
     HOUSE_EVENT = 7
@@ -79,7 +80,7 @@ EVENT_APPEARANCE_EXPLAINER = (
 )
 
 GATE_TYPE_EXPLAINER = (
-    f'Gate type must be `OR`, `AND`, or of the form `VOTE(<integer>)` (case-sensitive).'
+    f'Gate type must be `NULL`, `OR`, `AND`, or of the form `VOTE(<integer>)` (case-sensitive).'
 )
 
 VALID_KEY_COMBOS_FROM_MODEL_TYPE = {

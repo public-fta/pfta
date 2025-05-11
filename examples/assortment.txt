@@ -165,8 +165,7 @@ Gate: GT-OR
 
 Gate: GT-NULL
 - label: NULL gate
-- type: OR
-# TODO: Change to actual null gate
+- type: NULL
 - inputs: GT-BOOLEAN
 
 Gate: GT-BOOLEAN
