@@ -362,7 +362,6 @@ class Index:
         return f'<code>{escape_xml(figure_id)}.svg</code> ({links_content})'
 
 
-
 class Table:
     """
     Class representing tabular output.

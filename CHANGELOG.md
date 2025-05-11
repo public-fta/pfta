@@ -3,6 +3,8 @@
 
 ## [Unreleased]
 
+- Fixed minor coding style violations
+
 
 ## [v0.3.0] Proper NULL gates (2025-05-11)
 
