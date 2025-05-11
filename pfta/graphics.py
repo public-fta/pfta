@@ -627,7 +627,7 @@ def escape_xml(text: str) -> str:
     Escape `&` (when not used in an entity), `<`, and `>`.
     """
     ampersand_pattern = re.compile(
-        '''
+        r'''
             &
             (?!
                 (?:
