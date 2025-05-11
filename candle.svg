@@ -35,7 +35,7 @@ text {
 <text x="240" y="46.5" style="font-size: 10px">fails</text>
 <rect x="186" y="80" width="108" height="24"/>
 <text x="240" y="92">CAN</text>
-<path d="M240,112 C234,114 207,125 207,160 L207,186 Q240,156 273,186 L273,160 C273,125 246,114 240,112"/>
+<path d="M240,112 C234,114 207,125 207,160 L207,186 Q240,156 273,186 L273,160 C273,125 246,114 240,112 Z"/>
 <rect x="186" y="134" width="108" height="32"/>
 <text x="240" y="143.5"><title>mean value estimated from a sample of size 1000</title>q = 0.487<tspan class="padding">  </tspan></text>
 <text x="240" y="156.5"><title>mean value estimated from a sample of size 1000</title>ω = 0.171/h</text>
@@ -47,7 +47,7 @@ text {
 <text x="120" y="256.5" style="font-size: 10px">ignite</text>
 <rect x="66" y="290" width="108" height="24"/>
 <text x="120" y="302">IGN</text>
-<path d="M88,394 L152,394 L152,354 C152,312 88,312 88,354 L88,394"/>
+<path d="M88,394 L152,394 L152,354 C152,312 88,312 88,354 L88,394 Z"/>
 <rect x="66" y="344" width="108" height="32"/>
 <text x="120" y="353.5"><title>mean value estimated from a sample of size 1000</title>q = 7.87E-4</text>
 <text x="120" y="366.5"><title>mean value estimated from a sample of size 1000</title>ω = 0/h<tspan class="padding">    </tspan></text>

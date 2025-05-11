@@ -3,6 +3,7 @@
 
 ## [Unreleased]
 
+- Fixed AND/OR gate corner imperfection due to SVG paths not being closed
 - Fixed minor coding style violations (including W605 invalid escape sequence `\#`)
 - Fixed typos in maths
 - Fixed typos in docs and improved clarity

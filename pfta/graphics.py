@@ -452,6 +452,7 @@ class SymbolGraphic(Graphic):
             f'Q{groin_x},{groin_y} {right_x},{toe_y}',
             f'L{right_x},{ear_y}',
             f'C{right_x},{sling_y} {right_slant_x},{slant_y} {apex_x},{apex_y}',
+            f'Z',
         ])
 
         return f'<path d="{commands}"/>'
@@ -472,6 +473,7 @@ class SymbolGraphic(Graphic):
             f'L{right_x},{ear_y}',
             f'C{right_x},{sling_y} {left_x},{sling_y} {left_x},{ear_y}',
             f'L{left_x},{toe_y}',
+            f'Z',
         ])
 
         return f'<path d="{commands}"/>'
