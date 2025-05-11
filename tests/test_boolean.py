@@ -289,6 +289,18 @@ class TestBoolean(unittest.TestCase):
         )
 
     def test_expression_vote(self):
+        # (0 out of 0)() = True
+        self.assertEqual(
+            Expression.vote(threshold=0),
+            Expression(Term(0)),
+        )
+
+        # (1 out of 0)() = False
+        self.assertEqual(
+            Expression.vote(threshold=1),
+            Expression(),
+        )
+
         # (0 out of 2)(A, B) = True
         self.assertEqual(
             Expression.vote(Expression(Term(0b01)), Expression(Term(0b10)), threshold=0),

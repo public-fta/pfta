@@ -228,3 +228,28 @@ Gate: 4oo6
 - label: 4 out of 5
 - type: VOTE(4)
 - inputs: A, B, C, D, E, F
+
+
+Gate: EMPTINESS
+- type: OR
+- inputs: GT-EMPTY-OR, GT-EMPTY-AND, 0oo0, 1oo0
+
+Gate: GT-EMPTY-OR
+- label: Empty OR gate = False
+- type: OR
+- inputs: ,
+
+Gate: GT-EMPTY-AND
+- label: Empty AND gate = True
+- type: AND
+- inputs: ,
+
+Gate: 0oo0
+- label: Empty 0oo0 VOTE gate = True
+- type: VOTE(0)
+- inputs: ,
+
+Gate: 1oo0
+- label: Empty 1oo0 VOTE gate = False
+- type: VOTE(1)
+- inputs: ,
