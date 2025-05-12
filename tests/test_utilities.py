@@ -9,6 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import math
+import sys
 import unittest
 
 from pfta.utilities import format_number, descending_product, descending_sum, find_cycles
@@ -164,7 +165,7 @@ class TestUtilities(unittest.TestCase):
         terms_1 = [1e-9, 2.5e-12, 5e-13, 5e-10, 2.5e-12]
         terms_2 = [1e-9, 5e-10, 2.5e-12, 2.5e-12, 5e-13]
         self.assertEqual(set(terms_1), set(terms_2))
-        self.assertNotEqual(sum(terms_1), sum(terms_2))
+        self.assertNotEqual(sum(terms_1), sum(terms_2)) if sys.version_info < (3, 12) else None
         self.assertEqual(descending_sum(terms_1), descending_sum(terms_2))
 
     def test_find_cycles(self):
