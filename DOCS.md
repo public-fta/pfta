@@ -1,6 +1,12 @@
 # PFTA documentation
 
-## Fault tree text format
+This documentation describes the [fault tree text syntax], the [core objects], and the [presentational objects]
+of PFTA.
+
+See the main readme for [installation], [command line usage], and a [scripting example].
+
+
+## Fault tree text syntax
 
 Fault tree text is to consist of paragraphs declaring [fault tree properties](#fault-tree-properties-paragraph),
 [failure models](#failure-model-paragraph), [events](#event-paragraph), or [gates](#gate-paragraph).
@@ -272,6 +278,13 @@ Objects from `pfta.presentation` that are produced by the methods of [`FaultTree
 | `data` | Table data rows. |
 | `write_tsv(file_name)` | Write table to a TSV file. |
 
+
+[fault tree text syntax]: #fault-tree-text-syntax
+[core objects]: #core-objects
+[presentational objects]: #presentational-objects
+[installation]: README.md#installation
+[command line usage]: README.md#usage-command-line
+[scripting example]: README.md#usage-scripting-example
 
 [`FaultTree`]: #faulttree
 [events]: #event
