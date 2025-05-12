@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 
+
+## [v0.3.2] Python 3.12 passing (2025-05-12)
+
 - Fixed `test_descending_sum` failing in Python 3.12 due to [new use of Neumaier summation in `sum()`][python-3.12-other]
 - Fixed incomplete `model_type` options in docs for events
 - Fixed unformatted maths
@@ -40,7 +43,8 @@
 - First reasonably working version. Vote gates yet to be implemented.
 
 
-[Unreleased]: https://github.com/public-fta/pfta/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/public-fta/pfta/compare/v0.3.2...HEAD
+[v0.3.2]: https://github.com/public-fta/pfta/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/public-fta/pfta/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/public-fta/pfta/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/public-fta/pfta/compare/v0.1.0...v0.2.0
