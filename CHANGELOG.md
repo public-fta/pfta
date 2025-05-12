@@ -4,6 +4,7 @@
 ## [Unreleased]
 
 - Fixed incomplete `model_type` options in docs for events
+- Fixed unformatted maths
 
 
 ## [v0.3.1] Closed SVG paths (2025-05-12)

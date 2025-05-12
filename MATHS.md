@@ -118,7 +118,7 @@ After much thought, it occurred to me that we must have
 q(t) = 1 − 0 / 0,
 ```
 
-where the indeterminacy in the last expression resolves to Q.
+where the indeterminacy in the last expression resolves to `Q`.
 
 There are two (highly philosophical) ways to think about this:
 
@@ -362,7 +362,7 @@ where
   + ... ,
 ```
 
-being the sum of contributions to the intensity where (C_a), (C_a C_b), ... are already failed.
+being the sum of contributions to the intensity where `(C_a)`, `(C_a C_b)`, ... are already failed.
 
 For performance, successive upper, lower, upper, etc. bounds may be obtained by computing:
 
