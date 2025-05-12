@@ -116,7 +116,7 @@ An event declaration may do one of the following:
    - label: <string>                                  (optional)
    - comment: <string>                                (optional)
    - model_type: Fixed | ConstantRate | True | False
-   # <followed by the parameter properties relevant to the chosen `model_type`>
+   # (followed by the parameter properties relevant to the chosen `model_type`)
    - appearance: Basic | Undeveloped | House          (optional; default `Basic`)
    ```
 
