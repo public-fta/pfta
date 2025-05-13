@@ -384,3 +384,28 @@ of top gate `T`, its failure rate is then given by
 Again note that the failure rate is a quantity that is
 conditional on the top gate being unfailed
 (as hinted by the denominator `1 − q[T]` on the right-hand side).
+
+
+### Importance
+
+Consider a top gate `T` represented as a disjunction of `N` minimal cut sets,
+
+```
+T = C_1 + C_2 + ... + C_N.
+```
+
+The following importance measures for an event `e` are defined:
+
+| Name | Other names | Computation |
+| - | - | - |
+| Marginal | Birnbaum | `Q[T\|e=True] − Q[T\|e=False]` |
+| Criticality | | `Marginal . Q[e] / Q[T]` |
+| Probability | Fussell–Vesely probability | `Q[∑{e\|C_i} C_i] / Q[T]` |
+| Intensity | Fussell–Vesely intensity | `ω[∑{e\|C_i} C_i] / ω[T]` |
+
+The following importance measures for a minimal cut set `C` are defined:
+
+| Name | Other names | Computation |
+| - | - | - |
+| Probability | Fussell–Vesely probability | `Q[C] / Q[T]` |
+| Intensity | Fussell–Vesely intensity | `ω[C] / ω[T]` |
