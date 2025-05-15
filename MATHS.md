@@ -400,12 +400,12 @@ The following importance measures for an event `e` are defined:
 | - | - | - |
 | Marginal | Birnbaum | `Q[T\|e=True] − Q[T\|e=False]` |
 | Criticality | | `Marginal . Q[e] / Q[T]` |
-| Probability | Fussell–Vesely probability | `Q[∑{e\|C_i} C_i] / Q[T]` |
-| Intensity | Fussell–Vesely intensity | `ω[∑{e\|C_i} C_i] / ω[T]` |
+| Probability | Fussell–Vesely probability | `1 − Q[T\|e=False] / Q[T]` |
+| Intensity | Fussell–Vesely intensity | `1 − ω[T\|e=False] / ω[T]` |
 
 The following importance measures for a minimal cut set `C` are defined:
 
 | Name | Other names | Computation |
 | - | - | - |
-| Probability | Fussell–Vesely probability | `Q[C] / Q[T]` |
-| Intensity | Fussell–Vesely intensity | `ω[C] / ω[T]` |
+| Probability | Fussell–Vesely probability | `1 − Q[T\|C=False] / Q[T]` |
+| Intensity | Fussell–Vesely intensity | `1 − ω[T\|C=False] / ω[T]` |
