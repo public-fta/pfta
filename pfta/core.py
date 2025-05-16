@@ -320,6 +320,12 @@ class FaultTree:
             for gate in self.gates
         }
 
+    def compile_importance_tables(self) -> dict[str, Table]:
+        return {
+            gate.id_: gate.compile_importance_table()
+            for gate in self.gates
+        }
+
     def compile_figures(self) -> dict[float, dict[str, Figure]]:
         return {
             time: {
@@ -1031,6 +1037,11 @@ class Gate(Object):
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
         ]
+        return Table(headings, data)
+
+    def compile_importance_table(self) -> Table:
+        headings = []
+        data = []
         return Table(headings, data)
 
     @staticmethod
