@@ -396,16 +396,23 @@ T = C_1 + C_2 + ... + C_N.
 
 The following importance measures for an event `e` are defined:
 
-| Name | Other names | Computation |
+| Name | Computation | Remarks |
 | - | - | - |
-| Marginal | Birnbaum | `Q[T(e=True)] − Q[T(e=False)]` |
-| Criticality | | `Marginal . Q[e] / Q[T]` |
-| Probability | Fussell–Vesely probability | `1 − Q[T(e=False)] / Q[T]` |
-| Intensity | Fussell–Vesely intensity | `1 − ω[T(e=False)] / ω[T]` |
+| Marginal | `Q[T(e=True)] − Q[T(e=False)]` | Commonly called Birnbaum importance. Sometimes structural importance, since it is independent of `Q[e]`. May be thought of as `∂Q[T]/∂Q[e]`. |
+| Criticality | `Marginal . Q[e] / Q[T]` | Like Birnbaum importance, but accounts for `Q[e]`. |
+| Diagnostic | `Q[∑{e\|C_i} C_i] / Q[T]` | Probability that `e` is implicated, given the top failure exists. Commonly called Fussell–Vesely importance. |
+| Prognostic | `(Q[T] − Q[T(e=False)]) / Q[T]` | Relative improvement to top event probability if `e` were eternally unfailed. Commonly called Fussell–Vesely importance. Equal to `1 − 1 / Risk Reduction Worth`. |
 
-The following importance measures for a minimal cut set `C` are defined:
+The following importance-like measures for an event `e` are defined:
 
-| Name | Other names | Computation |
+| Name | Computation | Remarks |
 | - | - | - |
-| Probability | Fussell–Vesely probability | `1 − Q[T(C=False)] / Q[T]` |
-| Intensity | Fussell–Vesely intensity | `1 − ω[T(C=False)] / ω[T]` |
+| Risk Achievement Worth | `Q[T(e=True)] / Q[T]` | Ratio deterioration of top event probability if `e` were eternally failed. |
+| Risk Reduction Worth | `Q[T] / Q[T(e=False)]` | Ratio improvement to top event probability if `e` were eternally unfailed. |
+
+The following approximate importance measures for a minimal cut set `C` are defined:
+
+| Name | Computation | Remarks |
+| - | - | - |
+| Probability | `Q[C] / ∑{i} Q[C_i]` | The denominator uses the rare approximation in analogy with intensity importance below. |
+| Intensity | `ω[C] / ∑{i} ω[C_i]` | The denominator uses the rare approximation to prevent the possibility of importance exceeding unity. |
