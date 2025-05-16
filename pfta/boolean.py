@@ -175,6 +175,32 @@ class Expression:
 
         return next(iter(self.terms)).encoding
 
+    def substitute_true(self, event_index: int) -> 'Expression':
+        """
+        Substitute `True` for the event of the given index.  # TODO: tests
+
+        Equivalent to dividing through all terms by the event.
+        """
+        vanisher = Term.create_from_event_index(event_index)
+
+        return Term.disjunction(*(
+            term / vanisher
+            for term in self.terms
+        ))
+
+    def substitute_false(self, event_index: int) -> 'Expression':
+        """
+        Substitute `False` for the event of the given index.  # TODO: tests
+
+        Equivalent to removing terms that contain the event.
+        Elimination of redundant terms is not required, assuming the expression is already minimal.
+        """
+        return Expression(*(
+            term
+            for term in self.terms
+            if event_index not in term.event_indices()
+        ))
+
     @staticmethod
     def conjunction(*expressions: 'Expression') -> 'Expression':
         """
