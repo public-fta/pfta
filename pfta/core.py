@@ -1027,7 +1027,7 @@ class Gate(Object):
                 format_cut_set(tuple(events[index].id_ for index in term.event_indices())),
                 term.order(),
                 time, sample_index,
-                q_term := q(term, i := flattened_index(time_index, sample_index)),
+                q_term := q(term, i),
                 omega_term := omega(term, i),
                 lambda_(term, i),
                 robust_divide(q_term, sum(q(c, i) for c in terms)),
@@ -1036,6 +1036,8 @@ class Gate(Object):
             for term in sorted(terms)
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
+            # followed by singleton loops for assignment (not actual nesting):
+            for i in (flattened_index(time_index, sample_index),)
         ]
 
         return Table(headings, data)
