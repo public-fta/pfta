@@ -1005,17 +1005,29 @@ class Gate(Object):
             'computed_probability',
             'computed_intensity',
             'computed_rate',
+            'probability_importance',
+            'intensity_importance',
         ]
+
+        terms = self.computed_expression.terms
+        flattened_index = self.flattened_indexer.get_index
+
+        q = computational_cache.probability
+        omega = computational_cache.intensity
+        lambda_ = computational_cache.rate
+
         data = [
             [
                 format_cut_set(tuple(events[index].id_ for index in term.event_indices())),
                 term.order(),
                 time, sample_index,
-                computational_cache.probability(term, self.flattened_indexer.get_index(time_index, sample_index)),
-                computational_cache.intensity(term, self.flattened_indexer.get_index(time_index, sample_index)),
-                computational_cache.rate(term, self.flattened_indexer.get_index(time_index, sample_index)),
+                q_term := q(term, i := flattened_index(time_index, sample_index)),
+                omega_term := omega(term, i),
+                lambda_(term, i),
+                robust_divide(q_term, sum(q(c, i) for c in terms)),
+                robust_divide(omega_term, sum(omega(c, i) for c in terms)),
             ]
-            for term in sorted(self.computed_expression.terms)
+            for term in sorted(terms)
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
         ]
