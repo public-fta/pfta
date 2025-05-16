@@ -1002,6 +1002,23 @@ class Gate(Object):
             for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
 
+    def get_partials_from_event_index(self) -> dict[int, dict[bool, Expression]]:
+        expression = self.computed_expression
+
+        implicated_event_indices = set(
+            index
+            for term in expression.terms
+            for index in term.event_indices()
+        )
+
+        return {
+            event_index: {
+                True: expression.substitute_true(event_index),
+                False: expression.substitute_false(event_index),
+            }
+            for event_index in sorted(implicated_event_indices)
+        }
+
     def compile_cut_set_table(self, events: list[Event], times: list[float], sample_size: int,
                               computational_cache: ComputationalCache) -> Table:
         headings = [
@@ -1017,7 +1034,6 @@ class Gate(Object):
 
         terms = self.computed_expression.terms
         flattened_index = self.flattened_indexer.get_index
-
         q = computational_cache.probability
         omega = computational_cache.intensity
         lambda_ = computational_cache.rate
@@ -1047,27 +1063,24 @@ class Gate(Object):
         headings = [
             'event', 'label',
             'time', 'sample',
+            'marginal_importance',
         ]
 
-        terms = self.computed_expression.terms
-        implicated_event_indices = sorted(set(
-            index
-            for term in terms
-            for index in term.event_indices()
-        ))
-        implicated_events = [
-            events[index]
-            for index in implicated_event_indices
-        ]
+        flattened_index = self.flattened_indexer.get_index
 
         data = [
             [
-                event.id_, event.label,
+                events[event_index].id_, events[event_index].label,
                 time, sample_index,
+                q_event_true - q_event_false,
             ]
-            for event in implicated_events
+            for event_index, partials in self.get_partials_from_event_index().items()
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
+            # followed by singleton loops for assignment (not actual nesting):
+            for i in (flattened_index(time_index, sample_index),)
+            for q_event_true in (disjunction_probability(partials[True], i, computational_cache),)
+            for q_event_false in (disjunction_probability(partials[False], i, computational_cache),)
         ]
 
         return Table(headings, data)
