@@ -23,6 +23,7 @@ if TYPE_CHECKING:
 class ComputationalCache:
     _probability_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
     _intensity_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
+    # TODO: cache _probability_from_index_from_expression to make importance faster?
     _combinations_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
 
     def __init__(self, tolerance: float, events: list['Event']):
