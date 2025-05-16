@@ -12,7 +12,7 @@ import collections
 import math
 from typing import TYPE_CHECKING, Collection, DefaultDict, Iterable, Optional
 
-from pfta.boolean import Term
+from pfta.boolean import Term, Expression
 from pfta.common import natural_repr
 from pfta.utilities import robust_divide, descending_product, descending_sum, concrete_combinations
 
@@ -223,10 +223,10 @@ def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) ->
     return math.isnan(latest) or latest == 0 or abs(latest) < abs(partial_sum) * tolerance
 
 
-def disjunction_probability(terms: Collection[Term], flattened_index: int,
+def disjunction_probability(expression: Expression, flattened_index: int,
                             computational_cache: ComputationalCache) -> float:
     """
-    Instantaneous failure probability of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
+    Instantaneous failure probability for a general Boolean expression (a disjunction (OR) of terms).
 
     From `MATHS.md`, for a gate `T` represented as a disjunction of `N` minimal cut sets,
         T = C_1 + C_2 + ... + C_N,
@@ -238,6 +238,8 @@ def disjunction_probability(terms: Collection[Term], flattened_index: int,
     In the implementation, we truncate after the latest contribution divided by the partial sum
     falls below the tolerance.
     """
+    terms = expression.terms
+
     and_ = Term.conjunction
     combinations = computational_cache.combinations
 
@@ -266,10 +268,10 @@ def disjunction_probability(terms: Collection[Term], flattened_index: int,
     return partial_sum
 
 
-def disjunction_intensity(terms: Collection[Term], flattened_index: int,
+def disjunction_intensity(expression: Expression, flattened_index: int,
                           computational_cache: ComputationalCache) -> float:
     """
-    Instantaneous failure intensity of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
+    Instantaneous failure intensity for a general Boolean expression (a disjunction (OR) of terms).
 
     From `MATHS.md`, for a gate `T` represented as a disjunction of `N` minimal cut sets,
         T = C_1 + C_2 + ... + C_N,
@@ -305,6 +307,8 @@ def disjunction_intensity(terms: Collection[Term], flattened_index: int,
                                      − (ω^2 (r−1)th-order contribution with ω^† truncated at (r−1)th-order)
     divided by the partial sum falls below the tolerance.
     """
+    terms = expression.terms
+
     gcd = Term.gcd
     and_ = Term.conjunction
     combinations = computational_cache.combinations

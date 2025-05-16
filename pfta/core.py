@@ -991,14 +991,14 @@ class Gate(Object):
     @memoise('computed_probabilities')
     def compute_probabilities(self, computational_cache: ComputationalCache) -> list[float]:
         return [
-            disjunction_probability(self.computed_expression.terms, flattened_index, computational_cache)
+            disjunction_probability(self.computed_expression, flattened_index, computational_cache)
             for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
 
     @memoise('computed_intensities')
     def compute_intensities(self, computational_cache: ComputationalCache) -> list[float]:
         return [
-            disjunction_intensity(self.computed_expression.terms, flattened_index, computational_cache)
+            disjunction_intensity(self.computed_expression, flattened_index, computational_cache)
             for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
 
