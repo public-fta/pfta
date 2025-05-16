@@ -322,7 +322,7 @@ class FaultTree:
 
     def compile_importance_tables(self) -> dict[str, Table]:
         return {
-            gate.id_: gate.compile_importance_table()
+            gate.id_: gate.compile_importance_table(self.events, self.times, self.sample_size, self.computational_cache)
             for gate in self.gates
         }
 
@@ -1037,11 +1037,35 @@ class Gate(Object):
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
         ]
+
         return Table(headings, data)
 
-    def compile_importance_table(self) -> Table:
-        headings = []
-        data = []
+    def compile_importance_table(self, events: list[Event], times: list[float], sample_size: int,
+                                 computational_cache: ComputationalCache) -> Table:
+        headings = [
+            'event', 'label',
+        ]
+
+        terms = self.computed_expression.terms
+        implicated_event_indices = sorted(set(
+            index
+            for term in terms
+            for index in term.event_indices()
+        ))
+        implicated_events = [
+            events[index]
+            for index in implicated_event_indices
+        ]
+
+        data = [
+            [
+                event.id_, event.label,
+            ]
+            for event in implicated_events
+            for time_index, time in enumerate(times)
+            for sample_index in range(sample_size)
+        ]
+
         return Table(headings, data)
 
     @staticmethod
