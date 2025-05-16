@@ -1044,6 +1044,7 @@ class Gate(Object):
                                  computational_cache: ComputationalCache) -> Table:
         headings = [
             'event', 'label',
+            'time', 'sample',
         ]
 
         terms = self.computed_expression.terms
@@ -1060,6 +1061,7 @@ class Gate(Object):
         data = [
             [
                 event.id_, event.label,
+                time, sample_index,
             ]
             for event in implicated_events
             for time_index, time in enumerate(times)
