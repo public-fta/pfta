@@ -108,8 +108,8 @@ class Term:
         """
         Compute the disjunction (OR) of a sequence of terms.
 
-        Since we never encounter inversions, the result is merely an expression with the redundant terms removed
-        as per the absorption law.
+        Since we only encounter coherent (NOT-free) logic, the result is merely an expression
+        with the redundant terms removed as per the absorption law.
         """
         undecided_terms = set(terms)
         necessary_terms = set()
