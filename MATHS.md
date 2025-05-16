@@ -398,17 +398,17 @@ The following importance measures for an event `e` are defined:
 
 | Name | Computation | Remarks |
 | - | - | - |
-| Marginal Importance | `Q[T(e=True)] − Q[T(e=False)]` | Commonly called Birnbaum importance. Sometimes structural importance, since it is independent of `Q[e]`. May be thought of as `∂Q[T]/∂Q[e]`. |
+| Marginal Importance | `Q[T_(e=True)] − Q[T_(e=False)]` | Commonly called Birnbaum importance. Sometimes structural importance, since it is independent of `Q[e]`. May be thought of as `∂Q[T]/∂Q[e]`. |
 | Criticality Importance | `Marginal Importance . Q[e] / Q[T]` | Like Birnbaum importance, but accounts for `Q[e]`. |
 | Diagnostic Importance | `Q[∑{e\|C_i} C_i] / Q[T]` | Probability that `e` is implicated, given the top failure exists. Commonly called Fussell–Vesely importance. |
-| Prognostic Importance | `(Q[T] − Q[T(e=False)]) / Q[T]` | Relative improvement to top event probability if `e` were eternally unfailed. Commonly called Fussell–Vesely importance. Equal to `1 − 1 / Risk Reduction Worth`. |
+| Prognostic Importance | `(Q[T] − Q[T_(e=False)]) / Q[T]` | Relative improvement to top event probability if `e` were eternally unfailed. Commonly called Fussell–Vesely importance. Equal to `1 − 1 / Risk Reduction Worth`. |
 
 The following importance-like measures for an event `e` are defined:
 
 | Name | Computation | Remarks |
 | - | - | - |
-| Risk Achievement Worth | `Q[T(e=True)] / Q[T]` | Ratio deterioration of top event probability if `e` were eternally failed. |
-| Risk Reduction Worth | `Q[T] / Q[T(e=False)]` | Ratio improvement to top event probability if `e` were eternally unfailed. |
+| Risk Achievement Worth | `Q[T_(e=True)] / Q[T]` | Ratio deterioration of top event probability if `e` were eternally failed. |
+| Risk Reduction Worth | `Q[T] / Q[T_(e=False)]` | Ratio improvement to top event probability if `e` were eternally unfailed. |
 
 The following approximate importance measures for a minimal cut set `C` are defined:
 
