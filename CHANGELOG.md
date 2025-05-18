@@ -4,7 +4,7 @@
 ## [Unreleased]
 
 - Implemented importance output
-- Implemented beta distribution
+- Implemented beta and gamma distributions
 
 
 ## [v0.3.2] Python 3.12 passing (2025-05-12)

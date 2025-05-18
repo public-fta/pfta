@@ -60,6 +60,34 @@ class BetaDistribution(Distribution):
         return [random.betavariate(alpha, beta) for _ in range(count)]
 
 
+class GammaDistribution(Distribution):
+    alpha: float
+    lambda_: float
+
+    def __init__(self, alpha: float, lambda_: float, line_number: int):
+        if not math.isfinite(alpha) or alpha <= 0:
+            raise InvalidDistributionParameterException(
+                line_number,
+                f'gamma distribution parameter `alpha={alpha}` not finite positive',
+            )
+
+        if not math.isfinite(lambda_) or lambda_ <= 0:
+            raise InvalidDistributionParameterException(
+                line_number,
+                f'gamma distribution parameter `lambda={lambda_}` not finite positive',
+            )
+
+        self.alpha = alpha
+        self.lambda_ = lambda_
+        super().__init__(line_number)
+
+    def generate_samples(self, count: int) -> list[float]:
+        alpha = self.alpha
+        lambda_ = self.lambda_
+
+        return [random.gammavariate(alpha, beta=1 / lambda_) for _ in range(count)]
+
+
 class DegenerateDistribution(Distribution):
     value: float
 

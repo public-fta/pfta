@@ -13,7 +13,7 @@ import re
 
 from pfta.common import natural_join, natural_join_backticks
 from pfta.sampling import (
-    BetaDistribution, LogNormalDistribution, LogUniformDistribution,
+    BetaDistribution, GammaDistribution, LogNormalDistribution, LogUniformDistribution,
     NormalDistribution, TriangularDistribution, UniformDistribution,
 )
 
@@ -128,6 +128,7 @@ KEY_EXPLAINER_FROM_CLASS = {
 
 DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME = {
     'beta': (BetaDistribution, ('alpha', 'beta')),
+    'gamma': (GammaDistribution, ('alpha', 'lambda')),
     'lognormal': (LogNormalDistribution, ('mu', 'sigma')),
     'loguniform': (LogUniformDistribution, ('lower', 'upper')),
     'normal': (NormalDistribution, ('mu', 'sigma')),

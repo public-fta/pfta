@@ -534,8 +534,10 @@ def parse_distribution_parameters(distribution_match: re.Match) -> dict[str, flo
     float_from_parameter = {}
 
     for parameter, string in distribution_match.groupdict().items():
+        safe_parameter = re.sub('^lambda$', 'lambda_', parameter)
+
         try:
-            float_from_parameter[parameter] = float(string)
+            float_from_parameter[safe_parameter] = float(string)
         except ValueError:
             raise InvalidFloatException(None, f'unable to convert `{string}` to float')
 
