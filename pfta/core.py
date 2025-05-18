@@ -1073,7 +1073,10 @@ class Gate(Object):
                 event.id_, event.label,
                 time, sample_index,
                 marginal_importance := q_event_true - q_event_false,
-                marginal_importance * robust_divide(q(event.computed_expression, i), q(self.computed_expression, i)),
+                marginal_importance * robust_divide(
+                    event.get_computed_probability(time_index, sample_index),
+                    self.get_computed_probability(time_index, sample_index),
+                ),
             ]
             for event_index, partial_from_boolean in self.get_partials_from_event_index().items()
                 if (event := events[event_index]) or True
