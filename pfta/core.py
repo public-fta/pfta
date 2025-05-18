@@ -26,7 +26,7 @@ from pfta.parsing import (
 )
 from pfta.presentation import Figure, Table
 from pfta.sampling import Distribution
-from pfta.utilities import robust_divide, robust_invert, find_cycles
+from pfta.utilities import robust_divide, robust_invert, descending_sum, find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
 
 
@@ -1045,8 +1045,8 @@ class Gate(Object):
                 q_term := q(term, i),
                 omega_term := omega(term, i),
                 lambda_(term, i),
-                robust_divide(q_term, sum(q(c, i) for c in terms)),
-                robust_divide(omega_term, sum(omega(c, i) for c in terms)),
+                robust_divide(q_term, descending_sum(q(c, i) for c in terms)),
+                robust_divide(omega_term, descending_sum(omega(c, i) for c in terms)),
             ]
             for term in sorted(terms)
             for time_index, time in enumerate(times)
