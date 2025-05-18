@@ -1051,7 +1051,9 @@ class Gate(Object):
             for term in sorted(terms)
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
-                if (i := flattened_index(time_index, sample_index)) or True
+            if (
+                i := flattened_index(time_index, sample_index),
+            )
         ]
 
         return Table(headings, data)
@@ -1080,16 +1082,20 @@ class Gate(Object):
                 robust_divide(q_filtered, q_gate),
             ]
             for event_index, partial_from_boolean in partial_from_boolean_from_event_index.items()
-                if (event := events[event_index]) or True
-                if (filtered_expression := gate_expression.filter_terms(event_index)) or True
+            if (
+                event := events[event_index],
+                filtered_expression := gate_expression.filter_terms(event_index),
+            )
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
-                if (i := flattened_index(time_index, sample_index)) or True
-                if (q_partial_true := q(partial_from_boolean[True], i)) or True
-                if (q_partial_false := q(partial_from_boolean[False], i)) or True
-                if (q_event := event.get_computed_probability(time_index, sample_index)) or True
-                if (q_gate := self.get_computed_probability(time_index, sample_index)) or True
-                if (q_filtered := q(filtered_expression, i)) or True
+            if (
+                i := flattened_index(time_index, sample_index),
+                q_partial_true := q(partial_from_boolean[True], i),
+                q_partial_false := q(partial_from_boolean[False], i),
+                q_event := event.get_computed_probability(time_index, sample_index),
+                q_gate := self.get_computed_probability(time_index, sample_index),
+                q_filtered := q(filtered_expression, i),
+            )
         ]
 
         return Table(headings, data)
