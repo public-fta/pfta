@@ -54,28 +54,8 @@ class ComputationalCache:
         return self._q_from_index_from_encoding[term.encoding][index]
 
     def term_intensity(self, term: Term, index: int) -> float:
-        """
-        Instantaneous failure intensity of a Boolean term (minimal cut set).
-
-        From `MATHS.md`, the failure intensity of a minimal cut set `C = x y z ...`
-        is given by a product-rule-style expression, where each term is the product of
-        one primary event's failure intensity and the remaining primary events' failure probabilities:
-            ω[C] =   ω[x] q[y] q[z] ...
-                   + q[x] ω[y] q[z] ...
-                   + q[x] q[y] ω[z] ...
-                   + ...
-                 = ∑{e|C} ω[e] q[C÷e].
-        """
         if index not in self._omega_from_index_from_encoding[term.encoding]:
-            def q(e: Term) -> float:
-                return self.term_probability(e, index)
-
-            def omega(e: Term) -> float:
-                return self.term_intensity(e, index)
-
-            intensity = descending_sum(omega(factor) * q(term / factor) for factor in term.factors())
-
-            self._omega_from_index_from_encoding[term.encoding][index] = intensity
+            self._omega_from_index_from_encoding[term.encoding][index] = term_intensity(term, index, self)
 
         return self._omega_from_index_from_encoding[term.encoding][index]
 
@@ -220,6 +200,31 @@ def term_probability(term: Term, flattened_index: int, computational_cache: Comp
         return computational_cache.term_probability(factor, flattened_index)
 
     return descending_product(q(factor) for factor in term.factors())
+
+
+def term_intensity(term: Term, flattened_index: int, computational_cache: ComputationalCache) -> float:
+    """
+    Instantaneous failure intensity of a Boolean term (representing a minimal cut set).
+
+    From `MATHS.md`, the failure intensity of a minimal cut set `C = x y z ...`
+    is given by a product-rule-style expression, where each term is the product of
+    one primary event's failure intensity and the remaining primary events' failure probabilities:
+        ω[C] =   ω[x] q[y] q[z] ...
+               + q[x] ω[y] q[z] ...
+               + q[x] q[y] ω[z] ...
+               + ...
+             = ∑{e|C} ω[e] q[C ÷ e].
+    """
+    def q(factor: Term) -> float:
+        return computational_cache.term_probability(factor, flattened_index)
+
+    def omega(reduced_term: Term) -> float:
+        return computational_cache.term_intensity(reduced_term, flattened_index)
+
+    return descending_sum(
+        omega(factor) * q(term / factor)
+        for factor in term.factors()
+    )
 
 
 def expression_probability(expression: Expression, flattened_index: int,
