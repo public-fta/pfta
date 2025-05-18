@@ -35,8 +35,15 @@ class TestBoolean(unittest.TestCase):
 
     def test_term_order(self):
         self.assertEqual(Term(0).order(), 0)
+        self.assertEqual(Term(1).order(), 1)
         self.assertEqual(Term(0b10).order(), 1)
         self.assertEqual(Term(0b10111).order(), 4)
+
+    def test_term_is_vacuous(self):
+        self.assertTrue(Term(0).is_vacuous())
+        self.assertFalse(Term(1).is_vacuous())
+        self.assertFalse(Term(0b10).is_vacuous())
+        self.assertFalse(Term(0b10111).is_vacuous())
 
     def test_term_event_indices(self):
         self.assertEqual(Term(0).event_indices(), ())
