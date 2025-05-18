@@ -1069,11 +1069,12 @@ class Gate(Object):
 
         data = [
             [
-                events[event_index].id_, events[event_index].label,
+                event.id_, event.label,
                 time, sample_index,
                 q_event_true - q_event_false,
             ]
             for event_index, partial_from_boolean in self.get_partials_from_event_index().items()
+            if (event := events[event_index]) or True
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
             if (i := flattened_index(time_index, sample_index)) or True
