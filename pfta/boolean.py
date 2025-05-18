@@ -166,6 +166,9 @@ class Expression:
     def __repr__(self):
         return f'Expression({", ".join(repr(t) for t in self.terms)})'
 
+    def encodings(self) -> frozenset[int]:
+        return frozenset(term.encoding for term in self.terms)
+
     def sole_term_encoding(self) -> Optional[int]:
         if not self.terms:  # expression is False
             return None

@@ -26,7 +26,8 @@ class ComputationalCache:
     """
     _q_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
     _omega_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
-    # TODO: cache _probability_from_index_from_expression to make importance faster?
+    _q_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]
+    _omega_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]
     _combos_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
 
     def __init__(self, tolerance: float, events: list['Event']):
@@ -42,6 +43,8 @@ class ComputationalCache:
         self.tolerance = tolerance
         self._q_from_index_from_encoding = collections.defaultdict(dict, q_from_index_from_encoding)
         self._omega_from_index_from_encoding = collections.defaultdict(dict, omega_from_index_from_encoding)
+        self._q_from_index_from_encodings = collections.defaultdict(dict)
+        self._omega_from_index_from_encodings = collections.defaultdict(dict)
         self._combos_from_order_from_terms = collections.defaultdict(dict)
 
     def __repr__(self):
@@ -68,6 +71,15 @@ class ComputationalCache:
         omega = self.term_intensity(term, index)
 
         return robust_divide(omega, 1 - q)
+
+    def expression_probability(self, expression: Expression, index: int) -> float:
+        encodings = expression.encodings()
+
+        if index not in self._q_from_index_from_encodings[encodings]:
+            probability = uncached_expression_probability(expression, index, self)
+            self._q_from_index_from_encodings[encodings][index] = probability
+
+        return self._q_from_index_from_encodings[encodings][index]
 
     def term_combinations(self, terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
         if order not in self._combos_from_order_from_terms[terms]:
