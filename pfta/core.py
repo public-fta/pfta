@@ -1063,8 +1063,11 @@ class Gate(Object):
             'time', 'sample',
             'marginal_importance',
             'criticality_importance',
+            'diagnostic_importance',
         ]
 
+        partial_from_boolean_from_event_index = self.get_partials_from_event_index()
+        gate_expression = self.computed_expression
         flattened_index = self.flattened_indexer.get_index
         q = computational_cache.expression_probability
 
@@ -1074,9 +1077,11 @@ class Gate(Object):
                 time, sample_index,
                 marginal_importance := q_partial_true - q_partial_false,
                 marginal_importance * robust_divide(q_event, q_self),
+                robust_divide(q_filtered, q_self),
             ]
-            for event_index, partial_from_boolean in self.get_partials_from_event_index().items()
+            for event_index, partial_from_boolean in partial_from_boolean_from_event_index.items()
                 if (event := events[event_index]) or True
+                if (filtered_expression := gate_expression.filter_terms(event_index)) or True
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
                 if (i := flattened_index(time_index, sample_index)) or True
@@ -1084,6 +1089,7 @@ class Gate(Object):
                 if (q_partial_false := q(partial_from_boolean[False], i)) or True
                 if (q_event := event.get_computed_probability(time_index, sample_index)) or True
                 if (q_self := self.get_computed_probability(time_index, sample_index)) or True
+                if (q_filtered := q(filtered_expression, i)) or True
         ]
 
         return Table(headings, data)

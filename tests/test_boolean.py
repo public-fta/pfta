@@ -272,6 +272,31 @@ class TestBoolean(unittest.TestCase):
             Expression(Term(0b101)),
         )
 
+    def test_expression_filter_terms(self):
+        # False filtered on A = False
+        self.assertEqual(Expression().filter_terms(event_index=1), Expression())
+
+        # True filtered on A = False
+        self.assertEqual(Expression(Term(0)).filter_terms(event_index=1), Expression())
+
+        # ABCDEFG filtered on C = ABCDEFG
+        self.assertEqual(Expression(Term(0b1111111)).filter_terms(event_index=2), Expression(Term(0b1111111)))
+
+        # ABCDEFG filtered on H = False
+        self.assertEqual(Expression(Term(0b1111111)).filter_terms(event_index=7), Expression())
+
+        # (A + BC + DEF) filtered on C = BC
+        self.assertEqual(
+            Expression(Term(0b000001), Term(0b000110), Term(0b111000)).filter_terms(event_index=2),
+            Expression(Term(0b000110)),
+        )
+
+        # (AB + BC + CA) filtered on B = AB + BC
+        self.assertEqual(
+            Expression(Term(0b011), Term(0b110), Term(0b101)).filter_terms(event_index=1),
+            Expression(Term(0b011), Term(0b110)),
+        )
+
     def test_expression_conjunction(self):
         # (Empty conjunction) = True
         self.assertEqual(

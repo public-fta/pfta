@@ -204,6 +204,18 @@ class Expression:
             if event_index not in term.event_indices()
         ))
 
+    def filter_terms(self, event_index: int) -> 'Expression':
+        """
+        Filter through terms, retaining only those that contain (as a factor) the event of the given index.
+
+        Effectively the complement of `substitute_false`.
+        """
+        return Expression(*(
+            term
+            for term in self.terms
+            if event_index in term.event_indices()
+        ))
+
     @staticmethod
     def conjunction(*expressions: 'Expression') -> 'Expression':
         """
