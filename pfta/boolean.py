@@ -158,7 +158,7 @@ class Expression:
     terms: frozenset[Term]
 
     def __init__(self, *terms: Term):
-        self.terms = frozenset({*terms})
+        self.terms = frozenset([*terms])
 
     def __eq__(self, other):
         return self.terms == other.terms
