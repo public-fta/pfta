@@ -48,16 +48,20 @@ class ComputationalCache:
         return natural_repr(self)
 
     def term_probability(self, term: Term, index: int) -> float:
-        if index not in self._q_from_index_from_encoding[term.encoding]:
-            self._q_from_index_from_encoding[term.encoding][index] = uncached_term_probability(term, index, self)
+        encoding = term.encoding
 
-        return self._q_from_index_from_encoding[term.encoding][index]
+        if index not in self._q_from_index_from_encoding[encoding]:
+            self._q_from_index_from_encoding[encoding][index] = uncached_term_probability(term, index, self)
+
+        return self._q_from_index_from_encoding[encoding][index]
 
     def term_intensity(self, term: Term, index: int) -> float:
-        if index not in self._omega_from_index_from_encoding[term.encoding]:
-            self._omega_from_index_from_encoding[term.encoding][index] = uncached_term_intensity(term, index, self)
+        encoding = term.encoding
 
-        return self._omega_from_index_from_encoding[term.encoding][index]
+        if index not in self._omega_from_index_from_encoding[encoding]:
+            self._omega_from_index_from_encoding[encoding][index] = uncached_term_intensity(term, index, self)
+
+        return self._omega_from_index_from_encoding[encoding][index]
 
     def term_rate(self, term: Term, index: int) -> float:
         q = self.term_probability(term, index)
