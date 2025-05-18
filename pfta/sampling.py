@@ -32,6 +32,34 @@ class Distribution:
         raise NotImplementedError
 
 
+class BetaDistribution(Distribution):
+    alpha: float
+    beta: float
+
+    def __init__(self, alpha: float, beta: float, line_number: int):
+        if not math.isfinite(alpha) or alpha <= 0:
+            raise InvalidDistributionParameterException(
+                line_number,
+                f'beta distribution parameter `alpha={alpha}` not finite positive',
+            )
+
+        if not math.isfinite(beta) or beta <= 0:
+            raise InvalidDistributionParameterException(
+                line_number,
+                f'beta distribution parameter `beta={beta}` not finite positive',
+            )
+
+        self.alpha = alpha
+        self.beta = beta
+        super().__init__(line_number)
+
+    def generate_samples(self, count: int) -> list[float]:
+        alpha = self.alpha
+        beta = self.beta
+
+        return [random.betavariate(alpha, beta) for _ in range(count)]
+
+
 class DegenerateDistribution(Distribution):
     value: float
 
