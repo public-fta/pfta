@@ -18,7 +18,7 @@ from pfta.common import natural_repr, format_cut_set, natural_join_backticks
 from pfta.computation import (
     ComputationalCache,
     constant_rate_model_probability, constant_rate_model_intensity,
-    disjunction_probability, disjunction_intensity,
+    expression_probability, expression_intensity,
 )
 from pfta.constants import LineType, EventAppearance, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
@@ -991,14 +991,14 @@ class Gate(Object):
     @memoise('computed_probabilities')
     def compute_probabilities(self, computational_cache: ComputationalCache) -> list[float]:
         return [
-            disjunction_probability(self.computed_expression, flattened_index, computational_cache)
+            expression_probability(self.computed_expression, flattened_index, computational_cache)
             for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
 
     @memoise('computed_intensities')
     def compute_intensities(self, computational_cache: ComputationalCache) -> list[float]:
         return [
-            disjunction_intensity(self.computed_expression, flattened_index, computational_cache)
+            expression_intensity(self.computed_expression, flattened_index, computational_cache)
             for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
 
@@ -1034,9 +1034,9 @@ class Gate(Object):
 
         terms = self.computed_expression.terms
         flattened_index = self.flattened_indexer.get_index
-        q = computational_cache.probability
-        omega = computational_cache.intensity
-        lambda_ = computational_cache.rate
+        q = computational_cache.term_probability
+        omega = computational_cache.term_intensity
+        lambda_ = computational_cache.term_rate
 
         data = [
             [
@@ -1079,8 +1079,8 @@ class Gate(Object):
             for sample_index in range(sample_size)
             # followed by singleton loops for assignment (not actual nesting):
             for i in (flattened_index(time_index, sample_index),)
-            for q_event_true in (disjunction_probability(partials[True], i, computational_cache),)
-            for q_event_false in (disjunction_probability(partials[False], i, computational_cache),)
+            for q_event_true in (expression_probability(partials[True], i, computational_cache),)
+            for q_event_false in (expression_probability(partials[False], i, computational_cache),)
         ]
 
         return Table(headings, data)

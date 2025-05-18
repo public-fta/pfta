@@ -44,7 +44,7 @@ class ComputationalCache:
     def __repr__(self):
         return natural_repr(self)
 
-    def probability(self, term: Term, index: int) -> float:
+    def term_probability(self, term: Term, index: int) -> float:
         """
         Instantaneous failure probability of a Boolean term (minimal cut set).
 
@@ -55,7 +55,7 @@ class ComputationalCache:
         """
         if index not in self._q_from_index_from_encoding[term.encoding]:
             def q(e: Term) -> float:
-                return self.probability(e, index)
+                return self.term_probability(e, index)
 
             probability = descending_product(q(factor) for factor in term.factors())
 
@@ -63,7 +63,7 @@ class ComputationalCache:
 
         return self._q_from_index_from_encoding[term.encoding][index]
 
-    def intensity(self, term: Term, index: int) -> float:
+    def term_intensity(self, term: Term, index: int) -> float:
         """
         Instantaneous failure intensity of a Boolean term (minimal cut set).
 
@@ -78,10 +78,10 @@ class ComputationalCache:
         """
         if index not in self._omega_from_index_from_encoding[term.encoding]:
             def q(e: Term) -> float:
-                return self.probability(e, index)
+                return self.term_probability(e, index)
 
             def omega(e: Term) -> float:
-                return self.intensity(e, index)
+                return self.term_intensity(e, index)
 
             intensity = descending_sum(omega(factor) * q(term / factor) for factor in term.factors())
 
@@ -89,16 +89,16 @@ class ComputationalCache:
 
         return self._omega_from_index_from_encoding[term.encoding][index]
 
-    def rate(self, term: Term, index: int) -> float:
+    def term_rate(self, term: Term, index: int) -> float:
         """
         Instantaneous failure rate of a Boolean term (minimal cut set).
         """
-        q = self.probability(term, index)
-        omega = self.intensity(term, index)
+        q = self.term_probability(term, index)
+        omega = self.term_intensity(term, index)
 
         return robust_divide(omega, 1 - q)
 
-    def combinations(self, terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
+    def term_combinations(self, terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
         """
         Term combinations (subset-tuples) of given order (size).
         """
@@ -217,8 +217,8 @@ def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
     return lambda_ * (1 - q)
 
 
-def disjunction_probability(expression: Expression, flattened_index: int,
-                            computational_cache: ComputationalCache) -> float:
+def expression_probability(expression: Expression, flattened_index: int,
+                           computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure probability for a general Boolean expression (a disjunction (OR) of terms).
 
@@ -235,10 +235,10 @@ def disjunction_probability(expression: Expression, flattened_index: int,
     terms = expression.terms
 
     and_ = Term.conjunction
-    combinations = computational_cache.combinations
+    combinations = computational_cache.term_combinations
 
     def q(term: Term) -> float:
-        return computational_cache.probability(term, flattened_index)
+        return computational_cache.term_probability(term, flattened_index)
 
     def q_contribution(order: int) -> float:
         return (
@@ -262,8 +262,8 @@ def disjunction_probability(expression: Expression, flattened_index: int,
     return partial_sum
 
 
-def disjunction_intensity(expression: Expression, flattened_index: int,
-                          computational_cache: ComputationalCache) -> float:
+def expression_intensity(expression: Expression, flattened_index: int,
+                         computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure intensity for a general Boolean expression (a disjunction (OR) of terms).
 
@@ -305,13 +305,13 @@ def disjunction_intensity(expression: Expression, flattened_index: int,
 
     gcd = Term.gcd
     and_ = Term.conjunction
-    combinations = computational_cache.combinations
+    combinations = computational_cache.term_combinations
 
     def q(term: Term) -> float:
-        return computational_cache.probability(term, flattened_index)
+        return computational_cache.term_probability(term, flattened_index)
 
     def omega(term: Term) -> float:
-        return computational_cache.intensity(term, flattened_index)
+        return computational_cache.term_intensity(term, flattened_index)
 
     def omega_1_contribution(order: int) -> float:
         return (
