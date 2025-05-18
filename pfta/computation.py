@@ -219,8 +219,8 @@ def uncached_term_intensity(term: Term, flattened_index: int, computational_cach
     )
 
 
-def expression_probability(expression: Expression, flattened_index: int,
-                           computational_cache: ComputationalCache) -> float:
+def uncached_expression_probability(expression: Expression, flattened_index: int,
+                                    computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure probability for a general Boolean expression (a disjunction (OR) of terms).
 
@@ -264,8 +264,8 @@ def expression_probability(expression: Expression, flattened_index: int,
     return partial_sum
 
 
-def expression_intensity(expression: Expression, flattened_index: int,
-                         computational_cache: ComputationalCache) -> float:
+def uncached_expression_intensity(expression: Expression, flattened_index: int,
+                                  computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure intensity for a general Boolean expression (a disjunction (OR) of terms).
 
