@@ -33,6 +33,11 @@ class TestBoolean(unittest.TestCase):
         # ABCE / BCD = AE
         self.assertEqual(Term(0b10111) / Term(0b01110), Term(0b10001))
 
+    def test_term_order(self):
+        self.assertEqual(Term(0).order(), 0)
+        self.assertEqual(Term(0b10).order(), 1)
+        self.assertEqual(Term(0b10111).order(), 4)
+
     def test_term_event_indices(self):
         self.assertEqual(Term(0).event_indices(), ())
         self.assertEqual(Term(1).event_indices(), (0,))
