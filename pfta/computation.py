@@ -217,13 +217,6 @@ def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
     return lambda_ * (1 - q)
 
 
-def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) -> bool:
-    """
-    Predicate for early termination (truncation) of disjunction probability and intensity computations.
-    """
-    return math.isnan(latest) or latest == 0 or abs(latest) < abs(partial_sum) * tolerance
-
-
 def disjunction_probability(expression: Expression, flattened_index: int,
                             computational_cache: ComputationalCache) -> float:
     """
@@ -374,3 +367,10 @@ def disjunction_intensity(expression: Expression, flattened_index: int,
             break
 
     return partial_sum
+
+
+def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) -> bool:
+    """
+    Predicate for early termination (truncation) of disjunction probability and intensity computations.
+    """
+    return math.isnan(latest) or latest == 0 or abs(latest) < abs(partial_sum) * tolerance
