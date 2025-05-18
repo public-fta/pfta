@@ -18,7 +18,6 @@ from pfta.common import natural_repr, format_cut_set, natural_join_backticks
 from pfta.computation import (
     ComputationalCache,
     constant_rate_model_probability, constant_rate_model_intensity,
-    disjunction_probability, disjunction_intensity,
 )
 from pfta.constants import LineType, EventAppearance, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
@@ -27,7 +26,7 @@ from pfta.parsing import (
 )
 from pfta.presentation import Figure, Table
 from pfta.sampling import Distribution
-from pfta.utilities import robust_divide, robust_invert, find_cycles
+from pfta.utilities import robust_divide, robust_invert, descending_sum, find_cycles
 from pfta.woe import ImplementationError, FaultTreeTextException
 
 
@@ -317,6 +316,12 @@ class FaultTree:
     def compile_cut_set_tables(self) -> dict[str, Table]:
         return {
             gate.id_: gate.compile_cut_set_table(self.events, self.times, self.sample_size, self.computational_cache)
+            for gate in self.gates
+        }
+
+    def compile_importance_tables(self) -> dict[str, Table]:
+        return {
+            gate.id_: gate.compile_importance_table(self.events, self.times, self.sample_size, self.computational_cache)
             for gate in self.gates
         }
 
@@ -985,16 +990,33 @@ class Gate(Object):
     @memoise('computed_probabilities')
     def compute_probabilities(self, computational_cache: ComputationalCache) -> list[float]:
         return [
-            disjunction_probability(self.computed_expression.terms, flattened_index, computational_cache)
+            computational_cache.expression_probability(self.computed_expression, flattened_index)
             for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
 
     @memoise('computed_intensities')
     def compute_intensities(self, computational_cache: ComputationalCache) -> list[float]:
         return [
-            disjunction_intensity(self.computed_expression.terms, flattened_index, computational_cache)
+            computational_cache.expression_intensity(self.computed_expression, flattened_index)
             for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
+
+    def get_partials_from_event_index(self) -> dict[int, dict[bool, Expression]]:
+        expression = self.computed_expression
+
+        implicated_event_indices = set(
+            index
+            for term in expression.terms
+            for index in term.event_indices()
+        )
+
+        return {
+            event_index: {
+                True: expression.substitute_true(event_index),
+                False: expression.substitute_false(event_index),
+            }
+            for event_index in sorted(implicated_event_indices)
+        }
 
     def compile_cut_set_table(self, events: list[Event], times: list[float], sample_size: int,
                               computational_cache: ComputationalCache) -> Table:
@@ -1005,20 +1027,83 @@ class Gate(Object):
             'computed_probability',
             'computed_intensity',
             'computed_rate',
+            'probability_importance',
+            'intensity_importance',
         ]
+
+        terms = self.computed_expression.terms
+        flattened_index = self.flattened_indexer.get_index
+        q = computational_cache.term_probability
+        omega = computational_cache.term_intensity
+        lambda_ = computational_cache.term_rate
+
         data = [
             [
                 format_cut_set(tuple(events[index].id_ for index in term.event_indices())),
                 term.order(),
                 time, sample_index,
-                computational_cache.probability(term, self.flattened_indexer.get_index(time_index, sample_index)),
-                computational_cache.intensity(term, self.flattened_indexer.get_index(time_index, sample_index)),
-                computational_cache.rate(term, self.flattened_indexer.get_index(time_index, sample_index)),
+                q_term := q(term, i),
+                omega_term := omega(term, i),
+                lambda_(term, i),
+                robust_divide(q_term, descending_sum(q(c, i) for c in terms)),
+                robust_divide(omega_term, descending_sum(omega(c, i) for c in terms)),
             ]
-            for term in sorted(self.computed_expression.terms)
+            for term in sorted(terms)
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
+            if (
+                i := flattened_index(time_index, sample_index),
+            )
         ]
+
+        return Table(headings, data)
+
+    def compile_importance_table(self, events: list[Event], times: list[float], sample_size: int,
+                                 computational_cache: ComputationalCache) -> Table:
+        headings = [
+            'event', 'label',
+            'time', 'sample',
+            'marginal_importance',
+            'criticality_importance',
+            'diagnostic_importance',
+            'prognostic_importance',
+            'risk_achievement_worth',
+            'risk_reduction_worth',
+        ]
+
+        partial_from_boolean_from_event_index = self.get_partials_from_event_index()
+        gate_expression = self.computed_expression
+        flattened_index = self.flattened_indexer.get_index
+        q = computational_cache.expression_probability
+
+        data = [
+            [
+                event.id_, event.label,
+                time, sample_index,
+                marginal_importance := q_partial_true - q_partial_false,
+                marginal_importance * robust_divide(q_event, q_gate),
+                robust_divide(q_filtered, q_gate),
+                robust_divide(q_gate - q_partial_false, q_gate),
+                robust_divide(q_partial_true, q_gate),
+                robust_divide(q_gate, q_partial_false),
+            ]
+            for event_index, partial_from_boolean in partial_from_boolean_from_event_index.items()
+            if (
+                event := events[event_index],
+                filtered_expression := gate_expression.filter_terms(event_index),
+            )
+            for time_index, time in enumerate(times)
+            for sample_index in range(sample_size)
+            if (
+                i := flattened_index(time_index, sample_index),
+                q_partial_true := q(partial_from_boolean[True], i),
+                q_partial_false := q(partial_from_boolean[False], i),
+                q_event := event.get_computed_probability(time_index, sample_index),
+                q_gate := self.get_computed_probability(time_index, sample_index),
+                q_filtered := q(filtered_expression, i),
+            )
+        ]
+
         return Table(headings, data)
 
     @staticmethod

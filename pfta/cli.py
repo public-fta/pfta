@@ -69,10 +69,12 @@ def main():
     event_table = fault_tree.compile_event_table()
     gate_table = fault_tree.compile_gate_table()
     cut_set_table_from_gate_id = fault_tree.compile_cut_set_tables()
+    importance_table_from_gate_id = fault_tree.compile_importance_tables()
     figure_from_id_from_time = fault_tree.compile_figures()
 
     mkdir_robust(output_directory_name := f'{fault_tree_text_file_name}.out')
     mkdir_robust(cut_sets_directory_name := f'{output_directory_name}/cut-sets')
+    mkdir_robust(importances_directory_name := f'{output_directory_name}/importances')
     mkdir_robust(figures_directory_name := f'{output_directory_name}/figures')
 
     figure_index = Index(figure_from_id_from_time, figures_directory_name, fault_tree.time_unit)
@@ -83,6 +85,9 @@ def main():
 
     for gate_id, cut_set_table in cut_set_table_from_gate_id.items():
         cut_set_table.write_tsv(f'{cut_sets_directory_name}/{gate_id}.tsv')
+
+    for gate_id, importance_table in importance_table_from_gate_id.items():
+        importance_table.write_tsv(f'{importances_directory_name}/{gate_id}.tsv')
 
     for time, figure_from_id in figure_from_id_from_time.items():
         mkdir_robust(figures_subdirectory_name := f'{figures_directory_name}/{time}')

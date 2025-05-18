@@ -2,6 +2,7 @@
 
 - times: 0, 1
 - time_unit: h
+- seed: Moo
 - sample_size: 10
 
 Model: CENTURY
@@ -102,6 +103,26 @@ Event: CENTURY-A
 Event: CENTURY-B
 - label: `loguniform` instance B
 - model: CENTURY
+
+Event: EV1
+- model_type: Fixed
+- probability: 0.1
+- intensity: 1
+
+Event: EV2
+- model_type: Fixed
+- probability: 0.2
+- intensity: 2
+
+Event: EV3
+- model_type: Fixed
+- probability: 0.3
+- intensity: 3
+
+Event: EV4
+- model_type: Fixed
+- probability: 1
+- intensity: 0
 
 
 Gate: OR
@@ -253,3 +274,16 @@ Gate: 1oo0
 - label: Empty 1oo0 VOTE gate = False
 - type: VOTE(1)
 - inputs: ,
+
+Gate: GT-IMP
+- label: Importance testing
+- type: OR
+- inputs: GT-IMP-123, GT-IMP-124
+
+Gate: GT-IMP-123
+- type: VOTE(2)
+- inputs: EV1, EV2, EV3
+
+Gate: GT-IMP-124
+- type: VOTE(2)
+- inputs: EV1, EV2, EV4

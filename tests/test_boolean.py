@@ -33,13 +33,25 @@ class TestBoolean(unittest.TestCase):
         # ABCE / BCD = AE
         self.assertEqual(Term(0b10111) / Term(0b01110), Term(0b10001))
 
+    def test_term_order(self):
+        self.assertEqual(Term(0).order(), 0)
+        self.assertEqual(Term(1).order(), 1)
+        self.assertEqual(Term(0b10).order(), 1)
+        self.assertEqual(Term(0b10111).order(), 4)
+
+    def test_term_is_vacuous(self):
+        self.assertTrue(Term(0).is_vacuous())
+        self.assertFalse(Term(1).is_vacuous())
+        self.assertFalse(Term(0b10).is_vacuous())
+        self.assertFalse(Term(0b10111).is_vacuous())
+
     def test_term_event_indices(self):
         self.assertEqual(Term(0).event_indices(), ())
         self.assertEqual(Term(1).event_indices(), (0,))
         self.assertEqual(Term(0b1010010).event_indices(), (1, 4, 6,))
         self.assertEqual(Term(2 ** 69420).event_indices(), (69420,))
 
-    def test_factors(self):
+    def test_term_factors(self):
         self.assertEqual(
             Term(0b10110).factors(),
             (Term(0b00010), Term(0b00100), Term(0b10000)),
@@ -198,6 +210,92 @@ class TestBoolean(unittest.TestCase):
 
         # gcd(ABCDEFG) = ABCDEFG
         self.assertEqual(Term.gcd(Term(0b1111111)), Term(0b1111111))
+
+    def test_expression_encodings(self):
+        self.assertEqual(Expression().encodings(), set())
+        self.assertEqual(Expression(Term(0)).encodings(), {0})
+        self.assertEqual(Expression(Term(0b0001), Term(0b1000), Term(0b0110)).encodings(), {0b0001, 0b1000, 0b0110})
+
+    def test_expression_sole_term_encoding(self):
+        self.assertEqual(Expression().sole_term_encoding(), None)
+        self.assertEqual(Expression(Term(0)).sole_term_encoding(), 0)
+        self.assertEqual(Expression(Term(1)).sole_term_encoding(), 1)
+        self.assertEqual(Expression(Term(0b1101)).sole_term_encoding(), 0b1101)
+
+    def test_expression_substitute_true(self):
+        # False_(A=True) = False
+        self.assertEqual(Expression().substitute_true(event_index=1), Expression())
+
+        # True_(A=True) = True
+        self.assertEqual(Expression(Term(0)).substitute_true(event_index=1), Expression(Term(0)))
+
+        # ABCDEFG_(C=True) = ABDEFG
+        self.assertEqual(Expression(Term(0b1111111)).substitute_true(event_index=2), Expression(Term(0b1111011)))
+
+        # ABCDEFG_(H=True) = ABCDEFG
+        self.assertEqual(Expression(Term(0b1111111)).substitute_true(event_index=7), Expression(Term(0b1111111)))
+
+        # (A + BC + DEF)_(C=True) = A + B + DEF
+        self.assertEqual(
+            Expression(Term(0b000001), Term(0b000110), Term(0b111000)).substitute_true(event_index=2),
+            Expression(Term(0b000001), Term(0b000010), Term(0b111000)),
+        )
+
+        # (AB + BC + CA)_(B=True) = A + C
+        self.assertEqual(
+            Expression(Term(0b011), Term(0b110), Term(0b101)).substitute_true(event_index=1),
+            Expression(Term(0b001), Term(0b100)),
+        )
+
+    def test_expression_substitute_false(self):
+        # False_(A=False) = False
+        self.assertEqual(Expression().substitute_false(event_index=1), Expression())
+
+        # True_(A=False) = True
+        self.assertEqual(Expression(Term(0)).substitute_false(event_index=1), Expression(Term(0)))
+
+        # ABCDEFG_(C=False) = False
+        self.assertEqual(Expression(Term(0b1111111)).substitute_false(event_index=2), Expression())
+
+        # ABCDEFG_(H=False) = ABCDEFG
+        self.assertEqual(Expression(Term(0b1111111)).substitute_false(event_index=7), Expression(Term(0b1111111)))
+
+        # (A + BC + DEF)_(C=False) = A + DEF
+        self.assertEqual(
+            Expression(Term(0b000001), Term(0b000110), Term(0b111000)).substitute_false(event_index=2),
+            Expression(Term(0b000001), Term(0b111000)),
+        )
+
+        # (AB + BC + CA)_(B=False) = AC
+        self.assertEqual(
+            Expression(Term(0b011), Term(0b110), Term(0b101)).substitute_false(event_index=1),
+            Expression(Term(0b101)),
+        )
+
+    def test_expression_filter_terms(self):
+        # False filtered on A = False
+        self.assertEqual(Expression().filter_terms(event_index=1), Expression())
+
+        # True filtered on A = False
+        self.assertEqual(Expression(Term(0)).filter_terms(event_index=1), Expression())
+
+        # ABCDEFG filtered on C = ABCDEFG
+        self.assertEqual(Expression(Term(0b1111111)).filter_terms(event_index=2), Expression(Term(0b1111111)))
+
+        # ABCDEFG filtered on H = False
+        self.assertEqual(Expression(Term(0b1111111)).filter_terms(event_index=7), Expression())
+
+        # (A + BC + DEF) filtered on C = BC
+        self.assertEqual(
+            Expression(Term(0b000001), Term(0b000110), Term(0b111000)).filter_terms(event_index=2),
+            Expression(Term(0b000110)),
+        )
+
+        # (AB + BC + CA) filtered on B = AB + BC
+        self.assertEqual(
+            Expression(Term(0b011), Term(0b110), Term(0b101)).filter_terms(event_index=1),
+            Expression(Term(0b011), Term(0b110)),
+        )
 
     def test_expression_conjunction(self):
         # (Empty conjunction) = True

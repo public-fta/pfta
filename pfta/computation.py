@@ -12,7 +12,7 @@ import collections
 import math
 from typing import TYPE_CHECKING, Collection, DefaultDict, Iterable, Optional
 
-from pfta.boolean import Term
+from pfta.boolean import Term, Expression
 from pfta.common import natural_repr
 from pfta.utilities import robust_divide, descending_product, descending_sum, concrete_combinations
 
@@ -21,92 +21,80 @@ if TYPE_CHECKING:
 
 
 class ComputationalCache:
-    _probability_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
-    _intensity_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
-    _combinations_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
+    """
+    Class for caching laborious computations.
+    """
+    _q_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
+    _omega_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
+    _q_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]
+    _omega_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]
+    _combos_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
 
     def __init__(self, tolerance: float, events: list['Event']):
-        probability_from_index_from_encoding = {
+        q_from_index_from_encoding = {
             event.computed_expression.sole_term_encoding(): dict(enumerate(event.computed_probabilities))
             for event in events
         }
-        intensity_from_index_from_encoding = {
+        omega_from_index_from_encoding = {
             event.computed_expression.sole_term_encoding(): dict(enumerate(event.computed_intensities))
             for event in events
         }
 
         self.tolerance = tolerance
-        self._probability_from_index_from_encoding = collections.defaultdict(dict, probability_from_index_from_encoding)
-        self._intensity_from_index_from_encoding = collections.defaultdict(dict, intensity_from_index_from_encoding)
-        self._combinations_from_order_from_terms = collections.defaultdict(dict)
+        self._q_from_index_from_encoding = collections.defaultdict(dict, q_from_index_from_encoding)
+        self._omega_from_index_from_encoding = collections.defaultdict(dict, omega_from_index_from_encoding)
+        self._q_from_index_from_encodings = collections.defaultdict(dict)
+        self._omega_from_index_from_encodings = collections.defaultdict(dict)
+        self._combos_from_order_from_terms = collections.defaultdict(dict)
 
     def __repr__(self):
         return natural_repr(self)
 
-    def probability(self, term: Term, index: int) -> float:
-        """
-        Instantaneous failure probability of a Boolean term (minimal cut set).
+    def term_probability(self, term: Term, index: int) -> float:
+        encoding = term.encoding
 
-        From `MATHS.md`, the failure probability of a minimal cut set `C = x y z ...` is given by
-            q[C] = q[x] q[y] q[z] ...
-                 = ∏{e|C} q[e],
-        a straight product of the failure probabilities of its constituent primary events (i.e. factors).
-        """
-        if index not in self._probability_from_index_from_encoding[term.encoding]:
-            def q(e: Term) -> float:
-                return self.probability(e, index)
+        if index not in self._q_from_index_from_encoding[encoding]:
+            self._q_from_index_from_encoding[encoding][index] = uncached_term_probability(term, index, self)
 
-            probability = descending_product(q(factor) for factor in term.factors())
+        return self._q_from_index_from_encoding[encoding][index]
 
-            self._probability_from_index_from_encoding[term.encoding][index] = probability
+    def term_intensity(self, term: Term, index: int) -> float:
+        encoding = term.encoding
 
-        return self._probability_from_index_from_encoding[term.encoding][index]
+        if index not in self._omega_from_index_from_encoding[encoding]:
+            self._omega_from_index_from_encoding[encoding][index] = uncached_term_intensity(term, index, self)
 
-    def intensity(self, term: Term, index: int) -> float:
-        """
-        Instantaneous failure intensity of a Boolean term (minimal cut set).
+        return self._omega_from_index_from_encoding[encoding][index]
 
-        From `MATHS.md`, the failure intensity of a minimal cut set `C = x y z ...`
-        is given by a product-rule-style expression, where each term is the product of
-        one primary event's failure intensity and the remaining primary events' failure probabilities:
-            ω[C] =   ω[x] q[y] q[z] ...
-                   + q[x] ω[y] q[z] ...
-                   + q[x] q[y] ω[z] ...
-                   + ...
-                 = ∑{e|C} ω[e] q[C÷e].
-        """
-        if index not in self._intensity_from_index_from_encoding[term.encoding]:
-            def q(e: Term) -> float:
-                return self.probability(e, index)
-
-            def omega(e: Term) -> float:
-                return self.intensity(e, index)
-
-            intensity = descending_sum(omega(factor) * q(term / factor) for factor in term.factors())
-
-            self._intensity_from_index_from_encoding[term.encoding][index] = intensity
-
-        return self._intensity_from_index_from_encoding[term.encoding][index]
-
-    def rate(self, term: Term, index: int) -> float:
-        """
-        Instantaneous failure rate of a Boolean term (minimal cut set).
-        """
-        q = self.probability(term, index)
-        omega = self.intensity(term, index)
+    def term_rate(self, term: Term, index: int) -> float:
+        q = self.term_probability(term, index)
+        omega = self.term_intensity(term, index)
 
         return robust_divide(omega, 1 - q)
 
-    def combinations(self, terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
-        """
-        Term combinations (subset-tuples) of given order (size).
-        """
-        if order not in self._combinations_from_order_from_terms[terms]:
-            combos = concrete_combinations(terms, order)
+    def expression_probability(self, expression: Expression, index: int) -> float:
+        encodings = expression.encodings()
 
-            self._combinations_from_order_from_terms[terms][order] = combos
+        if index not in self._q_from_index_from_encodings[encodings]:
+            probability = uncached_expression_probability(expression, index, self)
+            self._q_from_index_from_encodings[encodings][index] = probability
 
-        return self._combinations_from_order_from_terms[terms][order]
+        return self._q_from_index_from_encodings[encodings][index]
+
+    def expression_intensity(self, expression: Expression, index: int) -> float:
+        encodings = expression.encodings()
+
+        if index not in self._omega_from_index_from_encodings[encodings]:
+            intensity = uncached_expression_intensity(expression, index, self)
+            self._omega_from_index_from_encodings[encodings][index] = intensity
+
+        return self._omega_from_index_from_encodings[encodings][index]
+
+    def term_combinations(self, terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
+        if order not in self._combos_from_order_from_terms[terms]:
+            self._combos_from_order_from_terms[terms][order] = concrete_combinations(terms, order)
+
+        return self._combos_from_order_from_terms[terms][order]
 
 
 def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> float:
@@ -216,17 +204,50 @@ def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
     return lambda_ * (1 - q)
 
 
-def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) -> bool:
+def uncached_term_probability(term: Term, flattened_index: int, computational_cache: ComputationalCache) -> float:
     """
-    Predicate for early termination (truncation) of disjunction probability and intensity computations.
+    Instantaneous failure probability of a Boolean term (representing a minimal cut set).
+
+    From `MATHS.md`, the failure probability of a minimal cut set `C = x y z ...` is given by
+        q[C] = q[x] q[y] q[z] ...
+             = ∏{e|C} q[e],
+    a straight product of the failure probabilities of its constituent primary events (i.e. factors).
     """
-    return math.isnan(latest) or latest == 0 or abs(latest) < abs(partial_sum) * tolerance
+    def q(factor: Term) -> float:
+        return computational_cache.term_probability(factor, flattened_index)
+
+    return descending_product(q(factor) for factor in term.factors())
 
 
-def disjunction_probability(terms: Collection[Term], flattened_index: int,
-                            computational_cache: ComputationalCache) -> float:
+def uncached_term_intensity(term: Term, flattened_index: int, computational_cache: ComputationalCache) -> float:
     """
-    Instantaneous failure probability of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
+    Instantaneous failure intensity of a Boolean term (representing a minimal cut set).
+
+    From `MATHS.md`, the failure intensity of a minimal cut set `C = x y z ...`
+    is given by a product-rule-style expression, where each term is the product of
+    one primary event's failure intensity and the remaining primary events' failure probabilities:
+        ω[C] =   ω[x] q[y] q[z] ...
+               + q[x] ω[y] q[z] ...
+               + q[x] q[y] ω[z] ...
+               + ...
+             = ∑{e|C} ω[e] q[C ÷ e].
+    """
+    def q(factor: Term) -> float:
+        return computational_cache.term_probability(factor, flattened_index)
+
+    def omega(reduced_term: Term) -> float:
+        return computational_cache.term_intensity(reduced_term, flattened_index)
+
+    return descending_sum(
+        omega(factor) * q(term / factor)
+        for factor in term.factors()
+    )
+
+
+def uncached_expression_probability(expression: Expression, flattened_index: int,
+                                    computational_cache: ComputationalCache) -> float:
+    """
+    Instantaneous failure probability for a general Boolean expression (a disjunction (OR) of terms).
 
     From `MATHS.md`, for a gate `T` represented as a disjunction of `N` minimal cut sets,
         T = C_1 + C_2 + ... + C_N,
@@ -238,11 +259,13 @@ def disjunction_probability(terms: Collection[Term], flattened_index: int,
     In the implementation, we truncate after the latest contribution divided by the partial sum
     falls below the tolerance.
     """
+    terms = expression.terms
+
     and_ = Term.conjunction
-    combinations = computational_cache.combinations
+    combinations = computational_cache.term_combinations
 
     def q(term: Term) -> float:
-        return computational_cache.probability(term, flattened_index)
+        return computational_cache.term_probability(term, flattened_index)
 
     def q_contribution(order: int) -> float:
         return (
@@ -266,10 +289,10 @@ def disjunction_probability(terms: Collection[Term], flattened_index: int,
     return partial_sum
 
 
-def disjunction_intensity(terms: Collection[Term], flattened_index: int,
-                          computational_cache: ComputationalCache) -> float:
+def uncached_expression_intensity(expression: Expression, flattened_index: int,
+                                  computational_cache: ComputationalCache) -> float:
     """
-    Instantaneous failure intensity of a disjunction (OR) of a list of Boolean terms (minimal cut sets).
+    Instantaneous failure intensity for a general Boolean expression (a disjunction (OR) of terms).
 
     From `MATHS.md`, for a gate `T` represented as a disjunction of `N` minimal cut sets,
         T = C_1 + C_2 + ... + C_N,
@@ -305,15 +328,17 @@ def disjunction_intensity(terms: Collection[Term], flattened_index: int,
                                      − (ω^2 (r−1)th-order contribution with ω^† truncated at (r−1)th-order)
     divided by the partial sum falls below the tolerance.
     """
+    terms = expression.terms
+
     gcd = Term.gcd
     and_ = Term.conjunction
-    combinations = computational_cache.combinations
+    combinations = computational_cache.term_combinations
 
     def q(term: Term) -> float:
-        return computational_cache.probability(term, flattened_index)
+        return computational_cache.term_probability(term, flattened_index)
 
     def omega(term: Term) -> float:
-        return computational_cache.intensity(term, flattened_index)
+        return computational_cache.term_intensity(term, flattened_index)
 
     def omega_1_contribution(order: int) -> float:
         return (
@@ -369,3 +394,10 @@ def disjunction_intensity(terms: Collection[Term], flattened_index: int,
             break
 
     return partial_sum
+
+
+def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) -> bool:
+    """
+    Predicate for early termination (truncation) of disjunction probability and intensity computations.
+    """
+    return math.isnan(latest) or latest == 0 or abs(latest) < abs(partial_sum) * tolerance

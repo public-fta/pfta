@@ -3,6 +3,8 @@
 
 ## [Unreleased]
 
+- Implemented importance output
+
 
 ## [v0.3.2] Python 3.12 passing (2025-05-12)
 

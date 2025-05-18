@@ -108,8 +108,8 @@ class Term:
         """
         Compute the disjunction (OR) of a sequence of terms.
 
-        Since we never encounter inversions, the result is merely an expression with the redundant terms removed
-        as per the absorption law.
+        Since we only encounter coherent (NOT-free) logic, the result is merely an expression
+        with the redundant terms removed as per the absorption law.
         """
         undecided_terms = set(terms)
         necessary_terms = set()
@@ -158,13 +158,16 @@ class Expression:
     terms: frozenset[Term]
 
     def __init__(self, *terms: Term):
-        self.terms = frozenset({*terms})
+        self.terms = frozenset([*terms])
 
     def __eq__(self, other):
         return self.terms == other.terms
 
     def __repr__(self):
         return f'Expression({", ".join(repr(t) for t in self.terms)})'
+
+    def encodings(self) -> frozenset[int]:
+        return frozenset(term.encoding for term in self.terms)
 
     def sole_term_encoding(self) -> Optional[int]:
         if not self.terms:  # expression is False
@@ -174,6 +177,44 @@ class Expression:
             raise ImplementationError(f'`{self}` does not have a sole term')
 
         return next(iter(self.terms)).encoding
+
+    def substitute_true(self, event_index: int) -> 'Expression':
+        """
+        Substitute `True` for the event of the given index.
+
+        Equivalent to dividing through all terms by the event.
+        """
+        vanisher = Term.create_from_event_index(event_index)
+
+        return Term.disjunction(*(
+            term / vanisher
+            for term in self.terms
+        ))
+
+    def substitute_false(self, event_index: int) -> 'Expression':
+        """
+        Substitute `False` for the event of the given index.
+
+        Equivalent to removing terms that contain the event.
+        Elimination of redundant terms is not required, assuming the expression is already minimal.
+        """
+        return Expression(*(
+            term
+            for term in self.terms
+            if event_index not in term.event_indices()
+        ))
+
+    def filter_terms(self, event_index: int) -> 'Expression':
+        """
+        Filter through terms, retaining only those that contain (as a factor) the event of the given index.
+
+        Effectively the complement of `substitute_false`.
+        """
+        return Expression(*(
+            term
+            for term in self.terms
+            if event_index in term.event_indices()
+        ))
 
     @staticmethod
     def conjunction(*expressions: 'Expression') -> 'Expression':

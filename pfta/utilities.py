@@ -7,6 +7,7 @@ Mathematical utility methods.
 Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
+
 import itertools
 import math
 import re
