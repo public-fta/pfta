@@ -60,22 +60,14 @@ class ComputationalCache:
         return self._omega_from_index_from_encoding[term.encoding][index]
 
     def term_rate(self, term: Term, index: int) -> float:
-        """
-        Instantaneous failure rate of a Boolean term (minimal cut set).
-        """
         q = self.term_probability(term, index)
         omega = self.term_intensity(term, index)
 
         return robust_divide(omega, 1 - q)
 
     def term_combinations(self, terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
-        """
-        Term combinations (subset-tuples) of given order (size).
-        """
         if order not in self._combos_from_order_from_terms[terms]:
-            combos = concrete_combinations(terms, order)
-
-            self._combos_from_order_from_terms[terms][order] = combos
+            self._combos_from_order_from_terms[terms][order] = concrete_combinations(terms, order)
 
         return self._combos_from_order_from_terms[terms][order]
 
