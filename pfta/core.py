@@ -1051,7 +1051,7 @@ class Gate(Object):
             for term in sorted(terms)
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
-            if (i := flattened_index(time_index, sample_index)) or True
+                if (i := flattened_index(time_index, sample_index)) or True
         ]
 
         return Table(headings, data)
@@ -1076,12 +1076,12 @@ class Gate(Object):
                 marginal_importance * robust_divide(q(event.computed_expression, i), q(self.computed_expression, i)),
             ]
             for event_index, partial_from_boolean in self.get_partials_from_event_index().items()
-            if (event := events[event_index]) or True
+                if (event := events[event_index]) or True
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
-            if (i := flattened_index(time_index, sample_index)) or True
-            if (q_event_true := q(partial_from_boolean[True], i)) or True
-            if (q_event_false := q(partial_from_boolean[False], i)) or True
+                if (i := flattened_index(time_index, sample_index)) or True
+                if (q_event_true := q(partial_from_boolean[True], i)) or True
+                if (q_event_false := q(partial_from_boolean[False], i)) or True
         ]
 
         return Table(headings, data)
