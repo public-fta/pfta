@@ -1073,12 +1073,12 @@ class Gate(Object):
                 time, sample_index,
                 q_event_true - q_event_false,
             ]
-            for event_index, partials in self.get_partials_from_event_index().items()
+            for event_index, partial_from_boolean in self.get_partials_from_event_index().items()
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
             if (i := flattened_index(time_index, sample_index)) or True
-            if (q_event_true := q(partials[True], i)) or True
-            if (q_event_false := q(partials[False], i)) or True
+            if (q_event_true := q(partial_from_boolean[True], i)) or True
+            if (q_event_false := q(partial_from_boolean[False], i)) or True
         ]
 
         return Table(headings, data)
