@@ -180,7 +180,7 @@ class Expression:
 
     def substitute_true(self, event_index: int) -> 'Expression':
         """
-        Substitute `True` for the event of the given index.  # TODO: tests
+        Substitute `True` for the event of the given index.
 
         Equivalent to dividing through all terms by the event.
         """

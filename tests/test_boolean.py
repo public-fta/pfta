@@ -222,6 +222,31 @@ class TestBoolean(unittest.TestCase):
         self.assertEqual(Expression(Term(1)).sole_term_encoding(), 1)
         self.assertEqual(Expression(Term(0b1101)).sole_term_encoding(), 0b1101)
 
+    def test_expression_substitute_true(self):
+        # False_(A=True) = False
+        self.assertEqual(Expression().substitute_true(event_index=1), Expression())
+
+        # True_(A=True) = True
+        self.assertEqual(Expression(Term(0)).substitute_true(event_index=1), Expression(Term(0)))
+
+        # ABCDEFG_(C=True) = ABDEFG
+        self.assertEqual(Expression(Term(0b1111111)).substitute_true(event_index=2), Expression(Term(0b1111011)))
+
+        # ABCDEFG_(H=True) = ABCDEFG
+        self.assertEqual(Expression(Term(0b1111111)).substitute_true(event_index=7), Expression(Term(0b1111111)))
+
+        # (A + BC + DEF)_(C=True) = A + B + DEF
+        self.assertEqual(
+            Expression(Term(0b000001), Term(0b000110), Term(0b111000)).substitute_true(event_index=2),
+            Expression(Term(0b000001), Term(0b000010), Term(0b111000)),
+        )
+
+        # (AB + BC + CA)_(B=True) = A + C
+        self.assertEqual(
+            Expression(Term(0b011), Term(0b110), Term(0b101)).substitute_true(event_index=1),
+            Expression(Term(0b001), Term(0b100)),
+        )
+
     def test_expression_conjunction(self):
         # (Empty conjunction) = True
         self.assertEqual(
