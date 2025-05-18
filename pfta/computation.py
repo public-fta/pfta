@@ -21,25 +21,25 @@ if TYPE_CHECKING:
 
 
 class ComputationalCache:
-    _probability_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
-    _intensity_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
+    _q_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
+    _omega_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
     # TODO: cache _probability_from_index_from_expression to make importance faster?
-    _combinations_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
+    _combos_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
 
     def __init__(self, tolerance: float, events: list['Event']):
-        probability_from_index_from_encoding = {
+        q_from_index_from_encoding = {
             event.computed_expression.sole_term_encoding(): dict(enumerate(event.computed_probabilities))
             for event in events
         }
-        intensity_from_index_from_encoding = {
+        omega_from_index_from_encoding = {
             event.computed_expression.sole_term_encoding(): dict(enumerate(event.computed_intensities))
             for event in events
         }
 
         self.tolerance = tolerance
-        self._probability_from_index_from_encoding = collections.defaultdict(dict, probability_from_index_from_encoding)
-        self._intensity_from_index_from_encoding = collections.defaultdict(dict, intensity_from_index_from_encoding)
-        self._combinations_from_order_from_terms = collections.defaultdict(dict)
+        self._q_from_index_from_encoding = collections.defaultdict(dict, q_from_index_from_encoding)
+        self._omega_from_index_from_encoding = collections.defaultdict(dict, omega_from_index_from_encoding)
+        self._combos_from_order_from_terms = collections.defaultdict(dict)
 
     def __repr__(self):
         return natural_repr(self)
@@ -53,15 +53,15 @@ class ComputationalCache:
                  = ∏{e|C} q[e],
         a straight product of the failure probabilities of its constituent primary events (i.e. factors).
         """
-        if index not in self._probability_from_index_from_encoding[term.encoding]:
+        if index not in self._q_from_index_from_encoding[term.encoding]:
             def q(e: Term) -> float:
                 return self.probability(e, index)
 
             probability = descending_product(q(factor) for factor in term.factors())
 
-            self._probability_from_index_from_encoding[term.encoding][index] = probability
+            self._q_from_index_from_encoding[term.encoding][index] = probability
 
-        return self._probability_from_index_from_encoding[term.encoding][index]
+        return self._q_from_index_from_encoding[term.encoding][index]
 
     def intensity(self, term: Term, index: int) -> float:
         """
@@ -76,7 +76,7 @@ class ComputationalCache:
                    + ...
                  = ∑{e|C} ω[e] q[C÷e].
         """
-        if index not in self._intensity_from_index_from_encoding[term.encoding]:
+        if index not in self._omega_from_index_from_encoding[term.encoding]:
             def q(e: Term) -> float:
                 return self.probability(e, index)
 
@@ -85,9 +85,9 @@ class ComputationalCache:
 
             intensity = descending_sum(omega(factor) * q(term / factor) for factor in term.factors())
 
-            self._intensity_from_index_from_encoding[term.encoding][index] = intensity
+            self._omega_from_index_from_encoding[term.encoding][index] = intensity
 
-        return self._intensity_from_index_from_encoding[term.encoding][index]
+        return self._omega_from_index_from_encoding[term.encoding][index]
 
     def rate(self, term: Term, index: int) -> float:
         """
@@ -102,12 +102,12 @@ class ComputationalCache:
         """
         Term combinations (subset-tuples) of given order (size).
         """
-        if order not in self._combinations_from_order_from_terms[terms]:
+        if order not in self._combos_from_order_from_terms[terms]:
             combos = concrete_combinations(terms, order)
 
-            self._combinations_from_order_from_terms[terms][order] = combos
+            self._combos_from_order_from_terms[terms][order] = combos
 
-        return self._combinations_from_order_from_terms[terms][order]
+        return self._combos_from_order_from_terms[terms][order]
 
 
 def constant_rate_model_probability(t: float, lambda_: float, mu: float) -> float:
