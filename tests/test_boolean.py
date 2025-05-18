@@ -216,6 +216,12 @@ class TestBoolean(unittest.TestCase):
         self.assertEqual(Expression(Term(0)).encodings(), {0})
         self.assertEqual(Expression(Term(0b0001), Term(0b1000), Term(0b0110)).encodings(), {0b0001, 0b1000, 0b0110})
 
+    def test_expression_sole_term_encoding(self):
+        self.assertEqual(Expression().sole_term_encoding(), None)
+        self.assertEqual(Expression(Term(0)).sole_term_encoding(), 0)
+        self.assertEqual(Expression(Term(1)).sole_term_encoding(), 1)
+        self.assertEqual(Expression(Term(0b1101)).sole_term_encoding(), 0b1101)
+
     def test_expression_conjunction(self):
         # (Empty conjunction) = True
         self.assertEqual(
