@@ -39,7 +39,7 @@ class TestBoolean(unittest.TestCase):
         self.assertEqual(Term(0b1010010).event_indices(), (1, 4, 6,))
         self.assertEqual(Term(2 ** 69420).event_indices(), (69420,))
 
-    def test_factors(self):
+    def test_term_factors(self):
         self.assertEqual(
             Term(0b10110).factors(),
             (Term(0b00010), Term(0b00100), Term(0b10000)),
