@@ -1068,6 +1068,7 @@ class Gate(Object):
             'diagnostic_importance',
             'prognostic_importance',
             'risk_achievement_worth',
+            'risk_reduction_worth',
         ]
 
         partial_from_boolean_from_event_index = self.get_partials_from_event_index()
@@ -1084,6 +1085,7 @@ class Gate(Object):
                 robust_divide(q_filtered, q_gate),
                 robust_divide(q_gate - q_partial_false, q_gate),
                 robust_divide(q_partial_true, q_gate),
+                robust_divide(q_gate, q_partial_false),
             ]
             for event_index, partial_from_boolean in partial_from_boolean_from_event_index.items()
             if (
