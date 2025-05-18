@@ -81,6 +81,15 @@ class ComputationalCache:
 
         return self._q_from_index_from_encodings[encodings][index]
 
+    def expression_intensity(self, expression: Expression, index: int) -> float:
+        encodings = expression.encodings()
+
+        if index not in self._omega_from_index_from_encodings[encodings]:
+            intensity = uncached_expression_intensity(expression, index, self)
+            self._omega_from_index_from_encodings[encodings][index] = intensity
+
+        return self._omega_from_index_from_encodings[encodings][index]
+
     def term_combinations(self, terms: Collection[Term], order: int) -> list[tuple[Term, ...]]:
         if order not in self._combos_from_order_from_terms[terms]:
             self._combos_from_order_from_terms[terms][order] = concrete_combinations(terms, order)

@@ -18,7 +18,6 @@ from pfta.common import natural_repr, format_cut_set, natural_join_backticks
 from pfta.computation import (
     ComputationalCache,
     constant_rate_model_probability, constant_rate_model_intensity,
-    uncached_expression_intensity,
 )
 from pfta.constants import LineType, EventAppearance, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
@@ -998,7 +997,7 @@ class Gate(Object):
     @memoise('computed_intensities')
     def compute_intensities(self, computational_cache: ComputationalCache) -> list[float]:
         return [
-            uncached_expression_intensity(self.computed_expression, flattened_index, computational_cache)
+            computational_cache.expression_intensity(self.computed_expression, flattened_index)
             for flattened_index in range(self.flattened_indexer.flattened_size)
         ]
 
