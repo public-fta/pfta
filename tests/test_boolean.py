@@ -211,6 +211,11 @@ class TestBoolean(unittest.TestCase):
         # gcd(ABCDEFG) = ABCDEFG
         self.assertEqual(Term.gcd(Term(0b1111111)), Term(0b1111111))
 
+    def test_expression_encodings(self):
+        self.assertEqual(Expression().encodings(), set())
+        self.assertEqual(Expression(Term(0)).encodings(), {0})
+        self.assertEqual(Expression(Term(0b0001), Term(0b1000), Term(0b0110)).encodings(), {0b0001, 0b1000, 0b0110})
+
     def test_expression_conjunction(self):
         # (Empty conjunction) = True
         self.assertEqual(
