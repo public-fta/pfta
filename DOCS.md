@@ -35,6 +35,8 @@ Parameter values may be supplied as either:
 
 - A `<distribution>`, being one of the following:
 
+  - `beta(alpha=<value>, beta=<value>)`
+  - `gamma(alpha=<value>, lambda=<value>)`
   - `lognormal(mu=<value>, sigma=<value>)`
   - `loguniform(lower=<value>, upper=<value>)`
   - `normal(mu=<value>, sigma=<value>)`
