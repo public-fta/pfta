@@ -1051,8 +1051,7 @@ class Gate(Object):
             for term in sorted(terms)
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
-            # followed by singleton loops for assignment (not actual nesting):
-            for i in (flattened_index(time_index, sample_index),)
+            if (i := flattened_index(time_index, sample_index)) or True
         ]
 
         return Table(headings, data)
@@ -1077,10 +1076,9 @@ class Gate(Object):
             for event_index, partials in self.get_partials_from_event_index().items()
             for time_index, time in enumerate(times)
             for sample_index in range(sample_size)
-            # followed by singleton loops for assignment (not actual nesting):
-            for i in (flattened_index(time_index, sample_index),)
-            for q_event_true in (q(partials[True], i),)
-            for q_event_false in (q(partials[False], i),)
+            if (i := flattened_index(time_index, sample_index)) or True
+            if (q_event_true := q(partials[True], i)) or True
+            if (q_event_false := q(partials[False], i)) or True
         ]
 
         return Table(headings, data)
