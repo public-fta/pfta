@@ -21,6 +21,9 @@ if TYPE_CHECKING:
 
 
 class ComputationalCache:
+    """
+    Class for caching laborious computations.
+    """
     _q_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
     _omega_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
     # TODO: cache _probability_from_index_from_expression to make importance faster?
@@ -45,21 +48,8 @@ class ComputationalCache:
         return natural_repr(self)
 
     def term_probability(self, term: Term, index: int) -> float:
-        """
-        Instantaneous failure probability of a Boolean term (minimal cut set).
-
-        From `MATHS.md`, the failure probability of a minimal cut set `C = x y z ...` is given by
-            q[C] = q[x] q[y] q[z] ...
-                 = ∏{e|C} q[e],
-        a straight product of the failure probabilities of its constituent primary events (i.e. factors).
-        """
         if index not in self._q_from_index_from_encoding[term.encoding]:
-            def q(e: Term) -> float:
-                return self.term_probability(e, index)
-
-            probability = descending_product(q(factor) for factor in term.factors())
-
-            self._q_from_index_from_encoding[term.encoding][index] = probability
+            self._q_from_index_from_encoding[term.encoding][index] = term_probability(term, index, self)
 
         return self._q_from_index_from_encoding[term.encoding][index]
 
@@ -215,6 +205,21 @@ def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
 
     q = constant_rate_model_probability(t, lambda_, mu)
     return lambda_ * (1 - q)
+
+
+def term_probability(term: Term, flattened_index: int, computational_cache: ComputationalCache) -> float:
+    """
+    Instantaneous failure probability of a Boolean term (representing a minimal cut set).
+
+    From `MATHS.md`, the failure probability of a minimal cut set `C = x y z ...` is given by
+        q[C] = q[x] q[y] q[z] ...
+             = ∏{e|C} q[e],
+    a straight product of the failure probabilities of its constituent primary events (i.e. factors).
+    """
+    def q(factor: Term) -> float:
+        return computational_cache.term_probability(factor, flattened_index)
+
+    return descending_product(q(factor) for factor in term.factors())
 
 
 def expression_probability(expression: Expression, flattened_index: int,
