@@ -32,6 +32,17 @@ class Distribution:
         raise NotImplementedError
 
 
+class DegenerateDistribution(Distribution):
+    value: float
+
+    def __init__(self, value: float, line_number: int):
+        self.value = value
+        super().__init__(line_number)
+
+    def generate_samples(self, count: int) -> list[float]:
+        return [self.value for _ in range(count)]
+
+
 class BetaDistribution(Distribution):
     alpha: float
     beta: float
@@ -86,17 +97,6 @@ class GammaDistribution(Distribution):
         lambda_ = self.lambda_
 
         return [random.gammavariate(alpha, beta=1 / lambda_) for _ in range(count)]
-
-
-class DegenerateDistribution(Distribution):
-    value: float
-
-    def __init__(self, value: float, line_number: int):
-        self.value = value
-        super().__init__(line_number)
-
-    def generate_samples(self, count: int) -> list[float]:
-        return [self.value for _ in range(count)]
 
 
 class LogNormalDistribution(Distribution):
