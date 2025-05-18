@@ -49,13 +49,13 @@ class ComputationalCache:
 
     def term_probability(self, term: Term, index: int) -> float:
         if index not in self._q_from_index_from_encoding[term.encoding]:
-            self._q_from_index_from_encoding[term.encoding][index] = term_probability(term, index, self)
+            self._q_from_index_from_encoding[term.encoding][index] = uncached_term_probability(term, index, self)
 
         return self._q_from_index_from_encoding[term.encoding][index]
 
     def term_intensity(self, term: Term, index: int) -> float:
         if index not in self._omega_from_index_from_encoding[term.encoding]:
-            self._omega_from_index_from_encoding[term.encoding][index] = term_intensity(term, index, self)
+            self._omega_from_index_from_encoding[term.encoding][index] = uncached_term_intensity(term, index, self)
 
         return self._omega_from_index_from_encoding[term.encoding][index]
 
@@ -179,7 +179,7 @@ def constant_rate_model_intensity(t: float, lambda_: float, mu: float) -> float:
     return lambda_ * (1 - q)
 
 
-def term_probability(term: Term, flattened_index: int, computational_cache: ComputationalCache) -> float:
+def uncached_term_probability(term: Term, flattened_index: int, computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure probability of a Boolean term (representing a minimal cut set).
 
@@ -194,7 +194,7 @@ def term_probability(term: Term, flattened_index: int, computational_cache: Comp
     return descending_product(q(factor) for factor in term.factors())
 
 
-def term_intensity(term: Term, flattened_index: int, computational_cache: ComputationalCache) -> float:
+def uncached_term_intensity(term: Term, flattened_index: int, computational_cache: ComputationalCache) -> float:
     """
     Instantaneous failure intensity of a Boolean term (representing a minimal cut set).
 
