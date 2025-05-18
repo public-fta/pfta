@@ -193,7 +193,7 @@ class Expression:
 
     def substitute_false(self, event_index: int) -> 'Expression':
         """
-        Substitute `False` for the event of the given index.  # TODO: tests
+        Substitute `False` for the event of the given index.
 
         Equivalent to removing terms that contain the event.
         Elimination of redundant terms is not required, assuming the expression is already minimal.

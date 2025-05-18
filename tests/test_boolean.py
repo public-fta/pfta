@@ -247,6 +247,31 @@ class TestBoolean(unittest.TestCase):
             Expression(Term(0b001), Term(0b100)),
         )
 
+    def test_expression_substitute_false(self):
+        # False_(A=False) = False
+        self.assertEqual(Expression().substitute_false(event_index=1), Expression())
+
+        # True_(A=False) = True
+        self.assertEqual(Expression(Term(0)).substitute_false(event_index=1), Expression(Term(0)))
+
+        # ABCDEFG_(C=False) = False
+        self.assertEqual(Expression(Term(0b1111111)).substitute_false(event_index=2), Expression())
+
+        # ABCDEFG_(H=False) = ABCDEFG
+        self.assertEqual(Expression(Term(0b1111111)).substitute_false(event_index=7), Expression(Term(0b1111111)))
+
+        # (A + BC + DEF)_(C=False) = A + DEF
+        self.assertEqual(
+            Expression(Term(0b000001), Term(0b000110), Term(0b111000)).substitute_false(event_index=2),
+            Expression(Term(0b000001), Term(0b111000)),
+        )
+
+        # (AB + BC + CA)_(B=False) = AC
+        self.assertEqual(
+            Expression(Term(0b011), Term(0b110), Term(0b101)).substitute_false(event_index=1),
+            Expression(Term(0b101)),
+        )
+
     def test_expression_conjunction(self):
         # (Empty conjunction) = True
         self.assertEqual(
