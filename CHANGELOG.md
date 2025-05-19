@@ -4,6 +4,7 @@
 ## [Unreleased]
 
 - Fixed partial sums should be initialised as float zero, not integer zero
+- Converted `model_type` from string to enum
 - Implemented importance output
 - Implemented beta and gamma distributions
 

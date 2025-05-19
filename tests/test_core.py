@@ -11,6 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import textwrap
 import unittest
 
+from pfta.constants import ModelType
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException, ModelPropertyClashException, InvalidModelKeyComboException,
     NegativeValueException, SubUnitValueException, InvalidToleranceException,
@@ -262,7 +263,12 @@ class TestCore(unittest.TestCase):
         try:
             Model(
                 'MD-001',
-                {'label': 'First model', 'model_type': 'ConstantRate', 'mean_failure_time': '100', 'repair_rate': '10'},
+                {
+                    'label': 'First model',
+                    'model_type': ModelType.CONSTANT_RATE,
+                    'mean_failure_time': '100',
+                    'repair_rate': '10',
+                },
             )
         except InvalidModelKeyComboException:
             self.fail('InvalidModelKeyComboException should not have been raised')
@@ -272,7 +278,12 @@ class TestCore(unittest.TestCase):
             InvalidModelKeyComboException,
             Model,
             'MD-001',
-            {'label': 'First model', 'model_type': 'ConstantRate', 'mean_failure_time': '100', 'failure_rate': '10'},
+            {
+                'label': 'First model',
+                'model_type': ModelType.CONSTANT_RATE,
+                'mean_failure_time': '100',
+                'failure_rate': '10',
+            },
         )
 
         # Overflow when sampling a distribution
@@ -309,7 +320,12 @@ class TestCore(unittest.TestCase):
             Event(
                 'EV-001',
                 0,
-                {'label': 'First event', 'model_type': 'ConstantRate', 'mean_failure_time': '100', 'repair_rate': '10'},
+                {
+                    'label': 'First event',
+                    'model_type': ModelType.CONSTANT_RATE,
+                    'mean_failure_time': '100',
+                    'repair_rate': '10',
+                },
             )
         except InvalidModelKeyComboException:
             self.fail('InvalidModelKeyComboException should not have been raised')
@@ -320,7 +336,7 @@ class TestCore(unittest.TestCase):
             Event,
             'EV-001',
             0,
-            {'label': 'First event', 'model_type': 'ConstantRate', 'model_id': 'MD-001'},
+            {'label': 'First event', 'model_type': ModelType.CONSTANT_RATE, 'model_id': 'MD-001'},
         )
         self.assertRaises(
             ModelPropertyClashException,
@@ -336,7 +352,12 @@ class TestCore(unittest.TestCase):
             Event,
             'EV-001',
             0,
-            {'label': 'First event', 'model_type': 'ConstantRate', 'mean_failure_time': '100', 'failure_rate': '10'},
+            {
+                'label': 'First event',
+                'model_type': ModelType.CONSTANT_RATE,
+                'mean_failure_time': '100',
+                'failure_rate': '10',
+            },
         )
 
     def test_gate(self):

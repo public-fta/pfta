@@ -18,7 +18,7 @@ from pfta.constants import (
     BOOLEAN_FROM_STRING, IS_PAGED_EXPLAINER,
     EVENT_APPEARANCE_FROM_STRING, EVENT_APPEARANCE_EXPLAINER,
     GATE_TYPE_EXPLAINER,
-    VALID_MODEL_TYPES, VALID_MODEL_KEYS, MODEL_TYPE_EXPLAINER,
+    MODEL_TYPE_FROM_STRING, VALID_MODEL_KEYS, MODEL_TYPE_EXPLAINER,
     VALID_KEYS_FROM_CLASS, KEY_EXPLAINER_FROM_CLASS,
     VALID_ID_REGEX, ID_EXPLAINER,
     DISTRIBUTION_CLASS_AND_PARAMETERS_FROM_NAME, DISTRIBUTION_EXPLAINER,
@@ -387,10 +387,10 @@ def parse_model_properties(parsed_assembly: ParsedAssembly) -> dict[str, Any]:
             continue
 
         if key == 'model_type':
-            if value not in VALID_MODEL_TYPES:
+            try:
+                properties['model_type'] = MODEL_TYPE_FROM_STRING[value]
+            except KeyError:
                 raise InvalidModelTypeException(parsed_line.number, f'invalid value `{value}`', MODEL_TYPE_EXPLAINER)
-
-            properties['model_type'] = value
             continue
 
         if key in VALID_MODEL_KEYS:
@@ -419,10 +419,10 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict[str, Any]:
             continue
 
         if key == 'model_type':
-            if value not in VALID_MODEL_TYPES:
+            try:
+                properties['model_type'] = MODEL_TYPE_FROM_STRING[value]
+            except KeyError:
                 raise InvalidModelTypeException(parsed_line.number, f'invalid value `{value}`', MODEL_TYPE_EXPLAINER)
-
-            properties['model_type'] = value
             continue
 
         if key in VALID_MODEL_KEYS:

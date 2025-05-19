@@ -19,7 +19,7 @@ from pfta.computation import (
     ComputationalCache,
     constant_rate_model_probability, constant_rate_model_intensity,
 )
-from pfta.constants import EventAppearance, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
+from pfta.constants import EventAppearance, GateType, ModelType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_model_properties, parse_event_properties, parse_gate_properties,
@@ -535,14 +535,14 @@ class Model:
     id_: str
     label: str
     comment: str
-    model_type: str
+    model_type: ModelType
     model_dict: dict[str, Distribution]
     is_used: Optional[bool]
 
     def __init__(self, id_: str, properties: dict[str, Any]):
         label: str = properties.get('label')
         comment: str = properties.get('comment')
-        model_type: str = properties.get('model_type')
+        model_type: ModelType = properties.get('model_type')
         unset_property_line_number: int = properties.get('unset_property_line_number')
 
         model_dict = Model.extract_model_dict(properties)
@@ -575,7 +575,7 @@ class Model:
         }
 
     @staticmethod
-    def validate_model_type_set(id_: str, model_type: str, unset_property_line_number: int):
+    def validate_model_type_set(id_: str, model_type: ModelType, unset_property_line_number: int):
         if model_type is None:
             raise UnsetPropertyException(
                 unset_property_line_number,
@@ -583,7 +583,8 @@ class Model:
             )
 
     @staticmethod
-    def validate_model_key_combo(id_: str, model_type: str, model_keys: list[str], unset_property_line_number: int):
+    def validate_model_key_combo(id_: str, model_type: ModelType, model_keys: list[str],
+                                 unset_property_line_number: int):
         model_key_set = set(model_keys)
         valid_key_sets = [
             set(combo)
@@ -744,17 +745,17 @@ class Event(Object):
     model_id_line_number: int
     appearance: EventAppearance
 
-    model_type: str
+    model_type: ModelType
     model_dict: dict[str, Distribution]
 
     is_used: Optional[bool]
-    actual_model_type: Optional[str]
+    actual_model_type: Optional[ModelType]
     parameter_samples: Optional[dict[str, list[float]]]
 
     def __init__(self, id_: str, index: int, properties: dict[str, Any]):
         label: str = properties.get('label')
         comment: str = properties.get('comment')
-        model_type: str = properties.get('model_type')
+        model_type: ModelType = properties.get('model_type')
         model_id: str = properties.get('model_id')
         model_id_line_number: int = properties.get('model_id_line_number')
         appearance: EventAppearance = properties.get('appearance', EventAppearance.BASIC)
@@ -789,7 +790,7 @@ class Event(Object):
         super().__init__(id_, label, comment)
 
     @memoise('actual_model_type')
-    def determine_actual_model_type(self, model_from_id: dict[str, Model]) -> str:
+    def determine_actual_model_type(self, model_from_id: dict[str, Model]) -> ModelType:
         model_owner = model_from_id.get(self.model_id, self)
         return model_owner.model_type
 
@@ -803,28 +804,28 @@ class Event(Object):
 
     @memoise('computed_expression')
     def compute_expression(self) -> Expression:
-        if self.actual_model_type == 'True':
+        if self.actual_model_type == ModelType.TRUE:
             return Expression(Term(encoding=0))
 
-        if self.actual_model_type == 'False':
+        if self.actual_model_type == ModelType.FALSE:
             return Expression()
 
         return Expression(Term.create_from_event_index(self.index))
 
     @memoise('computed_probabilities')
     def compute_probabilities(self, times: list[float], sample_size: int) -> list[float]:
-        if self.actual_model_type == 'Fixed':
+        if self.actual_model_type == ModelType.FIXED:
             return self.parameter_samples['probability']
 
-        if self.actual_model_type == 'True':
+        if self.actual_model_type == ModelType.TRUE:
             return [1 for _ in range(len(times) * sample_size)]
 
-        if self.actual_model_type == 'False':
+        if self.actual_model_type == ModelType.FALSE:
             return [0 for _ in range(len(times) * sample_size)]
 
         time_values = [t for t in times for _ in range(sample_size)]
 
-        if self.actual_model_type == 'ConstantRate':
+        if self.actual_model_type == ModelType.CONSTANT_RATE:
             try:
                 failure_rate_samples = self.parameter_samples['failure_rate']
             except KeyError:
@@ -844,15 +845,15 @@ class Event(Object):
 
     @memoise('computed_intensities')
     def compute_intensities(self, times: list[float], sample_size: int) -> list[float]:
-        if self.actual_model_type == 'Fixed':
+        if self.actual_model_type == ModelType.FIXED:
             return self.parameter_samples['intensity']
 
-        if self.actual_model_type in ('True', 'False'):
+        if self.actual_model_type in (ModelType.TRUE, ModelType.FALSE):
             return [0 for _ in range(len(times) * sample_size)]
 
         time_values = [t for t in times for _ in range(sample_size)]
 
-        if self.actual_model_type == 'ConstantRate':
+        if self.actual_model_type == ModelType.CONSTANT_RATE:
             try:
                 failure_rate_samples = self.parameter_samples['failure_rate']
             except KeyError:
@@ -871,7 +872,7 @@ class Event(Object):
         raise ImplementationError(f'bad actual_model_type {self.actual_model_type}')
 
     @staticmethod
-    def validate_model_xor_type_set(id_: str, model_type: str, model_id: str, unset_property_line_number: int):
+    def validate_model_xor_type_set(id_: str, model_type: ModelType, model_id: str, unset_property_line_number: int):
         is_model_type_set = model_type is not None
         is_model_set = model_id is not None
 
@@ -888,7 +889,8 @@ class Event(Object):
             )
 
     @staticmethod
-    def validate_model_key_combo(id_: str, model_type: str, model_keys: list[str], unset_property_line_number: int):
+    def validate_model_key_combo(id_: str, model_type: ModelType, model_keys: list[str],
+                                 unset_property_line_number: int):
         if model_type is None:
             if model_keys:
                 message = (

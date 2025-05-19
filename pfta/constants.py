@@ -38,6 +38,13 @@ class GateType(enum.Enum):
     VOTE = 3
 
 
+class ModelType(enum.Enum):
+    FIXED = 0
+    CONSTANT_RATE = 1
+    TRUE = 2
+    FALSE = 3
+
+
 class SymbolType(enum.Enum):
     NULL_GATE = 0
     OR_GATE = 1
@@ -84,24 +91,30 @@ GATE_TYPE_EXPLAINER = (
     f'Gate type must be `NULL`, `OR`, `AND`, or of the form `VOTE(<integer>)` (case-sensitive).'
 )
 
+MODEL_TYPE_FROM_STRING = {
+    'Fixed': ModelType.FIXED,
+    'ConstantRate': ModelType.CONSTANT_RATE,
+    'True': ModelType.TRUE,
+    'False': ModelType.FALSE,
+}
 VALID_KEY_COMBOS_FROM_MODEL_TYPE = {
-    'Fixed': (
+    ModelType.FIXED: (
         ('probability', 'intensity'),
     ),
-    'ConstantRate': (
+    ModelType.CONSTANT_RATE: (
         ('failure_rate', 'repair_rate'),
         ('failure_rate', 'mean_repair_time'),
         ('mean_failure_time', 'repair_rate'),
         ('mean_failure_time', 'mean_repair_time'),
     ),
-    'True': (
+    ModelType.TRUE: (
         (),
     ),
-    'False': (
+    ModelType.FALSE: (
         (),
     ),
 }
-VALID_MODEL_TYPES = tuple(VALID_KEY_COMBOS_FROM_MODEL_TYPE)
+VALID_MODEL_TYPES = tuple(MODEL_TYPE_FROM_STRING.keys())
 VALID_MODEL_KEYS = tuple({
     key: None  # dict to remove duplicates but preserve order
     for combos in VALID_KEY_COMBOS_FROM_MODEL_TYPE.values()
