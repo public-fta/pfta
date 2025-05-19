@@ -29,10 +29,10 @@ class ComputationalCache:
     _q_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]
     _omega_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]
     _combos_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
-    tolerance: float
+    truncation_tolerance: float
     truncation_order: Optional[int]
 
-    def __init__(self, events: list['Event'], tolerance: float, truncation_order: Optional[int]):
+    def __init__(self, events: list['Event'], truncation_tolerance: float, truncation_order: Optional[int]):
         q_from_index_from_encoding = {
             event.computed_expression.sole_term_encoding(): dict(enumerate(event.computed_probabilities))
             for event in events
@@ -47,7 +47,7 @@ class ComputationalCache:
         self._q_from_index_from_encodings = collections.defaultdict(dict)
         self._omega_from_index_from_encodings = collections.defaultdict(dict)
         self._combos_from_order_from_terms = collections.defaultdict(dict)
-        self.tolerance = tolerance
+        self.truncation_tolerance = truncation_tolerance
         self.truncation_order = truncation_order
 
     def __repr__(self):
@@ -259,8 +259,8 @@ def uncached_expression_probability(expression: Expression, flattened_index: int
                − ∑{1≤i<j≤N} q[C_i C_j]
                + ∑{1≤i<j<k≤N} q[C_i C_j C_k]
                − ... .
-    In the implementation, we truncate after the latest contribution divided by the partial sum
-    falls below the tolerance.
+    In the implementation, we truncate if the truncation order is reached,
+    or after the latest contribution divided by the partial sum falls below the truncation tolerance.
     """
     terms = expression.terms
 
@@ -289,7 +289,7 @@ def uncached_expression_probability(expression: Expression, flattened_index: int
         if r == computational_cache.truncation_order:
             break
 
-        if is_within_tolerance(latest, partial_sum, computational_cache.tolerance):
+        if is_within_truncation_tolerance(latest, partial_sum, computational_cache.truncation_tolerance):
             break
 
     return partial_sum
@@ -329,10 +329,10 @@ def uncached_expression_intensity(expression: Expression, flattened_index: int,
         (ω^1 4th-order contribution) − (ω^2 (1st,2nd)-order contributions' ω^† 3rd-order contribution
                                      − (ω^2 3rd-order contribution with ω^† truncated at 3rd-order),
         etc.
-    Thus, we truncate after the latest contribution
+    Thus, we truncate if the truncation order is reached, or after the latest contribution
         (ω^1 rth-order contribution) − (ω^2 (1,...,r−2)th-order contributions' ω^† (r−1)th-order contribution)
                                      − (ω^2 (r−1)th-order contribution with ω^† truncated at (r−1)th-order)
-    divided by the partial sum falls below the tolerance.
+    divided by the partial sum falls below the truncation tolerance.
     """
     terms = expression.terms
 
@@ -399,13 +399,13 @@ def uncached_expression_intensity(expression: Expression, flattened_index: int,
         if r == computational_cache.truncation_order:
             break
 
-        if is_within_tolerance(latest, partial_sum, computational_cache.tolerance):
+        if is_within_truncation_tolerance(latest, partial_sum, computational_cache.truncation_tolerance):
             break
 
     return partial_sum
 
 
-def is_within_tolerance(latest: float, partial_sum: float, tolerance: float) -> bool:
+def is_within_truncation_tolerance(latest: float, partial_sum: float, tolerance: float) -> bool:
     """
     Predicate for early termination (truncation) of disjunction probability and intensity computations.
     """
