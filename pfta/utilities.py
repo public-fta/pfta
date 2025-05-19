@@ -138,7 +138,7 @@ def concrete_combinations(items: Collection[T], order: int) -> list[tuple[T, ...
     return list(itertools.combinations(items, order))
 
 
-def find_cycles(adjacency_dict: dict):
+def find_cycles(adjacency_dict: dict[T, set[T]]) -> set[tuple[T, ...]]:
     """
     Find cycles of a directed graph via three-state (clean, infected, dead) depth-first search.
     """
@@ -149,7 +149,7 @@ def find_cycles(adjacency_dict: dict):
     infected_nodes = set()
     # dead_nodes need not be tracked
 
-    def infect(node):
+    def infect(node: T):
         clean_nodes.discard(node)
         infected_nodes.add(node)
         infection_chain.append(node)
