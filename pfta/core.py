@@ -261,7 +261,11 @@ class FaultTree:
         self.computational_cache = computational_cache
 
     def __repr__(self):
-        return natural_repr(self)
+        return natural_repr(
+            self,
+            omitted_attributes=('significant_figures', 'scientific_exponent'),
+            ellipsis_attributes=('parameter_samples',),
+        )
 
     def compile_model_table(self) -> Table:
         headings = ['id', 'label', 'is_used']
@@ -569,7 +573,7 @@ class Model:
         self.is_used = None
 
     def __repr__(self):
-        return natural_repr(self)
+        return natural_repr(self, omitted_attributes=('label', 'comment'))
 
     @staticmethod
     def extract_model_dict(properties: dict[str, Any]) -> dict[str, Distribution]:
@@ -694,9 +698,6 @@ class Object:
     def __lt__(self, other):
         return self.id_ < other.id_
 
-    def __repr__(self):
-        return natural_repr(self)
-
     @memoise('computed_rates')
     def compute_rates(self) -> list[float]:
         return [
@@ -794,6 +795,19 @@ class Event(Object):
 
         # Fields shared with class Gate
         super().__init__(id_, label, comment)
+
+    def __repr__(self):
+        return natural_repr(
+            self,
+            omitted_attributes=(
+                'label', 'comment', 'model_id_line_number', 'appearance',
+                'computed_expected_probabilities', 'computed_expected_intensities', 'computed_expected_rates',
+            ),
+            ellipsis_attributes=(
+                'parameter_samples',
+                'computed_probabilities', 'computed_intensities', 'computed_rates',
+            ),
+        )
 
     @memoise('actual_model_type')
     def determine_actual_model_type(self, model_from_id: dict[str, Model]) -> ModelType:
@@ -973,6 +987,18 @@ class Gate(Object):
 
         # Fields shared with class Event
         super().__init__(id_, label, comment)
+
+    def __repr__(self):
+        return natural_repr(
+            self,
+            omitted_attributes=(
+                'label', 'input_ids_line_number', 'comment',
+                'computed_expected_probabilities', 'computed_expected_intensities', 'computed_expected_rates',
+            ),
+            ellipsis_attributes=(
+                'computed_probabilities', 'computed_intensities', 'computed_rates',
+            ),
+        )
 
     @memoise('computed_expression')
     def compute_expression(self, event_from_id: dict[str, 'Event'], gate_from_id: dict[str, 'Gate']) -> Expression:

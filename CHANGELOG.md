@@ -9,6 +9,7 @@
 - Implemented beta and gamma distributions
 - Fixed partial sums should be initialised as float zero, not integer zero
 - Converted `model_type` from string to enum
+- Omitted/abbreviated irrelevant attributees in object representations
 
 
 ## [v0.3.2] Python 3.12 passing (2025-05-12)

@@ -26,7 +26,7 @@ class Distribution:
         self.line_number = line_number
 
     def __repr__(self):
-        return natural_repr(self)
+        return natural_repr(self, omitted_attributes=('line_number',))
 
     def generate_samples(self, count: int) -> list[float]:
         raise NotImplementedError

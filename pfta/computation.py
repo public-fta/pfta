@@ -51,7 +51,7 @@ class ComputationalCache:
         self.truncation_order = truncation_order
 
     def __repr__(self):
-        return natural_repr(self)
+        return natural_repr(self, ellipsis_attributes=('truncation_tolerance', 'truncation_order'))
 
     def term_probability(self, term: Term, index: int) -> float:
         encoding = term.encoding
