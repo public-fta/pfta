@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import textwrap
 import unittest
 
-from pfta.constants import ModelType
+from pfta.constants import ModelType, GateType
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException, ModelPropertyClashException, InvalidModelKeyComboException,
     NegativeValueException, SubUnitValueException, InvalidToleranceException,
@@ -19,7 +19,7 @@ from pfta.core import (
     DistributionSamplingError, InvalidProbabilityValueException,
     FaultTree, Model, Event, Gate,
 )
-from pfta.sampling import LogNormalDistribution, UniformDistribution
+from pfta.sampling import DegenerateDistribution, LogNormalDistribution, UniformDistribution
 
 
 class TestCore(unittest.TestCase):
@@ -266,8 +266,8 @@ class TestCore(unittest.TestCase):
                 {
                     'label': 'First model',
                     'model_type': ModelType.CONSTANT_RATE,
-                    'mean_failure_time': '100',
-                    'repair_rate': '10',
+                    'mean_failure_time': DegenerateDistribution(value=100, line_number=9),
+                    'repair_rate': DegenerateDistribution(value=10, line_number=10),
                 },
             )
         except InvalidModelKeyComboException:
@@ -281,8 +281,8 @@ class TestCore(unittest.TestCase):
             {
                 'label': 'First model',
                 'model_type': ModelType.CONSTANT_RATE,
-                'mean_failure_time': '100',
-                'failure_rate': '10',
+                'mean_failure_time': DegenerateDistribution(value=100, line_number=9),
+                'failure_rate': DegenerateDistribution(value=10, line_number=10),
             },
         )
 
@@ -323,8 +323,8 @@ class TestCore(unittest.TestCase):
                 {
                     'label': 'First event',
                     'model_type': ModelType.CONSTANT_RATE,
-                    'mean_failure_time': '100',
-                    'repair_rate': '10',
+                    'mean_failure_time': DegenerateDistribution(value=100, line_number=9),
+                    'repair_rate': DegenerateDistribution(value=10, line_number=10),
                 },
             )
         except InvalidModelKeyComboException:
@@ -343,7 +343,12 @@ class TestCore(unittest.TestCase):
             Event,
             'EV-001',
             0,
-            {'label': 'First event', 'model_id': 'MD-001', 'mean_failure_time': '100', 'failure_rate': '10'},
+            {
+                'label': 'First event',
+                'model_id': 'MD-001',
+                'mean_failure_time': DegenerateDistribution(value=100, line_number=9),
+                'failure_rate': DegenerateDistribution(value=10, line_number=10),
+            },
         )
 
         # Invalid model key combo
@@ -355,8 +360,8 @@ class TestCore(unittest.TestCase):
             {
                 'label': 'First event',
                 'model_type': ModelType.CONSTANT_RATE,
-                'mean_failure_time': '100',
-                'failure_rate': '10',
+                'mean_failure_time': DegenerateDistribution(value=100, line_number=9),
+                'failure_rate': DegenerateDistribution(value=10, line_number=10),
             },
         )
 
@@ -372,11 +377,11 @@ class TestCore(unittest.TestCase):
         self.assertRaises(
             UnsetPropertyException,
             Gate,
-            'GT-003', {'label': 'type gate', 'type': 'OR'},
+            'GT-003', {'label': 'type gate', 'type': GateType.OR},
         )
 
         # Reasonable gate
         try:
-            Gate('GT-003', {'type': 'OR', 'input_ids': ['EV-001', 'EV-002']})
+            Gate('GT-003', {'type': GateType.OR, 'input_ids': ['EV-001', 'EV-002']})
         except UnsetPropertyException:
             self.fail('UnsetPropertyException should not have been raised')
