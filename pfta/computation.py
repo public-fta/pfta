@@ -30,8 +30,9 @@ class ComputationalCache:
     _omega_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]
     _combos_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
     tolerance: float
+    truncation_order: Optional[int]
 
-    def __init__(self, events: list['Event'], tolerance: float):
+    def __init__(self, events: list['Event'], tolerance: float, truncation_order: Optional[int]):
         q_from_index_from_encoding = {
             event.computed_expression.sole_term_encoding(): dict(enumerate(event.computed_probabilities))
             for event in events
@@ -47,6 +48,7 @@ class ComputationalCache:
         self._omega_from_index_from_encodings = collections.defaultdict(dict)
         self._combos_from_order_from_terms = collections.defaultdict(dict)
         self.tolerance = tolerance
+        self.truncation_order = truncation_order
 
     def __repr__(self):
         return natural_repr(self)
@@ -284,6 +286,9 @@ def uncached_expression_probability(expression: Expression, flattened_index: int
 
         partial_sum += latest
 
+        if r == computational_cache.truncation_order:
+            break
+
         if is_within_tolerance(latest, partial_sum, computational_cache.tolerance):
             break
 
@@ -390,6 +395,9 @@ def uncached_expression_intensity(expression: Expression, flattened_index: int,
         )
 
         partial_sum += latest
+
+        if r == computational_cache.truncation_order:
+            break
 
         if is_within_tolerance(latest, partial_sum, computational_cache.tolerance):
             break

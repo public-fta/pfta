@@ -4,6 +4,7 @@
 ## [Unreleased]
 
 - Renamed `tolerance` to `computational_tolerance`
+- Implemented fault tree property `computational_order` (`1` for rare approximation)
 - Fixed partial sums should be initialised as float zero, not integer zero
 - Converted `model_type` from string to enum
 - Implemented importance output

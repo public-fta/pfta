@@ -20,6 +20,7 @@ The fault tree properties paragraph must be the first paragraph.
 - time_unit: <string>               (optional; displayed on intensities and rates in graphical output)
 - seed: <string>                    (optional; used when sampling distributions)
 - sample_size: <integer>            (optional; default `1`)
+- computational_order: <integer>    (optional; order for truncating probability/intensity computations; use `1` for rare approximation)
 - computational_tolerance: <float>  (optional; default `0.`; tolerance for truncating probability/intensity computations)
 - significant_figures: <integer>    (optional; default `3`; number of significant figures displayed in SVG output)
 - scientific_exponent: <integer>    (optional; default `3`; exponent threshold for scientific notation in SVG output)
@@ -148,6 +149,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `time_unit` | Time unit. |
 | `seed` | Seed used for sampling distributions. |
 | `sample_size` | Sample size for sampling distributions. |
+| `computational_order` | Order for truncating probability/intensity computations. |
 | `computational_tolerance` | Tolerance for truncating probability/intensity computations. |
 | `significant_figures` | Number of significant figures displayed in SVG output. |
 | `scientific_exponent` | Exponent threshold for scientific notation in SVG output. |

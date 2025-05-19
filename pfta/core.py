@@ -106,6 +106,7 @@ class FaultTree:
     time_unit: str
     seed: str
     sample_size: int
+    computational_order: Optional[int]
     computational_tolerance: float
     significant_figures: int
     scientific_exponent: int
@@ -169,6 +170,7 @@ class FaultTree:
         sample_size: int = fault_tree_properties.get('sample_size', 1)
         sample_size_raw: str = fault_tree_properties.get('sample_size_raw')
         sample_size_line_number: int = fault_tree_properties.get('sample_size_line_number')
+        computational_order: Optional[int] = fault_tree_properties.get('computational_order')
         computational_tolerance: float = fault_tree_properties.get('computational_tolerance', 0.)
         computational_tolerance_raw: str = fault_tree_properties.get('computational_tolerance_raw')
         computational_tolerance_line_number: int = fault_tree_properties.get('computational_tolerance_line_number')
@@ -234,7 +236,7 @@ class FaultTree:
         FaultTree.compute_event_expected_rates(events)
 
         # Prepare cache for computation of gate quantities
-        computational_cache = ComputationalCache(events, computational_tolerance)
+        computational_cache = ComputationalCache(events, computational_tolerance, computational_order)
 
         # Computation of gate quantities
         FaultTree.compute_gate_probabilities(gates, computational_cache)
@@ -249,6 +251,7 @@ class FaultTree:
         self.time_unit = time_unit
         self.seed = seed
         self.sample_size = sample_size
+        self.computational_order = computational_order
         self.computational_tolerance = computational_tolerance
         self.significant_figures = significant_figures
         self.scientific_exponent = scientific_exponent

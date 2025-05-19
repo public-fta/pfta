@@ -338,6 +338,13 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict[str, An
             properties['sample_size_line_number'] = parsed_line.number
             continue
 
+        if key == 'computational_order':
+            try:
+                properties['computational_order'] = int(value)
+            except ValueError:
+                raise InvalidIntegerException(parsed_line.number, f'unable to convert `{value}` to integer')
+            continue
+
         if key == 'computational_tolerance':
             try:
                 properties['computational_tolerance'] = float(value)
