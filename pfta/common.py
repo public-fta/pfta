@@ -20,9 +20,16 @@ def none_aware_dict_eq(self: T, other: T) -> bool:
     return self.__dict__ == other.__dict__
 
 
-def natural_repr(self: T) -> str:
+def natural_repr(self: T, omitted_attributes: tuple[str, ...] = tuple(),
+                 ellipsis_attributes: tuple[str, ...] = tuple(), omit_private: bool = True) -> str:
     class_name = type(self).__name__
-    argument_sequence = ', '.join(f'{key}={value!r}' for key, value in self.__dict__.items())
+    argument_sequence = ', '.join(
+        f'{attribute}={"..." if attribute in ellipsis_attributes else f"{value!r}"}'
+        for attribute, value in self.__dict__.items()
+        if attribute not in omitted_attributes
+        if not (omit_private and attribute.startswith('_'))
+    )
+
     return f'{class_name}({argument_sequence})'
 
 
