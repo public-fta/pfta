@@ -7,3 +7,5 @@ python3 examples/generate_staircase.py
 for txt_file in examples/*.txt; do
   python3 -m pfta.cli $txt_file
 done
+
+cp examples/candle.txt.out/figures/2.0/CAN.svg candle.svg
