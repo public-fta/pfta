@@ -12,7 +12,7 @@ import collections
 import csv
 import os
 import string
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pfta.common import natural_repr, format_quantity
 from pfta.graphics import (
@@ -367,9 +367,9 @@ class Table:
     Class representing tabular output.
     """
     headings: list[str]
-    data: list[list]
+    data: list[list[Any]]
 
-    def __init__(self, headings: list[str], data: list[list]):
+    def __init__(self, headings: list[str], data: list[list[Any]]):
         self.headings = headings
         self.data = data
 
