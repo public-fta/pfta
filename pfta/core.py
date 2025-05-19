@@ -800,7 +800,7 @@ class Event(Object):
         return natural_repr(
             self,
             omitted_attributes=(
-                'label', 'comment', 'model_id_line_number', 'appearance',
+                'label', 'comment', 'model_id_line_number', 'appearance', 'actual_model_type',
                 'computed_expected_probabilities', 'computed_expected_intensities', 'computed_expected_rates',
             ),
             ellipsis_attributes=(
