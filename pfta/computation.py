@@ -284,7 +284,7 @@ def uncached_expression_probability(expression: Expression, flattened_index: int
 
         partial_sum += latest
 
-        if should_terminate_sum(latest, partial_sum, computational_cache.tolerance):
+        if is_within_tolerance(latest, partial_sum, computational_cache.tolerance):
             break
 
     return partial_sum
@@ -391,13 +391,13 @@ def uncached_expression_intensity(expression: Expression, flattened_index: int,
 
         partial_sum += latest
 
-        if should_terminate_sum(latest, partial_sum, computational_cache.tolerance):
+        if is_within_tolerance(latest, partial_sum, computational_cache.tolerance):
             break
 
     return partial_sum
 
 
-def should_terminate_sum(latest: float, partial_sum: float, tolerance: float) -> bool:
+def is_within_tolerance(latest: float, partial_sum: float, tolerance: float) -> bool:
     """
     Predicate for early termination (truncation) of disjunction probability and intensity computations.
     """
