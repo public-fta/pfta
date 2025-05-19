@@ -9,7 +9,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
 import re
-from typing import Optional
+from typing import Any, Optional
 
 from pfta.common import none_aware_dict_eq, natural_repr
 from pfta.constants import (
@@ -88,7 +88,7 @@ class ParsedLine:
     type_: LineType
     info: dict[str, str]
 
-    def __init__(self, number: int, type_: LineType, info: dict):
+    def __init__(self, number: int, type_: LineType, info: dict[str, str]):
         self.number = number
         self.type_ = type_
         self.info = info
@@ -157,7 +157,7 @@ def is_valid_id(string: str) -> bool:
     return bool(re.fullmatch(VALID_ID_REGEX, string))
 
 
-def compile_distribution_pattern(name: str, parameters: tuple[str]) -> re.Pattern:
+def compile_distribution_pattern(name: str, parameters: tuple[str, ...]) -> re.Pattern[str]:
     if not parameters:
         raise ImplementationError('distribution should have at least one parameter')
 
@@ -300,7 +300,7 @@ def parse_assemblies(parsed_paragraphs: list[ParsedParagraph]) -> list[ParsedAss
     ]
 
 
-def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
+def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict[str, Any]:
     properties = {}
 
     for parsed_line in parsed_assembly.property_lines:
@@ -375,7 +375,7 @@ def parse_fault_tree_properties(parsed_assembly: ParsedAssembly) -> dict:
     return properties
 
 
-def parse_model_properties(parsed_assembly: ParsedAssembly) -> dict:
+def parse_model_properties(parsed_assembly: ParsedAssembly) -> dict[str, Any]:
     properties = {}
 
     for parsed_line in parsed_assembly.property_lines:
@@ -407,7 +407,7 @@ def parse_model_properties(parsed_assembly: ParsedAssembly) -> dict:
     return properties
 
 
-def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
+def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict[str, Any]:
     properties = {}
 
     for parsed_line in parsed_assembly.property_lines:
@@ -455,7 +455,7 @@ def parse_event_properties(parsed_assembly: ParsedAssembly) -> dict:
     return properties
 
 
-def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict:
+def parse_gate_properties(parsed_assembly: ParsedAssembly) -> dict[str, Any]:
     properties = {}
 
     for parsed_line in parsed_assembly.property_lines:
@@ -530,7 +530,7 @@ def parse_distribution(string: str, line_number: int) -> Distribution:
     return DegenerateDistribution(value, line_number)
 
 
-def parse_distribution_parameters(distribution_match: re.Match) -> dict[str, float]:
+def parse_distribution_parameters(distribution_match: re.Match[str]) -> dict[str, float]:
     float_from_parameter = {}
 
     for parameter, string in distribution_match.groupdict().items():
