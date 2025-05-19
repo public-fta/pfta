@@ -24,7 +24,7 @@ def natural_repr(self: T, omitted_attributes: tuple[str, ...] = tuple(),
                  ellipsis_attributes: tuple[str, ...] = tuple(), omit_private: bool = True) -> str:
     class_name = type(self).__name__
     argument_sequence = ', '.join(
-        f'{attribute}={"..." if attribute in ellipsis_attributes else f"{value!r}"}'
+        f'{attribute}={"<...>" if attribute in ellipsis_attributes else f"{value!r}"}'
         for attribute, value in self.__dict__.items()
         if attribute not in omitted_attributes
         if not (omit_private and attribute.startswith('_'))
