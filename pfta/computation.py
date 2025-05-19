@@ -276,7 +276,7 @@ def uncached_expression_probability(expression: Expression, flattened_index: int
             )
         )
 
-    partial_sum = 0
+    partial_sum = 0.
 
     for r in range(1, len(terms) + 1):
         latest = q_contribution(order=r)
@@ -376,7 +376,7 @@ def uncached_expression_intensity(expression: Expression, flattened_index: int,
             )
         )
 
-    partial_sum = 0
+    partial_sum = 0.
 
     for r in range(1, len(terms) + 1):
         latest = (
