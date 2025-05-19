@@ -19,7 +19,7 @@ from pfta.presentation import Index
 from pfta.woe import FaultTreeTextException
 
 
-def parse_cli_arguments():
+def parse_cli_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Perform a fault tree analysis.')
     parser.add_argument(
         '-v', '--version',
