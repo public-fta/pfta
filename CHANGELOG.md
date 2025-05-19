@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 
+
+## [v0.4.0] Importance etc. (2025-05-20)
+
 - Implemented importance output
 - Implemented beta and gamma distributions
 - Implemented fault tree property `computational_order` (`1` for rare approximation)
@@ -51,7 +54,8 @@
 - First reasonably working version. Vote gates yet to be implemented.
 
 
-[Unreleased]: https://github.com/public-fta/pfta/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/public-fta/pfta/compare/v0.4.0...HEAD
+[v0.4.0]: https://github.com/public-fta/pfta/compare/v0.3.2...v0.4.0
 [v0.3.2]: https://github.com/public-fta/pfta/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/public-fta/pfta/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/public-fta/pfta/compare/v0.2.0...v0.3.0
