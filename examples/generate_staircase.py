@@ -8,7 +8,7 @@ DEPTH = 20
 def fault_tree_properties_text():
     return '\n'.join([
         '- times: nan',
-        '- tolerance: 5e-3',
+        '- computational_tolerance: 5e-3',
     ])
 
 

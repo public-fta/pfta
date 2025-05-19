@@ -24,14 +24,14 @@ class ComputationalCache:
     """
     Class for caching laborious computations.
     """
-    tolerance: float
     _q_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
     _omega_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
     _q_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]
     _omega_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]
     _combos_from_order_from_terms: DefaultDict[Collection[Term], dict[int, list[tuple[Term, ...]]]]
+    tolerance: float
 
-    def __init__(self, tolerance: float, events: list['Event']):
+    def __init__(self, events: list['Event'], tolerance: float):
         q_from_index_from_encoding = {
             event.computed_expression.sole_term_encoding(): dict(enumerate(event.computed_probabilities))
             for event in events
@@ -41,12 +41,12 @@ class ComputationalCache:
             for event in events
         }
 
-        self.tolerance = tolerance
         self._q_from_index_from_encoding = collections.defaultdict(dict, q_from_index_from_encoding)
         self._omega_from_index_from_encoding = collections.defaultdict(dict, omega_from_index_from_encoding)
         self._q_from_index_from_encodings = collections.defaultdict(dict)
         self._omega_from_index_from_encodings = collections.defaultdict(dict)
         self._combos_from_order_from_terms = collections.defaultdict(dict)
+        self.tolerance = tolerance
 
     def __repr__(self):
         return natural_repr(self)

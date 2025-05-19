@@ -16,13 +16,13 @@ Fault tree text is to consist of paragraphs declaring [fault tree properties](#f
 The fault tree properties paragraph must be the first paragraph.
 
 ```
-- times: <comma separated floats>  (mandatory; use `nan` for arbitrary time)
-- time_unit: <string>              (optional; displayed on intensities and rates in graphical output)
-- seed: <string>                   (optional; used when sampling distributions)
-- sample_size: <integer>           (optional; default `1`)
-- tolerance: <float>               (optional; default `0`; tolerance for truncating probability/intensity computations)
-- significant_figures: <integer>   (optional; default `3`; number of significant figures displayed in SVG output)
-- scientific_exponent: <integer>   (optional; default `3`; exponent threshold for scientific notation in SVG output)
+- times: <comma separated floats>   (mandatory; use `nan` for arbitrary time)
+- time_unit: <string>               (optional; displayed on intensities and rates in graphical output)
+- seed: <string>                    (optional; used when sampling distributions)
+- sample_size: <integer>            (optional; default `1`)
+- computational_tolerance: <float>  (optional; default `0`; tolerance for truncating probability/intensity computations)
+- significant_figures: <integer>    (optional; default `3`; number of significant figures displayed in SVG output)
+- scientific_exponent: <integer>    (optional; default `3`; exponent threshold for scientific notation in SVG output)
 ```
 
 
@@ -148,7 +148,7 @@ Objects from `pfta.core` that are (directly or indirectly) exposed after invokin
 | `time_unit` | Time unit. |
 | `seed` | Seed used for sampling distributions. |
 | `sample_size` | Sample size for sampling distributions. |
-| `tolerance` | Tolerance for truncating probability/intensity computations. |
+| `computational_tolerance` | Tolerance for truncating probability/intensity computations. |
 | `significant_figures` | Number of significant figures displayed in SVG output. |
 | `scientific_exponent` | Exponent threshold for scientific notation in SVG output. |
 | `models` | List of [failure models]. |

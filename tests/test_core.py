@@ -14,7 +14,7 @@ import unittest
 from pfta.constants import ModelType, GateType
 from pfta.core import (
     DuplicateIdException, UnsetPropertyException, ModelPropertyClashException, InvalidModelKeyComboException,
-    NegativeValueException, SubUnitValueException, InvalidToleranceException,
+    NegativeValueException, SubUnitValueException, InvalidComputationalToleranceException,
     UnknownModelException, UnknownInputException, InputCountException, CircularInputsException,
     DistributionSamplingError, InvalidProbabilityValueException,
     FaultTree, Model, Event, Gate,
@@ -85,61 +85,61 @@ class TestCore(unittest.TestCase):
             '''),
         )
 
-        # Bad tolerance
+        # Bad computational tolerance
         self.assertRaises(
-            InvalidToleranceException,
+            InvalidComputationalToleranceException,
             FaultTree,
             textwrap.dedent('''
                 - times: 1
-                - tolerance: -1
+                - computational_tolerance: -1
             '''),
         )
         self.assertRaises(
-            InvalidToleranceException,
+            InvalidComputationalToleranceException,
             FaultTree,
             textwrap.dedent('''
                 - times: 1
-                - tolerance: -1e-16
+                - computational_tolerance: -1e-16
             '''),
         )
         self.assertRaises(
-            InvalidToleranceException,
+            InvalidComputationalToleranceException,
             FaultTree,
             textwrap.dedent('''
                 - times: 1
-                - tolerance: 1
+                - computational_tolerance: 1
             '''),
         )
         self.assertRaises(
-            InvalidToleranceException,
+            InvalidComputationalToleranceException,
             FaultTree,
             textwrap.dedent('''
                 - times: 1
-                - tolerance: 1.0000000000000001
+                - computational_tolerance: 1.0000000000000001
             '''),
         )
         self.assertRaises(
-            InvalidToleranceException,
+            InvalidComputationalToleranceException,
             FaultTree,
             textwrap.dedent('''
                 - times: 1
-                - tolerance: 2
+                - computational_tolerance: 2
             '''),
         )
         self.assertRaises(
-            InvalidToleranceException,
+            InvalidComputationalToleranceException,
             FaultTree,
             textwrap.dedent('''
                 - times: 1
-                - tolerance: nan
+                - computational_tolerance: nan
             '''),
         )
         self.assertRaises(
-            InvalidToleranceException,
+            InvalidComputationalToleranceException,
             FaultTree,
             textwrap.dedent('''
                 - times: 1
-                - tolerance: inf
+                - computational_tolerance: inf
             '''),
         )
 

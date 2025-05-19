@@ -125,7 +125,7 @@ MODEL_TYPE_EXPLAINER = f'Recognised model types are {natural_join_backticks(VALI
 
 VALID_KEYS_FROM_CLASS = {
     'FaultTree': (
-        'times', 'time_unit', 'seed', 'sample_size', 'tolerance',
+        'times', 'time_unit', 'seed', 'sample_size', 'computational_tolerance',
         'significant_figures', 'scientific_exponent',
     ),
     'Model': ('label', 'comment', 'model_type', *VALID_MODEL_KEYS),

@@ -70,7 +70,7 @@ class SubUnitValueException(FaultTreeTextException):
     pass
 
 
-class InvalidToleranceException(FaultTreeTextException):
+class InvalidComputationalToleranceException(FaultTreeTextException):
     pass
 
 
@@ -106,7 +106,7 @@ class FaultTree:
     time_unit: str
     seed: str
     sample_size: int
-    tolerance: float
+    computational_tolerance: float
     significant_figures: int
     scientific_exponent: int
     models: list['Model']
@@ -169,9 +169,9 @@ class FaultTree:
         sample_size: int = fault_tree_properties.get('sample_size', 1)
         sample_size_raw: str = fault_tree_properties.get('sample_size_raw')
         sample_size_line_number: int = fault_tree_properties.get('sample_size_line_number')
-        tolerance: float = fault_tree_properties.get('tolerance', 0)
-        tolerance_raw: str = fault_tree_properties.get('tolerance_raw')
-        tolerance_line_number: int = fault_tree_properties.get('tolerance_line_number')
+        computational_tolerance: float = fault_tree_properties.get('computational_tolerance', 0)
+        computational_tolerance_raw: str = fault_tree_properties.get('computational_tolerance_raw')
+        computational_tolerance_line_number: int = fault_tree_properties.get('computational_tolerance_line_number')
         significant_figures: int = fault_tree_properties.get('significant_figures', 3)
         significant_figures_raw: str = fault_tree_properties.get('significant_figures_raw')
         significant_figures_line_number: int = fault_tree_properties.get('significant_figures_line_number')
@@ -194,7 +194,8 @@ class FaultTree:
         # Validation
         FaultTree.validate_times(times, times_raw, times_line_number, unset_property_line_number)
         FaultTree.validate_sample_size(sample_size, sample_size_raw, sample_size_line_number)
-        FaultTree.validate_tolerance(tolerance, tolerance_raw, tolerance_line_number)
+        FaultTree.validate_computational_tolerance(computational_tolerance, computational_tolerance_raw,
+                                                   computational_tolerance_line_number)
         FaultTree.validate_significant_figures(significant_figures, significant_figures_raw,
                                                significant_figures_line_number)
         FaultTree.validate_scientific_exponent(scientific_exponent, scientific_exponent_raw,
@@ -233,7 +234,7 @@ class FaultTree:
         FaultTree.compute_event_expected_rates(events)
 
         # Prepare cache for computation of gate quantities
-        computational_cache = ComputationalCache(tolerance, events)
+        computational_cache = ComputationalCache(events, computational_tolerance)
 
         # Computation of gate quantities
         FaultTree.compute_gate_probabilities(gates, computational_cache)
@@ -248,7 +249,7 @@ class FaultTree:
         self.time_unit = time_unit
         self.seed = seed
         self.sample_size = sample_size
-        self.tolerance = tolerance
+        self.computational_tolerance = computational_tolerance
         self.significant_figures = significant_figures
         self.scientific_exponent = scientific_exponent
         self.models = models
@@ -354,11 +355,12 @@ class FaultTree:
             raise SubUnitValueException(sample_size_line_number, f'sample size `{sample_size_raw}` less than unity')
 
     @staticmethod
-    def validate_tolerance(tolerance: float, tolerance_raw: str, tolerance_line_number: int):
-        if not 0 <= tolerance < 1:
-            raise InvalidToleranceException(
-                tolerance_line_number,
-                f'tolerance `{tolerance_raw}` negative or not less than unity',
+    def validate_computational_tolerance(computational_tolerance: float, computational_tolerance_raw: str,
+                                         computational_tolerance_line_number: int):
+        if not 0 <= computational_tolerance < 1:
+            raise InvalidComputationalToleranceException(
+                computational_tolerance_line_number,
+                f'computational_tolerance `{computational_tolerance_raw}` negative or not less than unity',
             )
 
     @staticmethod
