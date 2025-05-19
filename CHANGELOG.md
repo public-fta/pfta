@@ -5,10 +5,10 @@
 
 - Renamed `tolerance` to `computational_tolerance`
 - Implemented fault tree property `computational_order` (`1` for rare approximation)
-- Fixed partial sums should be initialised as float zero, not integer zero
-- Converted `model_type` from string to enum
 - Implemented importance output
 - Implemented beta and gamma distributions
+- Fixed partial sums should be initialised as float zero, not integer zero
+- Converted `model_type` from string to enum
 
 
 ## [v0.3.2] Python 3.12 passing (2025-05-12)
