@@ -145,13 +145,13 @@ Gate: AB_OR_C
 ''')
 
 fault_tree.gates[0]
-# Gate(id_='AB', is_paged=False, type_=<GateType.AND: 2>, vote_threshold=None, input_ids=['A', 'B'], is_top_gate=False, flattened_indexer=FlattenedIndexer(time_count=1, sample_size=1, flattened_size=1), computed_expression=Expression(Term(0b11)), computed_probabilities=<...>, computed_intensities=<...>, computed_rates=<...>)
+# Gate(id_='AB', is_paged=False, type_=<GateType.AND: 2>, vote_threshold=None, input_ids=['A', 'B'], is_top_gate=False, flattened_indexer=FlattenedIndexer(time_count=1, sample_size=1, flattened_size=1), computed_expression=<...>, computed_probabilities=<...>, computed_intensities=<...>, computed_rates=<...>)
 
 fault_tree.gates[0].computed_rates
 # [0.63]
 
 fault_tree.gates[1]
-# Gate(id_='AB_OR_C', is_paged=False, type_=<GateType.OR: 1>, vote_threshold=None, input_ids=['AB', 'C'], is_top_gate=True, flattened_indexer=FlattenedIndexer(time_count=1, sample_size=1, flattened_size=1), computed_expression=Expression(Term(0b11), Term(0b100)), computed_probabilities=<...>, computed_intensities=<...>, computed_rates=<...>)
+# Gate(id_='AB_OR_C', is_paged=False, type_=<GateType.OR: 1>, vote_threshold=None, input_ids=['AB', 'C'], is_top_gate=True, flattened_indexer=FlattenedIndexer(time_count=1, sample_size=1, flattened_size=1), computed_expression=<...>, computed_probabilities=<...>, computed_intensities=<...>, computed_rates=<...>)
 
 fault_tree.gates[1].computed_rates
 # [0.6301]

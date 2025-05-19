@@ -805,7 +805,7 @@ class Event(Object):
             ),
             ellipsis_attributes=(
                 'parameter_samples',
-                'computed_probabilities', 'computed_intensities', 'computed_rates',
+                'computed_expression', 'computed_probabilities', 'computed_intensities', 'computed_rates',
             ),
         )
 
@@ -996,7 +996,7 @@ class Gate(Object):
                 'computed_expected_probabilities', 'computed_expected_intensities', 'computed_expected_rates',
             ),
             ellipsis_attributes=(
-                'computed_probabilities', 'computed_intensities', 'computed_rates',
+                'computed_expression', 'computed_probabilities', 'computed_intensities', 'computed_rates',
             ),
         )
 
