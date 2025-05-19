@@ -169,7 +169,7 @@ class FaultTree:
         sample_size: int = fault_tree_properties.get('sample_size', 1)
         sample_size_raw: str = fault_tree_properties.get('sample_size_raw')
         sample_size_line_number: int = fault_tree_properties.get('sample_size_line_number')
-        computational_tolerance: float = fault_tree_properties.get('computational_tolerance', 0)
+        computational_tolerance: float = fault_tree_properties.get('computational_tolerance', 0.)
         computational_tolerance_raw: str = fault_tree_properties.get('computational_tolerance_raw')
         computational_tolerance_line_number: int = fault_tree_properties.get('computational_tolerance_line_number')
         significant_figures: int = fault_tree_properties.get('significant_figures', 3)

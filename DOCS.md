@@ -20,7 +20,7 @@ The fault tree properties paragraph must be the first paragraph.
 - time_unit: <string>               (optional; displayed on intensities and rates in graphical output)
 - seed: <string>                    (optional; used when sampling distributions)
 - sample_size: <integer>            (optional; default `1`)
-- computational_tolerance: <float>  (optional; default `0`; tolerance for truncating probability/intensity computations)
+- computational_tolerance: <float>  (optional; default `0.`; tolerance for truncating probability/intensity computations)
 - significant_figures: <integer>    (optional; default `3`; number of significant figures displayed in SVG output)
 - scientific_exponent: <integer>    (optional; default `3`; exponent threshold for scientific notation in SVG output)
 ```
