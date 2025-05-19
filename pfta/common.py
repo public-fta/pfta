@@ -8,23 +8,25 @@ Licensed under the GNU General Public License v3.0 (GPL-3.0-only).
 This is free software with NO WARRANTY etc. etc., see LICENSE.
 """
 
-from typing import Optional, Union
+from typing import Optional, Union, Sequence, TypeVar
+
+T = TypeVar('T')
 
 
-def none_aware_dict_eq(self, other):
+def none_aware_dict_eq(self: T, other: T) -> bool:
     if other is None:
         return False
 
     return self.__dict__ == other.__dict__
 
 
-def natural_repr(self):
+def natural_repr(self: T) -> str:
     class_name = type(self).__name__
     argument_sequence = ', '.join(f'{key}={value!r}' for key, value in self.__dict__.items())
     return f'{class_name}({argument_sequence})'
 
 
-def natural_join(items: Union[tuple, list], penultimate_separator: Optional[str] = 'and') -> str:
+def natural_join(items: Sequence[T], penultimate_separator: Optional[str] = 'and') -> str:
     if not items:
         return ''
 
@@ -44,7 +46,7 @@ def natural_join(items: Union[tuple, list], penultimate_separator: Optional[str]
     return f'{leading_items_joined}, {penultimate_separator} {last_item}'
 
 
-def natural_join_backticks(items: Union[tuple, list], penultimate_separator: Optional[str] = 'and') -> str:
+def natural_join_backticks(items: Sequence[T], penultimate_separator: Optional[str] = 'and') -> str:
     return natural_join([f'`{item}`' for item in items], penultimate_separator)
 
 
@@ -55,9 +57,9 @@ def format_cut_set(event_ids: tuple[str, ...]) -> str:
     return '.'.join(event_ids)
 
 
-def format_quantity(value: Union[float, str], unit: str, is_reciprocal=False) -> str:
+def format_quantity(value: Union[float, str], unit: str, is_reciprocal: bool = False) -> str:
     if not unit:
-        return value
+        return str(value)
 
     separator = '/' if is_reciprocal else ' '
 
