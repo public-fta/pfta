@@ -69,6 +69,10 @@ def format_number(number: Optional[float],
             '(?P<sign>-?)(?P<mantissa>[0-9.]+)E(?P<exponent_sign>[+-])0*(?P<exponent_magnitude>[0-9]+)',
             scientific_form,
         )
+
+        if not scientific_match:
+            raise ImplementationError('scientific_form did not match regex')
+
         sign_prefix = scientific_match.group('sign')
         mantissa = scientific_match.group('mantissa')
         exponent_sign = scientific_match.group('exponent_sign')
