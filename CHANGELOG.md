@@ -3,10 +3,10 @@
 
 ## [Unreleased]
 
-- Renamed `tolerance` to `computational_tolerance`
-- Implemented fault tree property `computational_order` (`1` for rare approximation)
 - Implemented importance output
 - Implemented beta and gamma distributions
+- Implemented fault tree property `computational_order` (`1` for rare approximation)
+- Renamed `tolerance` to `computational_tolerance`
 - Fixed partial sums should be initialised as float zero, not integer zero
 - Converted `model_type` from string to enum
 - Omitted/abbreviated irrelevant attributees in object representations
