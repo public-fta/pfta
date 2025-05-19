@@ -11,7 +11,7 @@ This is free software with NO WARRANTY etc. etc., see LICENSE.
 import random
 import statistics
 import traceback
-from typing import Optional
+from typing import Any, Optional
 
 from pfta.boolean import Term, Expression
 from pfta.common import natural_repr, format_cut_set, natural_join_backticks
@@ -19,7 +19,7 @@ from pfta.computation import (
     ComputationalCache,
     constant_rate_model_probability, constant_rate_model_intensity,
 )
-from pfta.constants import LineType, EventAppearance, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
+from pfta.constants import EventAppearance, GateType, VALID_KEY_COMBOS_FROM_MODEL_TYPE, VALID_MODEL_KEYS
 from pfta.parsing import (
     parse_lines, parse_paragraphs, parse_assemblies,
     parse_fault_tree_properties, parse_model_properties, parse_event_properties, parse_gate_properties,
@@ -161,24 +161,24 @@ class FaultTree:
             raise ImplementationError(f'bad class {class_}')
 
         # Fault tree property extraction
-        times = fault_tree_properties.get('times')
-        time_unit = fault_tree_properties.get('time_unit')
-        times_raw = fault_tree_properties.get('times_raw')
-        times_line_number = fault_tree_properties.get('times_line_number')
-        seed = fault_tree_properties.get('seed')
-        sample_size = fault_tree_properties.get('sample_size', 1)
-        sample_size_raw = fault_tree_properties.get('sample_size_raw')
-        sample_size_line_number = fault_tree_properties.get('sample_size_line_number')
-        tolerance = fault_tree_properties.get('tolerance', 0)
-        tolerance_raw = fault_tree_properties.get('tolerance_raw')
-        tolerance_line_number = fault_tree_properties.get('tolerance_line_number')
-        significant_figures = fault_tree_properties.get('significant_figures', 3)
-        significant_figures_raw = fault_tree_properties.get('significant_figures_raw')
-        significant_figures_line_number = fault_tree_properties.get('significant_figures_line_number')
-        scientific_exponent = fault_tree_properties.get('scientific_exponent', 3)
-        scientific_exponent_raw = fault_tree_properties.get('scientific_exponent_raw')
-        scientific_exponent_line_number = fault_tree_properties.get('scientific_exponent_line_number')
-        unset_property_line_number = fault_tree_properties.get('unset_property_line_number', 1)
+        times: list[float] = fault_tree_properties.get('times')
+        time_unit: str = fault_tree_properties.get('time_unit')
+        times_raw: list[str] = fault_tree_properties.get('times_raw')
+        times_line_number: int = fault_tree_properties.get('times_line_number')
+        seed: str = fault_tree_properties.get('seed')
+        sample_size: int = fault_tree_properties.get('sample_size', 1)
+        sample_size_raw: str = fault_tree_properties.get('sample_size_raw')
+        sample_size_line_number: int = fault_tree_properties.get('sample_size_line_number')
+        tolerance: float = fault_tree_properties.get('tolerance', 0)
+        tolerance_raw: str = fault_tree_properties.get('tolerance_raw')
+        tolerance_line_number: int = fault_tree_properties.get('tolerance_line_number')
+        significant_figures: int = fault_tree_properties.get('significant_figures', 3)
+        significant_figures_raw: str = fault_tree_properties.get('significant_figures_raw')
+        significant_figures_line_number: int = fault_tree_properties.get('significant_figures_line_number')
+        scientific_exponent: int = fault_tree_properties.get('scientific_exponent', 3)
+        scientific_exponent_raw: str = fault_tree_properties.get('scientific_exponent_raw')
+        scientific_exponent_line_number: int = fault_tree_properties.get('scientific_exponent_line_number')
+        unset_property_line_number: int = fault_tree_properties.get('unset_property_line_number', 1)
 
         # Identifier conveniences
         model_from_id = {model.id_: model for model in models}
@@ -336,7 +336,8 @@ class FaultTree:
         }
 
     @staticmethod
-    def validate_times(times: list, times_raw: list, times_line_number: int, unset_property_line_number: int):
+    def validate_times(times: list[float], times_raw: list[str], times_line_number: int,
+                       unset_property_line_number: int):
         if times is None:
             raise UnsetPropertyException(
                 unset_property_line_number,
@@ -538,11 +539,11 @@ class Model:
     model_dict: dict[str, Distribution]
     is_used: Optional[bool]
 
-    def __init__(self, id_: str, properties: dict):
-        label = properties.get('label')
-        comment = properties.get('comment')
-        model_type = properties.get('model_type')
-        unset_property_line_number = properties.get('unset_property_line_number')
+    def __init__(self, id_: str, properties: dict[str, Any]):
+        label: str = properties.get('label')
+        comment: str = properties.get('comment')
+        model_type: str = properties.get('model_type')
+        unset_property_line_number: int = properties.get('unset_property_line_number')
 
         model_dict = Model.extract_model_dict(properties)
         model_keys = list(model_dict)
@@ -566,7 +567,7 @@ class Model:
         return natural_repr(self)
 
     @staticmethod
-    def extract_model_dict(properties: dict) -> dict[str, Distribution]:
+    def extract_model_dict(properties: dict[str, Any]) -> dict[str, Distribution]:
         return {
             key: properties[key]
             for key in properties
@@ -750,14 +751,14 @@ class Event(Object):
     actual_model_type: Optional[str]
     parameter_samples: Optional[dict[str, list[float]]]
 
-    def __init__(self, id_: str, index: int, properties: dict):
-        label = properties.get('label')
-        comment = properties.get('comment')
-        model_type = properties.get('model_type')
-        model_id = properties.get('model_id')
-        model_id_line_number = properties.get('model_id_line_number')
-        appearance = properties.get('appearance', EventAppearance.BASIC)
-        unset_property_line_number = properties.get('unset_property_line_number')
+    def __init__(self, id_: str, index: int, properties: dict[str, Any]):
+        label: str = properties.get('label')
+        comment: str = properties.get('comment')
+        model_type: str = properties.get('model_type')
+        model_id: str = properties.get('model_id')
+        model_id_line_number: int = properties.get('model_id_line_number')
+        appearance: EventAppearance = properties.get('appearance', EventAppearance.BASIC)
+        unset_property_line_number: int = properties.get('unset_property_line_number')
 
         model_dict = Model.extract_model_dict(properties)
         model_keys = list(model_dict)
@@ -936,15 +937,15 @@ class Gate(Object):
 
     is_top_gate: Optional[bool]
 
-    def __init__(self, id_: str, properties: dict):
-        label = properties.get('label')
-        is_paged = properties.get('is_paged', False)
-        type_ = properties.get('type')
-        vote_threshold = properties.get('vote_threshold')
-        input_ids = properties.get('input_ids')
-        input_ids_line_number = properties.get('input_ids_line_number')
-        comment = properties.get('comment')
-        unset_property_line_number = properties.get('unset_property_line_number')
+    def __init__(self, id_: str, properties: dict[str, Any]):
+        label: str = properties.get('label')
+        is_paged: bool = properties.get('is_paged', False)
+        type_: GateType = properties.get('type')
+        vote_threshold: int = properties.get('vote_threshold')
+        input_ids: list[str] = properties.get('input_ids')
+        input_ids_line_number: int = properties.get('input_ids_line_number')
+        comment: str = properties.get('comment')
+        unset_property_line_number: int = properties.get('unset_property_line_number')
 
         Gate.validate_type_set(id_, type_, unset_property_line_number)
         Gate.validate_input_ids_set(id_, input_ids, unset_property_line_number)
@@ -1107,7 +1108,7 @@ class Gate(Object):
         return Table(headings, data)
 
     @staticmethod
-    def validate_type_set(id_: str, type_: LineType, unset_property_line_number: int):
+    def validate_type_set(id_: str, type_: GateType, unset_property_line_number: int):
         if type_ is None:
             raise UnsetPropertyException(
                 unset_property_line_number,
@@ -1115,7 +1116,7 @@ class Gate(Object):
             )
 
     @staticmethod
-    def validate_input_ids_set(id_: str, input_ids: list, unset_property_line_number: int):
+    def validate_input_ids_set(id_: str, input_ids: list[str], unset_property_line_number: int):
         if input_ids is None:
             raise UnsetPropertyException(
                 unset_property_line_number,
