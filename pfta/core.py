@@ -749,6 +749,7 @@ class Event(Object):
     model_dict: dict[str, Distribution]
 
     is_used: Optional[bool]
+    flattened_indexer: Optional['FlattenedIndexer']
     actual_model_type: Optional[ModelType]
     parameter_samples: Optional[dict[str, list[float]]]
 

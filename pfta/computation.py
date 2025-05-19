@@ -24,6 +24,7 @@ class ComputationalCache:
     """
     Class for caching laborious computations.
     """
+    tolerance: float
     _q_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
     _omega_from_index_from_encoding: DefaultDict[Optional[int], dict[int, float]]
     _q_from_index_from_encodings: DefaultDict[frozenset[int], dict[int, float]]

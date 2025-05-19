@@ -150,6 +150,7 @@ class Node:
 
     Nodes are instantiated recursively, starting from the top node of the figure.
     """
+    time_index: int
     fault_tree: 'FaultTree'
     source_object: 'Object'
     input_nodes: list['Node']
