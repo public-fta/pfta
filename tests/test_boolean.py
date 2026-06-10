@@ -193,7 +193,7 @@ class TestBoolean(unittest.TestCase):
         # gcd(ABD, BD, BCD, BD) = BD
         self.assertEqual(Term.gcd(Term(0b1011), Term(0b1010), Term(0b1110), Term(0b1010)), Term(0b1010))
 
-        # gcd(AB, B, BCD, BD) = BD
+        # gcd(AB, B, BCD, BD) = B
         self.assertEqual(Term.gcd(Term(0b0011), Term(0b0010), Term(0b1110), Term(0b1010)), Term(0b0010))
 
         # gcd(AB, BC, CD, DE) = True

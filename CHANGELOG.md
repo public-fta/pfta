@@ -3,6 +3,8 @@
 
 ## [Unreleased]
 
+- Fixed typo in comment for `gcd(AB, B, BCD, BD)` test
+
 
 ## [v0.4.0] Importance etc. (2025-05-20)
 
